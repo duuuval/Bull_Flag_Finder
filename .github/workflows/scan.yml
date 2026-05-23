@@ -32,5 +32,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add public/latest.json public/scans/ public/universe-fallback.json
-          git diff --staged --quiet || git commit -m "📊 Daily scan: $(date +'%Y-%m-%d')"
-          git push
+          git diff --staged --quiet && exit 0
+          git commit -m "📊 Daily scan: $(date +'%Y-%m-%d')"
+          # Retry loop: if remote moved while we were running, pull --rebase and try again
+          for i in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push failed, attempt $i. Pulling and retrying..."
+            git pull --rebase origin main
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
