@@ -64,6 +64,7 @@ function SectionView({
   }, [candidates, stages, sort]);
 
   const visible = filtered.slice(0, limit);
+
   const accentColor = accent === 'green' ? 'text-terminal-green' : 'text-terminal-blue';
 
   const toggleStage = (s: Stage) => {
@@ -77,12 +78,14 @@ function SectionView({
 
   return (
     <section className="mb-10">
-      <div className="flex items-baseline gap-3 my-6 text-terminal-gray-dim">
-        <span className="font-mono text-xs">═══════</span>
-        <span className={`font-mono text-xs ${accentColor} uppercase tracking-widest`}>
+      <div className="flex items-baseline gap-3 my-6 text-terminal-gray-dim overflow-hidden">
+        <span className="font-mono text-xs shrink-0">═══════</span>
+        <span className={`font-mono text-xs ${accentColor} uppercase tracking-widest shrink-0`}>
           {emoji} {title}
         </span>
-        <span className="font-mono text-xs flex-1">═══════════════════════════════════════════</span>
+        <span className="font-mono text-xs flex-1 overflow-hidden whitespace-nowrap">
+          ════════════════════════════════════════════════════════════════════════════════════════════
+        </span>
       </div>
       <p className="text-text-muted text-[10px] font-mono mb-4 -mt-3">{subtitle}</p>
 
