@@ -2,10 +2,8 @@ name: BFF Daily Scan
 
 on:
   schedule:
-    # Mon-Fri at 22:30 UTC (6:30 PM ET, after US market close)
     - cron: '30 22 * * 1-5'
   workflow_dispatch:
-    # Allow manual trigger from GitHub UI
 
 jobs:
   scan:
