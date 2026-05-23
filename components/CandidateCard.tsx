@@ -165,7 +165,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
       </div>
 
       {chartOpen && (
-        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
+        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30 w-full">
           <TradingViewChart key={`${c.ticker}-chart`} ticker={c.ticker} exchange={c.exchange} />
           <a
             href={c.chartUrl}
@@ -270,17 +270,22 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 
 function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Wait one frame so the container has been laid out before measuring it
+    const raf = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  useEffect(() => {
+    if (!ready || !containerRef.current) return;
 
     const container = containerRef.current;
     container.innerHTML = '';
 
     const widgetDiv = document.createElement('div');
     widgetDiv.className = 'tradingview-widget-container__widget';
-    widgetDiv.style.height = '600px';
-    widgetDiv.style.width = '100%';
     container.appendChild(widgetDiv);
 
     const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
@@ -320,13 +325,20 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
         container.innerHTML = '';
       }
     };
-  }, [ticker, exchange]);
+  }, [ready, ticker, exchange]);
 
   return (
     <div
-      className="tradingview-widget-container"
       ref={containerRef}
-      style={{ height: 600, width: '100%', maxWidth: '100%', overflow: 'hidden' }}
+      className="tradingview-widget-container"
+      style={{
+        height: '500px',
+        width: '100%',
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        position: 'relative'
+      }}
     />
   );
 }
