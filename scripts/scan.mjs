@@ -20,7 +20,6 @@ async function main() {
   console.log('╚════════════════════════════════════════════╝');
   console.log('');
 
-  // Market regime
   console.log('🌍 Fetching market regime...');
   const [vix, spyData] = await Promise.all([fetchVix(), fetchSPY()]);
 
@@ -46,7 +45,6 @@ async function main() {
     spyAbove50ma,
   };
 
-  // Universe
   console.log('');
   console.log('📡 Fetching universe (S&P 1500)...');
   const universe = await getUniverse();
@@ -81,39 +79,26 @@ async function main() {
   console.log(`   Flag candidates: ${flagRaw.length}`);
   console.log(`   52W breakouts: ${fiftyTwoWeekCandidates.length}`);
 
-  // RS ranking and scoring
+  // RS rank computed across all candidates (continuation + first-stage)
   const returns60d = flagRaw.map(c => c.pattern.current.return60d);
 
   console.log('');
   console.log(`🎯 Scoring ${flagRaw.length} candidates...`);
 
-  const flagCandidates = flagRaw.map(c => {
+  const allCandidates = flagRaw.map(c => {
     const rsPercentile = percentileRank(c.pattern.current.return60d, returns60d);
     const score = scoreFlag(c.pattern, { rsPercentile, spyAbove50ma });
     const levels = tradeLevel(c.pattern);
 
-    return {
+    const card = {
       ticker: c.ticker,
       name: c.name,
       exchange: c.exchange,
       price: round2(c.pattern.current.price),
+      setupType: c.pattern.context.setupType,
       score: score.total,
-      subscores: {
-        pole: score.pole.total,
-        flag: score.flag.total,
-        context: score.context.total,
-      },
-      breakdown: {
-        poleMagnitude: score.pole.magnitude,
-        poleVelocity: score.pole.velocity,
-        poleVolume: score.pole.volume,
-        flagTightness: score.flag.tightness,
-        flagContraction: score.flag.contraction,
-        flagEntry: score.flag.entry,
-        ctxRs: score.context.rs,
-        ctxTrend: score.context.trend,
-        ctxMarket: score.context.market,
-      },
+      subscores: buildSubscores(score),
+      breakdown: buildBreakdown(score),
       stage: c.pattern.stage,
       daysInFlag: c.pattern.flag.days,
       pattern: {
@@ -130,6 +115,11 @@ async function main() {
         distAbove20Ema: round4(c.pattern.current.distAbove20Ema),
         direction: c.pattern.current.direction,
       },
+      base: {
+        baseDays: c.pattern.context.baseDays,
+        baseRange: round4(c.pattern.context.baseRange),
+        prePoleSlope: round4(c.pattern.context.prePoleSlope),
+      },
       ema: {
         ema10: round2(c.pattern.current.ema10),
         ema20: round2(c.pattern.current.ema20),
@@ -141,78 +131,112 @@ async function main() {
       return60dPct: round4(c.pattern.current.return60d),
       chartUrl: buildChartUrl(c.exchange, c.ticker),
     };
+    return card;
   });
 
-  flagCandidates.sort((a, b) => b.score - a.score);
+  // Split into two lists, each sorted by score
+  const continuationCandidates = allCandidates
+    .filter(c => c.setupType === 'continuation')
+    .sort((a, b) => b.score - a.score);
 
-  // Stage breakdown
-  const stageBreakdown = flagCandidates.reduce((acc, c) => {
-    acc[c.stage] = (acc[c.stage] || 0) + 1;
-    return acc;
-  }, {});
-
-  // Direction breakdown
-  const dirBreakdown = flagCandidates.reduce((acc, c) => {
-    acc[c.pattern.direction] = (acc[c.pattern.direction] || 0) + 1;
-    return acc;
-  }, {});
+  const firstStageCandidates = allCandidates
+    .filter(c => c.setupType === 'first-stage')
+    .sort((a, b) => b.score - a.score);
 
   console.log('');
-  console.log('📋 Candidates by stage:');
-  console.log(`   🎯 Prime (7-14d):   ${stageBreakdown.prime || 0}`);
-  console.log(`   🔨 Forming (5-6d):  ${stageBreakdown.forming || 0}`);
-  console.log(`   🌱 Early (3-4d):    ${stageBreakdown.early || 0}`);
-  console.log(`   ⏰ Late (15-20d):   ${stageBreakdown.late || 0}`);
-  console.log('');
-  console.log('📋 Candidates by direction:');
-  console.log(`   ↘ Descending: ${dirBreakdown.descending || 0}`);
-  console.log(`   → Flat:       ${dirBreakdown.flat || 0}`);
-  console.log(`   ↗ Ascending:  ${dirBreakdown.ascending || 0}`);
+  console.log('📋 Split by setup type:');
+  console.log(`   💪 Continuation: ${continuationCandidates.length}`);
+  console.log(`   🌱 First-stage:  ${firstStageCandidates.length}`);
 
-  if (flagCandidates.length > 0) {
+  if (continuationCandidates.length > 0) {
     console.log('');
-    console.log('   Top 5:');
-    flagCandidates.slice(0, 5).forEach((c, i) => {
-      const pole = (c.pattern.polePct * 100).toFixed(1);
-      const dist = (c.pattern.distAbove20Ema * 100).toFixed(1);
-      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${pole}% / ${c.pattern.poleDays}d · ${dist}% from 20-EMA`);
+    console.log('   Top 5 continuation:');
+    continuationCandidates.slice(0, 5).forEach((c, i) => {
+      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${(c.pattern.polePct * 100).toFixed(1)}%`);
+    });
+  }
+  if (firstStageCandidates.length > 0) {
+    console.log('');
+    console.log('   Top 5 first-stage:');
+    firstStageCandidates.slice(0, 5).forEach((c, i) => {
+      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${(c.pattern.polePct * 100).toFixed(1)}%`);
     });
   }
 
-  await writeOutputs(flagCandidates, fiftyTwoWeekCandidates, marketRegime, {
+  await writeOutputs(continuationCandidates, firstStageCandidates, fiftyTwoWeekCandidates, marketRegime, {
     universeSize: universe.length,
     fetched: stats.fetched,
     failed: stats.failed,
-    qualified: flagCandidates.length,
+    qualified: allCandidates.length,
+    continuationCount: continuationCandidates.length,
+    firstStageCount: firstStageCandidates.length,
   }, startedAt);
+}
+
+function buildSubscores(score) {
+  if (score.setupType === 'first-stage') {
+    return {
+      pole: score.pole.total,
+      flag: score.flag.total,
+      base: score.base.total,
+      context: score.context.total,
+    };
+  }
+  return {
+    pole: score.pole.total,
+    flag: score.flag.total,
+    context: score.context.total,
+  };
+}
+
+function buildBreakdown(score) {
+  if (score.setupType === 'first-stage') {
+    return {
+      poleMagnitude: score.pole.magnitude,
+      poleVelocity: score.pole.velocity,
+      poleVolume: score.pole.volume,
+      flagContraction: score.flag.contraction,
+      flagEntry: score.flag.entry,
+      flagPullback: score.flag.pullbackQuality,
+      baseLength: score.base.length,
+      baseTightness: score.base.tightness,
+      basePoleRatio: score.base.poleBaseRatio,
+      ctxMarket: score.context.market,
+    };
+  }
+  return {
+    poleMagnitude: score.pole.magnitude,
+    poleVelocity: score.pole.velocity,
+    poleVolume: score.pole.volume,
+    flagPullback: score.flag.pullbackQuality,
+    flagContraction: score.flag.contraction,
+    flagEntry: score.flag.entry,
+    ctxRs: score.context.rs,
+    ctxTrend: score.context.trend,
+    ctxMarket: score.context.market,
+  };
 }
 
 function runFiftyTwoWeekCheck(ticker, bars, meta, collector) {
   if (bars.length < 60) return;
   const todayBar = bars[bars.length - 1];
   if (todayBar.close < 5) return;
-
   const lookback = Math.min(252, bars.length);
   let high52w = 0;
   for (let i = bars.length - lookback; i < bars.length; i++) {
     if (bars[i].high > high52w) high52w = bars[i].high;
   }
-
   const recentVols = bars.slice(-21, -1).map(b => b.volume);
   const avgVol = recentVols.reduce((a, b) => a + b, 0) / recentVols.length;
   if (avgVol < 300000) return;
-
   const distFromHigh = (high52w - todayBar.close) / high52w;
   if (distFromHigh > 0.03) return;
-
   const todayVol = todayBar.volume;
   const volRatio = avgVol > 0 ? todayVol / avgVol : 0;
   if (volRatio < 1.2) return;
-
   const dayChange = bars.length >= 2
     ? (todayBar.close - bars[bars.length - 2].close) / bars[bars.length - 2].close
     : 0;
-
   collector.push({
     ticker,
     name: meta.name,
@@ -245,22 +269,25 @@ function buildChartUrl(exchange, ticker) {
   return `https://www.tradingview.com/symbols/${ticker}/`;
 }
 
-async function writeOutputs(flagCandidates, fiftyTwoWeekCandidates, marketRegime, stats, startedAt) {
+async function writeOutputs(continuation, firstStage, fiftyTwoWeek, marketRegime, stats, startedAt) {
   const completedAt = new Date();
   const durationMs = completedAt - startedAt;
   const dateStr = completedAt.toISOString().split('T')[0];
 
-  fiftyTwoWeekCandidates.sort((a, b) => b.volRatio - a.volRatio);
+  fiftyTwoWeek.sort((a, b) => b.volRatio - a.volRatio);
 
   const payload = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     scanDate: dateStr,
     timestamp: completedAt.toISOString(),
     durationSec: Math.round(durationMs / 1000),
     market: marketRegime,
     stats,
-    flagCandidates,
-    fiftyTwoWeekCandidates,
+    continuationCandidates: continuation,
+    firstStageCandidates: firstStage,
+    // legacy alias for compatibility — combined sorted by score
+    flagCandidates: [...continuation, ...firstStage].sort((a, b) => b.score - a.score),
+    fiftyTwoWeekCandidates: fiftyTwoWeek,
   };
 
   if (!fs.existsSync(ARCHIVE_DIR)) fs.mkdirSync(ARCHIVE_DIR, { recursive: true });
