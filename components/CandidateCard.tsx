@@ -279,7 +279,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
 
     const widgetDiv = document.createElement('div');
     widgetDiv.className = 'tradingview-widget-container__widget';
-    widgetDiv.style.height = '400px';
+    widgetDiv.style.height = '600px';
     widgetDiv.style.width = '100%';
     container.appendChild(widgetDiv);
 
@@ -326,7 +326,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     <div
       className="tradingview-widget-container"
       ref={containerRef}
-      style={{ height: 400, width: '100%', overflow: 'hidden' }}
+      style={{ height: 600, width: '100%', overflow: 'hidden' }}
     />
   );
 }
