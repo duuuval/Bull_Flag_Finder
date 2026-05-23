@@ -1,12 +1,4 @@
 // BFF Daily Scan Runner
-//
-// Workflow:
-// 1. Fetch market regime (SPY 50-MA, VIX)
-// 2. Fetch S&P 1500 universe
-// 3. Pass 1: fetch bars + detect flag patterns + collect 52w breakouts
-// 4. Pass 2: compute RS percentile across qualifying flag candidates
-// 5. Pass 3: score each pattern, compute trade levels
-// 6. Write latest.json + date-stamped archive
 
 import fs from 'fs';
 import path from 'path';
@@ -28,7 +20,7 @@ async function main() {
   console.log('╚════════════════════════════════════════════╝');
   console.log('');
 
-  // Step 1: Market regime
+  // Market regime
   console.log('🌍 Fetching market regime...');
   const [vix, spyData] = await Promise.all([fetchVix(), fetchSPY()]);
 
@@ -54,12 +46,11 @@ async function main() {
     spyAbove50ma,
   };
 
-  // Step 2: Universe
+  // Universe
   console.log('');
   console.log('📡 Fetching universe (S&P 1500)...');
   const universe = await getUniverse();
 
-  // Step 3: Scan
   console.log('');
   console.log(`🔍 Scanning ${universe.length} tickers...`);
   console.log('');
@@ -90,7 +81,7 @@ async function main() {
   console.log(`   Flag candidates: ${flagRaw.length}`);
   console.log(`   52W breakouts: ${fiftyTwoWeekCandidates.length}`);
 
-  // Step 4 + 5: RS ranking and scoring
+  // RS ranking and scoring
   const returns60d = flagRaw.map(c => c.pattern.current.return60d);
 
   console.log('');
@@ -118,7 +109,7 @@ async function main() {
         poleVolume: score.pole.volume,
         flagTightness: score.flag.tightness,
         flagContraction: score.flag.contraction,
-        flagPosition: score.flag.position,
+        flagEntry: score.flag.entry,
         ctxRs: score.context.rs,
         ctxTrend: score.context.trend,
         ctxMarket: score.context.market,
@@ -136,6 +127,8 @@ async function main() {
         flagLow: round2(c.pattern.flag.low),
         volumeContraction: round2(c.pattern.flag.volumeContractionRatio),
         poleVolumeRatio: round2(c.pattern.pole.maxVolumeRatio),
+        distAbove20Ema: round4(c.pattern.current.distAbove20Ema),
+        direction: c.pattern.current.direction,
       },
       ema: {
         ema10: round2(c.pattern.current.ema10),
@@ -152,9 +145,15 @@ async function main() {
 
   flagCandidates.sort((a, b) => b.score - a.score);
 
-  // Output stage breakdown
+  // Stage breakdown
   const stageBreakdown = flagCandidates.reduce((acc, c) => {
     acc[c.stage] = (acc[c.stage] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Direction breakdown
+  const dirBreakdown = flagCandidates.reduce((acc, c) => {
+    acc[c.pattern.direction] = (acc[c.pattern.direction] || 0) + 1;
     return acc;
   }, {});
 
@@ -164,13 +163,19 @@ async function main() {
   console.log(`   🔨 Forming (5-6d):  ${stageBreakdown.forming || 0}`);
   console.log(`   🌱 Early (3-4d):    ${stageBreakdown.early || 0}`);
   console.log(`   ⏰ Late (15-20d):   ${stageBreakdown.late || 0}`);
+  console.log('');
+  console.log('📋 Candidates by direction:');
+  console.log(`   ↘ Descending: ${dirBreakdown.descending || 0}`);
+  console.log(`   → Flat:       ${dirBreakdown.flat || 0}`);
+  console.log(`   ↗ Ascending:  ${dirBreakdown.ascending || 0}`);
 
   if (flagCandidates.length > 0) {
     console.log('');
     console.log('   Top 5:');
     flagCandidates.slice(0, 5).forEach((c, i) => {
       const pole = (c.pattern.polePct * 100).toFixed(1);
-      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} pole ${pole}% / ${c.pattern.poleDays}d`);
+      const dist = (c.pattern.distAbove20Ema * 100).toFixed(1);
+      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${pole}% / ${c.pattern.poleDays}d · ${dist}% from 20-EMA`);
     });
   }
 
