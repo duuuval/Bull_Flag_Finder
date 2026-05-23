@@ -1,9 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import Header from '@/components/Header';
-import CandidateCard from '@/components/CandidateCard';
 import { BFFLogoLarge, Divider, EmptyFlag } from '@/components/ASCIIFlair';
-import ScannerControls from './ScannerControls';
+import TwoSectionScanner from './TwoSectionScanner';
 
 export const dynamic = 'force-static';
 
@@ -24,7 +23,11 @@ type ScanData = {
     fetched: number;
     failed: number;
     qualified: number;
+    continuationCount?: number;
+    firstStageCount?: number;
   };
+  continuationCandidates?: any[];
+  firstStageCandidates?: any[];
   flagCandidates: any[];
   fiftyTwoWeekCandidates: any[];
 };
@@ -39,12 +42,10 @@ function loadLatestScan(): ScanData | null {
   }
 }
 
-// Format an ISO timestamp as "YYYY-MM-DD HH:MM ET"
-// Uses America/New_York since US markets are the universe.
 function formatScanTime(iso: string): string {
   try {
     const d = new Date(iso);
-    const date = d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); // YYYY-MM-DD
+    const date = d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
     const time = d.toLocaleTimeString('en-US', {
       timeZone: 'America/New_York',
       hour12: false,
@@ -64,18 +65,11 @@ export default function Home() {
     return <NoData />;
   }
 
-  const stageCounts = data.flagCandidates.reduce<Record<string, number>>((acc, c) => {
-    acc[c.stage] = (acc[c.stage] || 0) + 1;
-    return acc;
-  }, {});
+  // Support both new schema (split lists) and old schema (single list)
+  const continuation = data.continuationCandidates ?? data.flagCandidates.filter((c: any) => c.setupType !== 'first-stage');
+  const firstStage = data.firstStageCandidates ?? data.flagCandidates.filter((c: any) => c.setupType === 'first-stage');
+  const total = continuation.length + firstStage.length;
 
-  const prime = stageCounts.prime || 0;
-  const forming = stageCounts.forming || 0;
-  const early = stageCounts.early || 0;
-  const late = stageCounts.late || 0;
-  const total = data.flagCandidates.length;
-
-  // Detect placeholder data (epoch timestamp means no real scan has run yet)
   const isPlaceholder = data.scanDate === '1970-01-01';
   const lastScanLabel = isPlaceholder
     ? 'awaiting first scan'
@@ -86,7 +80,6 @@ export default function Home() {
       <Header subtitle={lastScanLabel} />
 
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
-        {/* Hero */}
         <section className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
             <div>
@@ -98,33 +91,42 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Market regime banner */}
         <section className="mb-6">
           <MarketBanner data={data} />
         </section>
 
-        {/* Stage summary */}
         <Divider label="today" />
 
         <section className="mb-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <StageStat emoji="🎯" label="Prime" count={prime} color="text-terminal-green glow-sm" highlight />
-            <StageStat emoji="🔨" label="Forming" count={forming} color="text-terminal-blue" />
-            <StageStat emoji="🌱" label="Early" count={early} color="text-terminal-gray" />
-            <StageStat emoji="⏰" label="Late" count={late} color="text-terminal-amber" />
+          <div className="grid grid-cols-2 gap-2">
+            <SectionStat
+              emoji="💪"
+              label="Strength"
+              sublabel="continuation"
+              count={continuation.length}
+              color="text-terminal-green glow-sm"
+              highlight={continuation.length > 0}
+            />
+            <SectionStat
+              emoji="🌱"
+              label="Base Breakouts"
+              sublabel="first-stage"
+              count={firstStage.length}
+              color="text-terminal-blue glow-sm"
+              highlight={firstStage.length > 0}
+            />
           </div>
         </section>
-
-        {/* Candidates */}
-        <Divider label="candidates" />
 
         {total === 0 ? (
           <EmptyFlag />
         ) : (
-          <ScannerControls candidates={data.flagCandidates} />
+          <TwoSectionScanner
+            continuation={continuation}
+            firstStage={firstStage}
+          />
         )}
 
-        {/* Footer */}
         <footer className="mt-12 pt-6 border-t border-terminal-gray-dim/30 text-center">
           <p className="text-text-muted text-[10px] font-mono">
             ▲ set the limit. walk away. ▲
@@ -154,9 +156,6 @@ function NoData() {
           <p className="text-text-muted text-sm font-mono">
             the daily scan runs at 22:30 UTC on weekdays
           </p>
-          <p className="text-text-muted text-xs font-mono opacity-60">
-            you can trigger it manually from the actions tab in the repo
-          </p>
         </div>
       </main>
     </>
@@ -169,23 +168,14 @@ function MarketBanner({ data }: { data: ScanData }) {
   const vixHostile = market.vixHostile;
   const hasData = market.spyPrice != null;
 
-  // Placeholder state — no scan has run yet
   if (!hasData) {
     return (
       <div className="bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-3 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-4 text-xs font-mono">
-          <div>
-            <span className="text-text-muted">SPY </span>
-            <span className="text-text-muted tabular-nums">—</span>
-          </div>
-          <div>
-            <span className="text-text-muted">VIX </span>
-            <span className="text-text-muted tabular-nums">—</span>
-          </div>
+          <div><span className="text-text-muted">SPY </span><span className="text-text-muted tabular-nums">—</span></div>
+          <div><span className="text-text-muted">VIX </span><span className="text-text-muted tabular-nums">—</span></div>
         </div>
-        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">
-          regime: unknown
-        </div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">regime: unknown</div>
       </div>
     );
   }
@@ -196,15 +186,11 @@ function MarketBanner({ data }: { data: ScanData }) {
         <div>
           <span className="text-text-muted">SPY </span>
           <span className="text-text tabular-nums">${market.spyPrice?.toFixed(2) ?? '—'}</span>
-          <span className={`ml-1 ${bullish ? 'text-terminal-green' : 'text-terminal-red'}`}>
-            {bullish ? '↗' : '↘'}
-          </span>
+          <span className={`ml-1 ${bullish ? 'text-terminal-green' : 'text-terminal-red'}`}>{bullish ? '↗' : '↘'}</span>
         </div>
         <div>
           <span className="text-text-muted">VIX </span>
-          <span className={`tabular-nums ${vixHostile ? 'text-terminal-red glow-sm' : 'text-text'}`}>
-            {market.vix?.toFixed(2) ?? '—'}
-          </span>
+          <span className={`tabular-nums ${vixHostile ? 'text-terminal-red glow-sm' : 'text-text'}`}>{market.vix?.toFixed(2) ?? '—'}</span>
         </div>
       </div>
       <div className={`text-[10px] font-mono uppercase tracking-widest ${
@@ -217,26 +203,21 @@ function MarketBanner({ data }: { data: ScanData }) {
   );
 }
 
-function StageStat({
-  emoji,
-  label,
-  count,
-  color,
-  highlight = false,
+function SectionStat({
+  emoji, label, sublabel, count, color, highlight = false,
 }: {
-  emoji: string;
-  label: string;
-  count: number;
-  color: string;
-  highlight?: boolean;
+  emoji: string; label: string; sublabel: string; count: number; color: string; highlight?: boolean;
 }) {
   return (
-    <div className={`bg-bg-card border ${highlight && count > 0 ? 'border-terminal-green' : 'border-terminal-gray-dim/40'} rounded-sm p-3`}>
+    <div className={`bg-bg-card border ${highlight ? 'border-terminal-green/50' : 'border-terminal-gray-dim/40'} rounded-sm p-3`}>
       <div className="flex items-center gap-2">
         <span className="text-base">{emoji}</span>
-        <span className="text-text-muted text-[10px] font-mono uppercase tracking-widest">{label}</span>
+        <div>
+          <div className="text-text text-[11px] font-mono uppercase tracking-widest">{label}</div>
+          <div className="text-text-muted text-[9px] font-mono uppercase tracking-widest">{sublabel}</div>
+        </div>
       </div>
-      <div className={`font-display text-3xl ${color} tabular-nums leading-none mt-1`}>{count}</div>
+      <div className={`font-display text-3xl ${color} tabular-nums leading-none mt-2`}>{count}</div>
     </div>
   );
 }
