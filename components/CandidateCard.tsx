@@ -291,8 +291,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = JSON.stringify({
-      width: '100%',
-      height: 600,
+      autosize: true,
       symbol: symbol,
       interval: 'D',
       timezone: 'Etc/UTC',
@@ -327,7 +326,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     <div
       className="tradingview-widget-container"
       ref={containerRef}
-      style={{ height: 600, width: '100%', overflow: 'hidden' }}
+      style={{ height: 600, width: '100%', maxWidth: '100%', overflow: 'hidden' }}
     />
   );
 }
