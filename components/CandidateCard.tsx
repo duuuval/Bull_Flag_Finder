@@ -166,7 +166,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 
       {chartOpen && (
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
-          <TradingViewChart ticker={c.ticker} exchange={c.exchange} />
+          <TradingViewChart key={`${c.ticker}-chart`} ticker={c.ticker} exchange={c.exchange} />
           <a
             href={c.chartUrl}
             target="_blank"
@@ -279,7 +279,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
 
     const widgetDiv = document.createElement('div');
     widgetDiv.className = 'tradingview-widget-container__widget';
-    widgetDiv.style.height = '1000px';
+    widgetDiv.style.height = '600px';
     widgetDiv.style.width = '100%';
     container.appendChild(widgetDiv);
 
@@ -291,7 +291,8 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = JSON.stringify({
-      autosize: true,
+      width: '100%',
+      height: 600,
       symbol: symbol,
       interval: 'D',
       timezone: 'Etc/UTC',
@@ -326,7 +327,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     <div
       className="tradingview-widget-container"
       ref={containerRef}
-      style={{ height: 1000, width: '100%', overflow: 'hidden' }}
+      style={{ height: 600, width: '100%', overflow: 'hidden' }}
     />
   );
 }
