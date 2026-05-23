@@ -5,9 +5,10 @@
 // 2. Walk backward from recent_high to find pole start within a tight window
 //    (max 30 days back), bounded by where the 50-EMA was violated
 // 3. Compute pole metrics; require pole to be both >= 20% AND <= 80%
-//    (anything bigger is a trend, not a pole)
 // 4. Compute flag metrics
-// 5. Apply qualification gates; return null if any fail
+// 5. Gate on entry zone: price must be within 5% above the 20-EMA
+//    (anything further means the bounce already happened)
+// 6. Classify direction over last 3 days (descending/flat/ascending)
 
 import { calculateEMA, sma } from './ema.mjs';
 
@@ -23,6 +24,7 @@ const QUALIFICATION = {
   maxPoleDays: 30,             // pole itself must complete in 30 days or less
   minPoleVolumeSpike: 1.5,     // at least one pole day with 1.5x avg volume
   maxDistAbove20Ema: 0.05,     // price must be within 5% above 20-EMA (entry-zone gate)
+  maxDistBelow20Ema: 0.05,     // price can be at most 5% below 20-EMA (else broke support)
 };
 
 export function detectFlag(bars) {
@@ -70,21 +72,15 @@ export function detectFlag(bars) {
   if (pullbackPct < 0) return null;
 
   // Walk backward from recent_high to find pole start
-  // CRITICAL: search depth is tight (30 days max) — a real pole is a recent sharp move,
-  // not a year-long uptrend. Stop walking if:
-  //   - We hit a day where price closed below 50-EMA (prior trend broken), OR
-  //   - We've walked back maxPoleDays, OR
-  //   - We hit price within 5% of the recent high going back (means we're already past the pole start)
+  // Tight search depth (30 days max) — a real pole is a recent sharp move.
   const searchStart = Math.max(0, recentHighIdx - QUALIFICATION.poleSearchDepth);
   let poleStartIdx = recentHighIdx;
   let poleStartLow = lows[recentHighIdx];
 
   for (let i = recentHighIdx - 1; i >= searchStart; i--) {
-    // Stop if we hit a day where price closed below 50-EMA (prior trend broken)
     if (ema50[i] != null && closes[i] < ema50[i]) {
-      break;
+      break; // prior trend broken
     }
-    // Stop if we've gone back more than maxPoleDays
     if (recentHighIdx - i > QUALIFICATION.maxPoleDays) {
       break;
     }
@@ -98,8 +94,6 @@ export function detectFlag(bars) {
   const poleMagnitude = (recentHigh - poleStartLow) / poleStartLow;
 
   // Gate: pole magnitude must be in valid range
-  // Below 20% = not a real pole
-  // Above 80% = stock had a parabolic move, not a clean flag setup
   if (poleMagnitude < QUALIFICATION.minPoleMagnitude) return null;
   if (poleMagnitude > QUALIFICATION.maxPoleMagnitude) return null;
   if (poleDays < 3) return null;
@@ -125,7 +119,6 @@ export function detectFlag(bars) {
     baseVolCount++;
   }
   const avg50dVolume = baseVolCount > 0 ? baseVolSum / baseVolCount : avgPoleVolume;
-
   const poleVolumeRatio = avg50dVolume > 0 ? maxPoleDayVolume / avg50dVolume : 0;
 
   // Gate: at least one pole day with 1.5x avg volume
@@ -143,16 +136,34 @@ export function detectFlag(bars) {
   const avgFlagVolume = flagVolCount > 0 ? flagVolSum / flagVolCount : 0;
   const volumeContractionRatio = avgPoleVolume > 0 ? avgFlagVolume / avgPoleVolume : 1;
 
-  // Compute current EMA values
+  // Current EMA values
   const ema10Now = ema10[today];
   const ema20Now = ema20[today];
   const ema50Now = ema50[today];
 
-  // 50-EMA slope
+  // GATE: price must be within entry zone of the 20-EMA
+  // Above by more than 5% = bounce already happened, too late to set limit at support
+  // Below by more than 5% = broke support, risky
+  if (ema20Now == null) return null;
+  const distAbove20Ema = (todayBar.close - ema20Now) / ema20Now;
+  if (distAbove20Ema > QUALIFICATION.maxDistAbove20Ema) return null;
+  if (distAbove20Ema < -QUALIFICATION.maxDistBelow20Ema) return null;
+
+  // 3-day direction: descending toward support is what we want
+  let direction = 'flat';
+  if (n >= 4) {
+    const threeDaysAgo = closes[n - 4];
+    const change = (todayBar.close - threeDaysAgo) / threeDaysAgo;
+    if (change < -0.005) direction = 'descending';      // -0.5% or worse
+    else if (change > 0.015) direction = 'ascending';   // +1.5% or better
+    // else 'flat' (between -0.5% and +1.5%)
+  }
+
+  // 50-EMA slope (rising = positive)
   const ema50_10daysAgo = ema50[Math.max(0, today - 10)];
   const ema50Rising = ema50_10daysAgo != null && ema50Now > ema50_10daysAgo;
 
-  // 60-day return
+  // 60-day return (for RS rank)
   const sixtyDaysAgo = Math.max(0, today - 60);
   const return60d = (todayBar.close - closes[sixtyDaysAgo]) / closes[sixtyDaysAgo];
 
@@ -188,6 +199,8 @@ export function detectFlag(bars) {
       ema50: ema50Now,
       ema50Rising,
       return60d,
+      distAbove20Ema,
+      direction,
     },
     stage: classifyStage(daysInFlag),
   };
