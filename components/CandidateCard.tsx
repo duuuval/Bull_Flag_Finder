@@ -165,7 +165,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
       </div>
 
       {chartOpen && (
-        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30 w-full">
+        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
           <TradingViewChart key={`${c.ticker}-chart`} ticker={c.ticker} exchange={c.exchange} />
           <a
             href={c.chartUrl}
@@ -269,35 +269,64 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 }
 
 function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: string }) {
-  const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
-  const symbol = `${exchangePrefix}${ticker}`;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const params = new URLSearchParams({
-    symbol: symbol,
-    interval: 'D',
-    range: '12M',
-    theme: 'dark',
-    style: '1',
-    timezone: 'Etc/UTC',
-    locale: 'en',
-    hide_side_toolbar: '1',
-    allow_symbol_change: '0',
-    studies: 'MAExp@tv-basicstudies,MAExp@tv-basicstudies,MAExp@tv-basicstudies,Volume@tv-basicstudies',
-  });
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-  const src = `https://www.tradingview.com/widgetembed/?${params.toString()}`;
+    const container = containerRef.current;
+    container.innerHTML = '';
+
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = '600px';
+    widgetDiv.style.width = '100%';
+    container.appendChild(widgetDiv);
+
+    const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
+    const symbol = `${exchangePrefix}${ticker}`;
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      autosize: true,
+      symbol: symbol,
+      interval: 'D',
+      timezone: 'Etc/UTC',
+      theme: 'dark',
+      style: '1',
+      locale: 'en',
+      range: '12M',
+      hide_side_toolbar: true,
+      hide_top_toolbar: false,
+      allow_symbol_change: false,
+      studies: [
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 10 } },
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 20 } },
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 50 } },
+        { id: 'Volume@tv-basicstudies' }
+      ],
+      backgroundColor: 'rgba(0, 0, 0, 1)',
+      gridColor: 'rgba(42, 46, 57, 0.5)',
+      support_host: 'https://www.tradingview.com'
+    });
+
+    container.appendChild(script);
+
+    return () => {
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
+  }, [ticker, exchange]);
 
   return (
-    <iframe
-      src={src}
-      style={{
-        width: '100%',
-        height: '500px',
-        border: 'none',
-        display: 'block',
-      }}
-      allow="fullscreen"
-      title={`${ticker} chart`}
+    <div
+      className="tradingview-widget-container"
+      ref={containerRef}
+      style={{ height: 600, width: '100%', maxWidth: '100%', overflow: 'hidden' }}
     />
   );
 }
