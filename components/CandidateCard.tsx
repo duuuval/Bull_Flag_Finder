@@ -72,7 +72,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
   const dir = DIRECTION_DISPLAY[c.pattern.direction] ?? DIRECTION_DISPLAY.flat;
 
   return (
-    <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4">
+    <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4 overflow-hidden">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2 mb-1">
@@ -270,13 +270,18 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 
 function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const containerId = `tv-chart-${ticker}`;
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Clear any prior render (toggle re-open case)
-    containerRef.current.innerHTML = `<div id="${containerId}" style="height: 400px; width: 100%;"></div>`;
+    const container = containerRef.current;
+    container.innerHTML = '';
+
+    const widgetDiv = document.createElement('div');
+    widgetDiv.className = 'tradingview-widget-container__widget';
+    widgetDiv.style.height = '400px';
+    widgetDiv.style.width = '100%';
+    container.appendChild(widgetDiv);
 
     const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
     const symbol = `${exchangePrefix}${ticker}`;
@@ -286,9 +291,7 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
     script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = JSON.stringify({
-      autosize: false,
-      width: '100%',
-      height: 400,
+      autosize: true,
       symbol: symbol,
       interval: 'D',
       timezone: 'Etc/UTC',
@@ -310,18 +313,20 @@ function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: stri
       support_host: 'https://www.tradingview.com'
     });
 
-    containerRef.current.appendChild(script);
+    container.appendChild(script);
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
       }
     };
-  }, [ticker, exchange, containerId]);
+  }, [ticker, exchange]);
 
   return (
-    <div className="tradingview-widget-container" ref={containerRef}>
-      <div id={containerId} style={{ height: 400, width: '100%' }}></div>
-    </div>
+    <div
+      className="tradingview-widget-container"
+      ref={containerRef}
+      style={{ height: 400, width: '100%', overflow: 'hidden' }}
+    />
   );
 }
