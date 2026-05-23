@@ -1,0 +1,38 @@
+name: BFF Daily Scan
+
+on:
+  schedule:
+    # Mon-Fri at 22:30 UTC (6:30 PM ET, after US market close)
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub UI
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install scanner dependencies
+        run: npm install cheerio --no-save
+
+      - name: Run BFF scan
+        run: node scripts/scan.mjs
+
+      - name: Commit and push results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/latest.json public/scans/ public/universe-fallback.json
+          git diff --staged --quiet || git commit -m "📊 Daily scan: $(date +'%Y-%m-%d')"
+          git push
