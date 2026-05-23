@@ -2,22 +2,25 @@
 //
 // Algorithm:
 // 1. Find the highest high in the last 30 trading days (the "recent_high")
-// 2. Walk backward from recent_high to find pole start: the lowest low before
-//    that high, bounded by where the 50-EMA was violated (means prior trend broke)
-// 3. Compute pole metrics (magnitude, days, volume)
-// 4. Compute flag metrics (pullback, days, volume contraction)
+// 2. Walk backward from recent_high to find pole start within a tight window
+//    (max 30 days back), bounded by where the 50-EMA was violated
+// 3. Compute pole metrics; require pole to be both >= 20% AND <= 80%
+//    (anything bigger is a trend, not a pole)
+// 4. Compute flag metrics
 // 5. Apply qualification gates; return null if any fail
 
 import { calculateEMA, sma } from './ema.mjs';
 
 const QUALIFICATION = {
   minPoleMagnitude: 0.20,      // 20% pole minimum
+  maxPoleMagnitude: 0.80,      // 80% pole maximum (anything bigger is a trend)
   maxPullback: 0.20,           // 20% max pullback
-  minDaysInFlag: 3,            // 3 days since recent high (early-stage minimum)
-  maxDaysInFlag: 20,           // 20 days max (research: 4+ weeks loses momentum)
+  minDaysInFlag: 3,            // 3 days since recent high
+  maxDaysInFlag: 20,           // 20 days max
   recentHighLookback: 30,      // recent high must be within 30 days
   minBars: 90,                 // need at least 90 days of history
-  poleSearchDepth: 60,         // walk back up to 60 days looking for pole start
+  poleSearchDepth: 30,         // walk back up to 30 days looking for pole start (was 60)
+  maxPoleDays: 30,             // pole itself must complete in 30 days or less
   minPoleVolumeSpike: 1.5,     // at least one pole day with 1.5x avg volume
 };
 
@@ -63,10 +66,14 @@ export function detectFlag(bars) {
   // Gate: pullback depth
   const pullbackPct = (recentHigh - todayBar.close) / recentHigh;
   if (pullbackPct > QUALIFICATION.maxPullback) return null;
-  if (pullbackPct < 0) return null; // shouldn't happen but defensive
+  if (pullbackPct < 0) return null;
 
   // Walk backward from recent_high to find pole start
-  // Pole starts at the lowest low in the search window, OR where price closed below 50-EMA
+  // CRITICAL: search depth is tight (30 days max) — a real pole is a recent sharp move,
+  // not a year-long uptrend. Stop walking if:
+  //   - We hit a day where price closed below 50-EMA (prior trend broken), OR
+  //   - We've walked back maxPoleDays, OR
+  //   - We hit price within 5% of the recent high going back (means we're already past the pole start)
   const searchStart = Math.max(0, recentHighIdx - QUALIFICATION.poleSearchDepth);
   let poleStartIdx = recentHighIdx;
   let poleStartLow = lows[recentHighIdx];
@@ -74,6 +81,10 @@ export function detectFlag(bars) {
   for (let i = recentHighIdx - 1; i >= searchStart; i--) {
     // Stop if we hit a day where price closed below 50-EMA (prior trend broken)
     if (ema50[i] != null && closes[i] < ema50[i]) {
+      break;
+    }
+    // Stop if we've gone back more than maxPoleDays
+    if (recentHighIdx - i > QUALIFICATION.maxPoleDays) {
       break;
     }
     if (lows[i] < poleStartLow) {
@@ -85,9 +96,12 @@ export function detectFlag(bars) {
   const poleDays = recentHighIdx - poleStartIdx;
   const poleMagnitude = (recentHigh - poleStartLow) / poleStartLow;
 
-  // Gate: minimum pole magnitude
+  // Gate: pole magnitude must be in valid range
+  // Below 20% = not a real pole
+  // Above 80% = stock had a parabolic move, not a clean flag setup
   if (poleMagnitude < QUALIFICATION.minPoleMagnitude) return null;
-  if (poleDays < 3) return null; // pole needs some minimum duration
+  if (poleMagnitude > QUALIFICATION.maxPoleMagnitude) return null;
+  if (poleDays < 3) return null;
 
   // Pole volume analysis
   let maxPoleDayVolume = 0;
@@ -133,16 +147,15 @@ export function detectFlag(bars) {
   const ema20Now = ema20[today];
   const ema50Now = ema50[today];
 
-  // 50-EMA slope (rising = positive)
+  // 50-EMA slope
   const ema50_10daysAgo = ema50[Math.max(0, today - 10)];
   const ema50Rising = ema50_10daysAgo != null && ema50Now > ema50_10daysAgo;
 
-  // 60-day return (for RS rank, computed in scoring stage)
+  // 60-day return
   const sixtyDaysAgo = Math.max(0, today - 60);
   const return60d = (todayBar.close - closes[sixtyDaysAgo]) / closes[sixtyDaysAgo];
 
   return {
-    // Pattern measurements
     pole: {
       startIdx: poleStartIdx,
       startDate: bars[poleStartIdx].date,
@@ -175,7 +188,6 @@ export function detectFlag(bars) {
       ema50Rising,
       return60d,
     },
-    // Maturity stage
     stage: classifyStage(daysInFlag),
   };
 }
