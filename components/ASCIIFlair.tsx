@@ -58,7 +58,7 @@ export function EmptyFlag({ message }: { message?: string }) {
     ╱
    ╱
   ╱
- ╱'}
+ ╱`}
       </pre>
       <p className="text-terminal-gray mt-4 text-sm">
         {message || 'no flags today. markets need to move first.'}
