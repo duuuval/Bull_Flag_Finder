@@ -19,9 +19,10 @@ const QUALIFICATION = {
   maxDaysInFlag: 20,           // 20 days max
   recentHighLookback: 30,      // recent high must be within 30 days
   minBars: 90,                 // need at least 90 days of history
-  poleSearchDepth: 30,         // walk back up to 30 days looking for pole start (was 60)
+  poleSearchDepth: 30,         // walk back up to 30 days looking for pole start
   maxPoleDays: 30,             // pole itself must complete in 30 days or less
   minPoleVolumeSpike: 1.5,     // at least one pole day with 1.5x avg volume
+  maxDistAbove20Ema: 0.05,     // price must be within 5% above 20-EMA (entry-zone gate)
 };
 
 export function detectFlag(bars) {
