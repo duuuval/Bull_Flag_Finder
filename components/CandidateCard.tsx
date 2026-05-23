@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import StageBadge from './StageBadge';
 import ScoreDisplay from './ScoreDisplay';
 
@@ -61,6 +61,7 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
 
 export default function CandidateCard({ candidate }: { candidate: Candidate }) {
   const [expanded, setExpanded] = useState(false);
+  const [chartOpen, setChartOpen] = useState(false);
   const c = candidate;
   const isFirstStage = c.setupType === 'first-stage';
 
@@ -150,17 +151,32 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <a
-          href={c.chartUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={() => setChartOpen(!chartOpen)}
           className="flex-1 text-center px-3 py-1.5 bg-terminal-green/10 border border-terminal-green/40 text-terminal-green text-xs font-mono uppercase tracking-wider hover:bg-terminal-green/20 transition"
-        >chart →</a>
+        >
+          {chartOpen ? 'hide chart' : 'chart →'}
+        </button>
+        {/* Future: <button>trade</button> goes here when broker link is set up */}
         <button
           onClick={() => setExpanded(!expanded)}
           className="px-3 py-1.5 bg-bg-elevated border border-terminal-gray-dim text-text-dim text-xs font-mono uppercase tracking-wider hover:border-terminal-gray hover:text-text"
         >{expanded ? 'less' : 'more'}</button>
       </div>
+
+      {chartOpen && (
+        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
+          <TradingViewChart ticker={c.ticker} exchange={c.exchange} />
+          <a
+            href={c.chartUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-center mt-2 px-3 py-1.5 bg-bg-elevated border border-terminal-gray-dim text-text-dim text-[10px] font-mono uppercase tracking-wider hover:border-terminal-gray hover:text-text transition"
+          >
+            see in app →
+          </a>
+        </div>
+      )}
 
       {expanded && (
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
@@ -248,6 +264,64 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerId = `tv-chart-${ticker}`;
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Clear any prior render (toggle re-open case)
+    containerRef.current.innerHTML = `<div id="${containerId}" style="height: 400px; width: 100%;"></div>`;
+
+    const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
+    const symbol = `${exchangePrefix}${ticker}`;
+
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+    script.type = 'text/javascript';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+      autosize: false,
+      width: '100%',
+      height: 400,
+      symbol: symbol,
+      interval: 'D',
+      timezone: 'Etc/UTC',
+      theme: 'dark',
+      style: '1',
+      locale: 'en',
+      range: '12M',
+      hide_side_toolbar: true,
+      hide_top_toolbar: false,
+      allow_symbol_change: false,
+      studies: [
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 10 } },
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 20 } },
+        { id: 'MAExp@tv-basicstudies', inputs: { length: 50 } },
+        { id: 'Volume@tv-basicstudies' }
+      ],
+      backgroundColor: 'rgba(0, 0, 0, 1)',
+      gridColor: 'rgba(42, 46, 57, 0.5)',
+      support_host: 'https://www.tradingview.com'
+    });
+
+    containerRef.current.appendChild(script);
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
+    };
+  }, [ticker, exchange, containerId]);
+
+  return (
+    <div className="tradingview-widget-container" ref={containerRef}>
+      <div id={containerId} style={{ height: 400, width: '100%' }}></div>
     </div>
   );
 }
