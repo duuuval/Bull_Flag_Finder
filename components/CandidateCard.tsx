@@ -269,76 +269,35 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 }
 
 function TradingViewChart({ ticker, exchange }: { ticker: string; exchange: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false);
+  const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
+  const symbol = `${exchangePrefix}${ticker}`;
 
-  useEffect(() => {
-    // Wait one frame so the container has been laid out before measuring it
-    const raf = requestAnimationFrame(() => setReady(true));
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const params = new URLSearchParams({
+    symbol: symbol,
+    interval: 'D',
+    range: '12M',
+    theme: 'dark',
+    style: '1',
+    timezone: 'Etc/UTC',
+    locale: 'en',
+    hide_side_toolbar: '1',
+    allow_symbol_change: '0',
+    studies: 'MAExp@tv-basicstudies,MAExp@tv-basicstudies,MAExp@tv-basicstudies,Volume@tv-basicstudies',
+  });
 
-  useEffect(() => {
-    if (!ready || !containerRef.current) return;
-
-    const container = containerRef.current;
-    container.innerHTML = '';
-
-    const widgetDiv = document.createElement('div');
-    widgetDiv.className = 'tradingview-widget-container__widget';
-    container.appendChild(widgetDiv);
-
-    const exchangePrefix = exchange === 'NYSE' || exchange === 'NASDAQ' ? `${exchange}:` : '';
-    const symbol = `${exchangePrefix}${ticker}`;
-
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-    script.type = 'text/javascript';
-    script.async = true;
-    script.innerHTML = JSON.stringify({
-      autosize: true,
-      symbol: symbol,
-      interval: 'D',
-      timezone: 'Etc/UTC',
-      theme: 'dark',
-      style: '1',
-      locale: 'en',
-      range: '12M',
-      hide_side_toolbar: true,
-      hide_top_toolbar: false,
-      allow_symbol_change: false,
-      studies: [
-        { id: 'MAExp@tv-basicstudies', inputs: { length: 10 } },
-        { id: 'MAExp@tv-basicstudies', inputs: { length: 20 } },
-        { id: 'MAExp@tv-basicstudies', inputs: { length: 50 } },
-        { id: 'Volume@tv-basicstudies' }
-      ],
-      backgroundColor: 'rgba(0, 0, 0, 1)',
-      gridColor: 'rgba(42, 46, 57, 0.5)',
-      support_host: 'https://www.tradingview.com'
-    });
-
-    container.appendChild(script);
-
-    return () => {
-      if (container) {
-        container.innerHTML = '';
-      }
-    };
-  }, [ready, ticker, exchange]);
+  const src = `https://www.tradingview.com/widgetembed/?${params.toString()}`;
 
   return (
-    <div
-      ref={containerRef}
-      className="tradingview-widget-container"
+    <iframe
+      src={src}
       style={{
-        height: '500px',
         width: '100%',
-        maxWidth: '100%',
-        boxSizing: 'border-box',
-        overflow: 'hidden',
-        position: 'relative'
+        height: '500px',
+        border: 'none',
+        display: 'block',
       }}
+      allow="fullscreen"
+      title={`${ticker} chart`}
     />
   );
 }
