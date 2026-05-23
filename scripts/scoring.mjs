@@ -8,7 +8,7 @@
 // Flag quality (35 pts):
 //   - Tightness (20): shallower pullback = stronger setup
 //   - Volume contraction (10): lower flag volume = seller exhaustion
-//   - Position vs EMAs (5): above 10-EMA is best
+//   - Entry quality (5): proximity to 20-EMA + direction (descending = best)
 //
 // Context quality (30 pts):
 //   - Relative strength (15): top performers tend to continue
@@ -80,23 +80,39 @@ function scoreFlagQuality(flag, current) {
   else if (vcr <= 1.0) contraction = 4;
   else contraction = 0;
 
-  // Position vs EMAs
-  let position;
-  if (current.ema10 != null && current.price > current.ema10) position = 5;
-  else if (current.ema20 != null && current.price > current.ema20) position = 3;
-  else position = 1;
+  // Entry quality: proximity to 20-EMA × direction
+  // Gates already ensure price is within ±5% of 20-EMA, so we score within that window.
+  // Best: 0-2% above + descending or flat (limit order zone, price coming to you)
+  // Good: 2-5% above + descending or flat (approaching, still actionable)
+  // OK:   0-2% above + ascending (bounce just started)
+  // Weak: 2-5% above + ascending (already bouncing, getting away)
+  // Bad:  below 20-EMA (broke support, riskier setup)
+  let entry = 0;
+  const dist = current.distAbove20Ema;
+  const dir = current.direction;
+
+  if (dist >= 0 && dist <= 0.02) {
+    if (dir === 'descending' || dir === 'flat') entry = 5;
+    else entry = 3;
+  } else if (dist > 0.02 && dist <= 0.05) {
+    if (dir === 'descending') entry = 4;
+    else if (dir === 'flat') entry = 3;
+    else entry = 1;
+  } else if (dist < 0) {
+    entry = 1;
+  }
 
   return {
     tightness,
     contraction,
-    position,
-    total: tightness + contraction + position,
+    entry,
+    total: tightness + contraction + entry,
   };
 }
 
 function scoreContext(current, context) {
   // Relative strength: percentile of 60-day return across universe
-  const rsRank = context.rsPercentile; // 0-1
+  const rsRank = context.rsPercentile;
   let rs;
   if (rsRank >= 0.90) rs = 15;
   else if (rsRank >= 0.75) rs = 10;
@@ -122,23 +138,6 @@ function scoreContext(current, context) {
   };
 }
 
-// Determine "triggered" state: just bounced off support on volume
-export function isTriggered(pattern, prevBar) {
-  if (!prevBar) return false;
-  const cur = pattern.current;
-
-  // Closed green and above prior day's high (confirmation)
-  const closedGreen = cur.price > cur.open;
-  const aboveYesterdayHigh = cur.price > prevBar.high;
-
-  // Near or just above the 20-EMA (bounce off support)
-  const nearEma = cur.ema20 != null && Math.abs(cur.price - cur.ema20) / cur.ema20 < 0.03;
-
-  // Volume spike vs flag average (computed externally)
-  // Caller passes prevBar so we can also compare today's vol to recent days
-  return closedGreen && aboveYesterdayHigh && nearEma;
-}
-
 // Suggested trade levels
 export function tradeLevel(pattern) {
   const cur = pattern.current;
@@ -156,13 +155,12 @@ export function tradeLevel(pattern) {
   } else {
     stop = flagLow * 0.99;
   }
-  // Sanity: stop must be below entry by at least 2%
   if (stop > entry * 0.98) {
-    stop = entry * 0.93; // fallback 7% stop
+    stop = entry * 0.93;
   }
 
-  // Target: project pole magnitude from entry
-  const target = entry * (1 + pattern.pole.magnitude * 0.5); // conservative half-pole target
+  // Target: project conservative half-pole gain from entry
+  const target = entry * (1 + pattern.pole.magnitude * 0.5);
 
   const riskPct = (entry - stop) / entry;
   const rewardPct = (target - entry) / entry;
