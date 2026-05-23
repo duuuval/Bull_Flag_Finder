@@ -59,6 +59,8 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
   ascending: { icon: '↗', label: 'ascending', color: 'text-terminal-amber' },
 };
 
+const EXTENDED_THRESHOLD = 0.15;
+
 export default function CandidateCard({ candidate }: { candidate: Candidate }) {
   const [expanded, setExpanded] = useState(false);
   const [chartOpen, setChartOpen] = useState(false);
@@ -67,9 +69,13 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
 
   const polePct = (c.pattern.polePct * 100).toFixed(1);
   const pullbackPct = (c.pattern.pullbackPct * 100).toFixed(1);
-  const distPct = (c.pattern.distAbove20Ema * 100).toFixed(1);
+  const dist20Pct = (c.pattern.distAbove20Ema * 100).toFixed(1);
   const rsRank = Math.round(c.rsPercentile * 100);
   const dir = DIRECTION_DISPLAY[c.pattern.direction] ?? DIRECTION_DISPLAY.flat;
+
+  const dist50 = c.ema.ema50 ? (c.price - c.ema.ema50) / c.ema.ema50 : null;
+  const dist50Pct = dist50 !== null ? (dist50 * 100).toFixed(1) : null;
+  const isExtended = dist50 !== null && dist50 >= EXTENDED_THRESHOLD;
 
   return (
     <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4 overflow-hidden">
@@ -106,6 +112,11 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
         {c.ema.ema50Rising && c.ema.ema20 && c.ema.ema50 && c.ema.ema20 > c.ema.ema50 && (
           <span className="text-terminal-green-dim text-[10px] tracking-wider uppercase">↗ stacked</span>
         )}
+        {isExtended && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-amber/40 bg-terminal-amber/5 text-terminal-amber text-[10px] tracking-wider uppercase">
+            ⚠ extended {dist50Pct}%
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
@@ -118,12 +129,14 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
           <div className="font-mono text-text tabular-nums">-{pullbackPct}%</div>
         </div>
         <div>
-          <div className="text-text-muted text-[9px] tracking-widest uppercase">From EMA</div>
-          <div className="font-mono text-text tabular-nums">{c.pattern.distAbove20Ema >= 0 ? '+' : ''}{distPct}%</div>
+          <div className="text-text-muted text-[9px] tracking-widest uppercase">From 20</div>
+          <div className="font-mono text-text tabular-nums">{c.pattern.distAbove20Ema >= 0 ? '+' : ''}{dist20Pct}%</div>
         </div>
         <div>
-          <div className="text-text-muted text-[9px] tracking-widest uppercase">Vol</div>
-          <div className="font-mono text-text tabular-nums">{c.pattern.poleVolumeRatio.toFixed(1)}x</div>
+          <div className="text-text-muted text-[9px] tracking-widest uppercase">From 50</div>
+          <div className={`font-mono tabular-nums ${isExtended ? 'text-terminal-amber' : 'text-text'}`}>
+            {dist50Pct !== null ? `${dist50 !== null && dist50 >= 0 ? '+' : ''}${dist50Pct}%` : '—'}
+          </div>
         </div>
       </div>
 
@@ -251,6 +264,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
             <div>recent high: <span className="text-text">${c.pattern.recentHigh.toFixed(2)} ({c.pattern.recentHighDate})</span></div>
             <div>flag low: <span className="text-text">${c.pattern.flagLow.toFixed(2)}</span></div>
             <div>vol contraction: <span className="text-text">{c.pattern.volumeContraction.toFixed(2)}x</span></div>
+            <div>pole vol: <span className="text-text">{c.pattern.poleVolumeRatio.toFixed(2)}x</span></div>
             <div>20-EMA: <span className="text-text">${c.ema.ema20?.toFixed(2) ?? '—'}</span></div>
             <div>50-EMA: <span className="text-text">${c.ema.ema50?.toFixed(2) ?? '—'} {c.ema.ema50Rising && '↗'}</span></div>
             <div>60d ret: <span className="text-text">{(c.return60dPct * 100).toFixed(1)}%</span></div>
