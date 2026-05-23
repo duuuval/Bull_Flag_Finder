@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import Header from '@/components/Header';
+import Link from 'next/link';
 import { BFFLogoLarge, Divider, EmptyFlag } from '@/components/ASCIIFlair';
 import TwoSectionScanner from './TwoSectionScanner';
+import BackToTop from '@/components/BackToTop';
 
 export const dynamic = 'force-static';
 
@@ -77,22 +78,30 @@ export default function Home() {
 
   return (
     <>
-      <Header subtitle={lastScanLabel} />
-
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
-        <section className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-            <div>
-              <BFFLogoLarge />
-              <p className="text-text-muted text-xs mt-2 font-mono">
-                bull flag finder · daily scan of the S&P 1500
-              </p>
-            </div>
-          </div>
+        {/* Logo header — ASCII is the header. About link sits top-right. */}
+        <section className="mb-5 relative">
+          <Link
+            href="/about"
+            aria-label="about"
+            className="absolute top-0 right-0 px-2 py-1 text-text-dim hover:text-terminal-green transition text-[11px] font-mono uppercase tracking-wider"
+          >
+            about
+          </Link>
+          <BFFLogoLarge />
+          <p className="text-text-muted text-xs mt-2 font-mono">
+            bull flag finder · daily scan of the S&amp;P 1500
+          </p>
         </section>
 
-        <section className="mb-6">
+        {/* SPY / VIX / regime */}
+        <section className="mb-2">
           <MarketBanner data={data} />
+        </section>
+
+        {/* Last scan + candidate count — relocated here so freshness is visible without the old header */}
+        <section className="mb-6">
+          <div className="text-text-muted text-[10px] font-mono">{lastScanLabel}</div>
         </section>
 
         <Divider label="today" />
@@ -139,26 +148,34 @@ export default function Home() {
           </p>
         </footer>
       </main>
+
+      <BackToTop />
     </>
   );
 }
 
 function NoData() {
   return (
-    <>
-      <Header />
-      <main className="max-w-3xl mx-auto px-4 py-12 text-center">
+    <main className="max-w-3xl mx-auto px-4 py-12 text-center">
+      <section className="relative">
+        <Link
+          href="/about"
+          aria-label="about"
+          className="absolute top-0 right-0 px-2 py-1 text-text-dim hover:text-terminal-green transition text-[11px] font-mono uppercase tracking-wider"
+        >
+          about
+        </Link>
         <BFFLogoLarge />
-        <div className="mt-8 space-y-3">
-          <p className="text-text">
-            <span className="cursor-blink">waiting for first scan</span>
-          </p>
-          <p className="text-text-muted text-sm font-mono">
-            the daily scan runs at 22:30 UTC on weekdays
-          </p>
-        </div>
-      </main>
-    </>
+      </section>
+      <div className="mt-8 space-y-3">
+        <p className="text-text">
+          <span className="cursor-blink">waiting for first scan</span>
+        </p>
+        <p className="text-text-muted text-sm font-mono">
+          the daily scan runs at 22:30 UTC on weekdays
+        </p>
+      </div>
+    </main>
   );
 }
 
@@ -217,7 +234,10 @@ function SectionStat({
           <div className="text-text-muted text-[9px] font-mono uppercase tracking-widest">{sublabel}</div>
         </div>
       </div>
-      <div className={`font-display text-3xl ${color} tabular-nums leading-none mt-2`}>{count}</div>
+      <div className="flex items-baseline gap-2 mt-2">
+        <span className={`font-display text-3xl ${color} tabular-nums leading-none`}>{count}</span>
+        <span className="text-text-muted text-[10px] font-mono uppercase tracking-widest">bull flags</span>
+      </div>
     </div>
   );
 }
