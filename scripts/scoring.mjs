@@ -1,37 +1,42 @@
-// BFF Scoring Rubric — 100 points total
+// BFF Scoring — two rubrics
 //
-// Pole quality (35 pts):
-//   - Magnitude (15): 20% → 6 pts, scales linearly to 50%+ → 15 pts
-//   - Velocity (10): faster pole = more momentum
-//   - Volume signature (10): bigger volume on pole days = institutional buying
+// CONTINUATION (strength trade):
+//   Pole quality (35): magnitude 15, velocity 10, volume 10
+//   Flag quality (35): pullback-to-EMA quality 20, contraction 10, entry 5
+//   Context (30):      RS rank 15, trend stack 10, market 5
 //
-// Flag quality (35 pts):
-//   - Tightness (20): shallower pullback = stronger setup
-//   - Volume contraction (10): lower flag volume = seller exhaustion
-//   - Entry quality (5): proximity to 20-EMA + direction (descending = best)
+// FIRST-STAGE (base breakout):
+//   Pole quality (30): magnitude 15, velocity 10, volume 5
+//   Flag quality (30): contraction 15, entry 10, pullback-quality 5
+//   Base quality (35): base length 15, base tightness 15, pole/base ratio 5
+//   Market (5)
 //
-// Context quality (30 pts):
-//   - Relative strength (15): top performers tend to continue
-//   - Trend stack (10): 20-EMA > 50-EMA AND 50-EMA rising
-//   - Market regime (5): SPY > 50-day MA
+// Both score on a 0-100 scale.
 
 export function scoreFlag(pattern, context) {
-  const poleScore = scorePole(pattern.pole);
-  const flagScore = scoreFlagQuality(pattern.flag, pattern.current);
-  const contextScore = scoreContext(pattern.current, context);
+  if (pattern.context.setupType === 'first-stage') {
+    return scoreFirstStage(pattern, context);
+  }
+  return scoreContinuation(pattern, context);
+}
 
-  const total = poleScore.total + flagScore.total + contextScore.total;
+// ─── CONTINUATION RUBRIC ────────────────────────────────────────────────
 
+function scoreContinuation(pattern, context) {
+  const pole = scorePoleContinuation(pattern.pole);
+  const flag = scoreFlagContinuation(pattern.flag, pattern.current);
+  const ctx = scoreContextContinuation(pattern.current, context);
+  const total = pole.total + flag.total + ctx.total;
   return {
     total: Math.round(total),
-    pole: poleScore,
-    flag: flagScore,
-    context: contextScore,
+    setupType: 'continuation',
+    pole,
+    flag,
+    context: ctx,
   };
 }
 
-function scorePole(pole) {
-  // Magnitude: 6 pts at 20%, 15 pts at 50%+, linear between
+function scorePoleContinuation(pole) {
   const magPct = pole.magnitude;
   let magnitude;
   if (magPct >= 0.50) magnitude = 15;
@@ -39,14 +44,12 @@ function scorePole(pole) {
   else magnitude = 0;
   magnitude = Math.round(magnitude * 10) / 10;
 
-  // Velocity: ≤10 days great, >30 days weak
   let velocity;
   if (pole.days <= 10) velocity = 10;
   else if (pole.days <= 20) velocity = 7;
   else if (pole.days <= 30) velocity = 4;
   else velocity = 1;
 
-  // Volume signature: max single-day pole volume / 50d avg
   let volume;
   const ratio = pole.maxVolumeRatio;
   if (ratio >= 2.5) volume = 10;
@@ -54,25 +57,37 @@ function scorePole(pole) {
   else if (ratio >= 1.5) volume = 4;
   else volume = 0;
 
-  return {
-    magnitude,
-    velocity,
-    volume,
-    total: magnitude + velocity + volume,
-  };
+  return { magnitude, velocity, volume, total: magnitude + velocity + volume };
 }
 
-function scoreFlagQuality(flag, current) {
-  // Tightness: tighter pullback = better
+function scoreFlagContinuation(flag, current) {
+  // For continuation, the "pullback quality" isn't about being shallow —
+  // it's about landing cleanly at structural support (the 20-EMA).
+  // A 7% pullback that brings price to the 20-EMA is BETTER than a 2% pullback
+  // that leaves price 8% above the EMA.
+  // Score combines pullback depth with distance to 20-EMA.
   const pb = flag.pullbackPct;
-  let tightness;
-  if (pb <= 0.05) tightness = 20;
-  else if (pb <= 0.08) tightness = 16;
-  else if (pb <= 0.12) tightness = 12;
-  else if (pb <= 0.15) tightness = 8;
-  else tightness = 4;
+  const dist = Math.abs(current.distAbove20Ema); // distance from EMA in either direction
 
-  // Volume contraction: flag volume / pole volume
+  // We've already gated to within ±5% of 20-EMA, so dist is in [0, 0.05].
+  // Best case: pulled back 4-12% AND landed within 2% of the 20-EMA.
+  // That's a "real" pullback to structural support.
+  let pullbackQuality;
+  if (dist <= 0.02) {
+    // At the EMA — score by pullback depth (deeper = more meaningful test of support)
+    if (pb >= 0.04 && pb <= 0.15) pullbackQuality = 20;
+    else if (pb >= 0.02 && pb < 0.04) pullbackQuality = 15;
+    else if (pb < 0.02) pullbackQuality = 10; // too shallow, hasn't really pulled back
+    else pullbackQuality = 14; // > 15% pullback, getting deep
+  } else if (dist <= 0.05) {
+    // 2-5% from EMA — approaching but not there yet
+    if (pb >= 0.04 && pb <= 0.15) pullbackQuality = 14;
+    else if (pb >= 0.02 && pb < 0.04) pullbackQuality = 10;
+    else pullbackQuality = 6;
+  } else {
+    pullbackQuality = 4;
+  }
+
   const vcr = flag.volumeContractionRatio;
   let contraction;
   if (vcr <= 0.5) contraction = 10;
@@ -80,38 +95,30 @@ function scoreFlagQuality(flag, current) {
   else if (vcr <= 1.0) contraction = 4;
   else contraction = 0;
 
-  // Entry quality: proximity to 20-EMA × direction
-  // Gates already ensure price is within ±5% of 20-EMA, so we score within that window.
-  // Best: 0-2% above + descending or flat (limit order zone, price coming to you)
-  // Good: 2-5% above + descending or flat (approaching, still actionable)
-  // OK:   0-2% above + ascending (bounce just started)
-  // Weak: 2-5% above + ascending (already bouncing, getting away)
-  // Bad:  below 20-EMA (broke support, riskier setup)
+  // Entry: descending into 20-EMA is best
   let entry = 0;
-  const dist = current.distAbove20Ema;
+  const d = current.distAbove20Ema;
   const dir = current.direction;
-
-  if (dist >= 0 && dist <= 0.02) {
+  if (d >= 0 && d <= 0.02) {
     if (dir === 'descending' || dir === 'flat') entry = 5;
     else entry = 3;
-  } else if (dist > 0.02 && dist <= 0.05) {
+  } else if (d > 0.02 && d <= 0.05) {
     if (dir === 'descending') entry = 4;
     else if (dir === 'flat') entry = 3;
     else entry = 1;
-  } else if (dist < 0) {
+  } else if (d < 0) {
     entry = 1;
   }
 
   return {
-    tightness,
+    pullbackQuality,
     contraction,
     entry,
-    total: tightness + contraction + entry,
+    total: pullbackQuality + contraction + entry,
   };
 }
 
-function scoreContext(current, context) {
-  // Relative strength: percentile of 60-day return across universe
+function scoreContextContinuation(current, context) {
   const rsRank = context.rsPercentile;
   let rs;
   if (rsRank >= 0.90) rs = 15;
@@ -119,34 +126,149 @@ function scoreContext(current, context) {
   else if (rsRank >= 0.50) rs = 5;
   else rs = 0;
 
-  // Trend stack
   let trend;
   const stack = current.ema20 != null && current.ema50 != null && current.ema20 > current.ema50;
   if (stack && current.ema50Rising) trend = 10;
   else if (stack || current.ema50Rising) trend = 5;
   else trend = 0;
 
-  // Market regime
   const market = context.spyAbove50ma ? 5 : 0;
+  return { rs, trend, market, total: rs + trend + market, rsPercentile: rsRank };
+}
 
+// ─── FIRST-STAGE RUBRIC ─────────────────────────────────────────────────
+
+function scoreFirstStage(pattern, context) {
+  const pole = scorePoleFirstStage(pattern.pole);
+  const flag = scoreFlagFirstStage(pattern.flag, pattern.current);
+  const base = scoreBase(pattern.context, pattern.pole);
+  const ctx = scoreMarketOnly(context);
+  const total = pole.total + flag.total + base.total + ctx.total;
   return {
-    rs,
-    trend,
-    market,
-    total: rs + trend + market,
-    rsPercentile: rsRank,
+    total: Math.round(total),
+    setupType: 'first-stage',
+    pole,
+    flag,
+    base,
+    context: ctx,
   };
 }
 
-// Suggested trade levels
+function scorePoleFirstStage(pole) {
+  // Same as continuation but lower volume weight (first-stage pole volume
+  // can vary more — sometimes it's the institutional accumulation, sometimes retail)
+  const magPct = pole.magnitude;
+  let magnitude;
+  if (magPct >= 0.50) magnitude = 15;
+  else if (magPct >= 0.20) magnitude = 6 + ((magPct - 0.20) / 0.30) * 9;
+  else magnitude = 0;
+  magnitude = Math.round(magnitude * 10) / 10;
+
+  let velocity;
+  if (pole.days <= 10) velocity = 10;
+  else if (pole.days <= 20) velocity = 7;
+  else if (pole.days <= 30) velocity = 4;
+  else velocity = 1;
+
+  let volume;
+  const ratio = pole.maxVolumeRatio;
+  if (ratio >= 2.5) volume = 5;
+  else if (ratio >= 2.0) volume = 4;
+  else if (ratio >= 1.5) volume = 2;
+  else volume = 0;
+
+  return { magnitude, velocity, volume, total: magnitude + velocity + volume };
+}
+
+function scoreFlagFirstStage(flag, current) {
+  // For first-stage, volume contraction is even more important — it's the
+  // signal that sellers have actually exhausted after a fresh breakout.
+  const vcr = flag.volumeContractionRatio;
+  let contraction;
+  if (vcr <= 0.5) contraction = 15;
+  else if (vcr <= 0.7) contraction = 10;
+  else if (vcr <= 1.0) contraction = 5;
+  else contraction = 0;
+
+  // Entry: at/near the 20-EMA, descending or flat
+  let entry = 0;
+  const d = current.distAbove20Ema;
+  const dir = current.direction;
+  if (d >= 0 && d <= 0.02) {
+    if (dir === 'descending' || dir === 'flat') entry = 10;
+    else entry = 6;
+  } else if (d > 0.02 && d <= 0.05) {
+    if (dir === 'descending') entry = 8;
+    else if (dir === 'flat') entry = 5;
+    else entry = 2;
+  } else if (d < 0) {
+    entry = 2;
+  }
+
+  // Pullback-quality lite (5 pts max for first-stage — deeper pullbacks more acceptable here)
+  const pb = flag.pullbackPct;
+  let pullbackQuality;
+  if (pb >= 0.04 && pb <= 0.15) pullbackQuality = 5;
+  else if (pb >= 0.02 && pb < 0.04) pullbackQuality = 3;
+  else pullbackQuality = 1;
+
+  return {
+    contraction,
+    entry,
+    pullbackQuality,
+    total: contraction + entry + pullbackQuality,
+  };
+}
+
+function scoreBase(ctx, pole) {
+  // Base length: longer is better (more accumulation time)
+  let length;
+  if (ctx.baseDays >= 60) length = 15;
+  else if (ctx.baseDays >= 40) length = 11;
+  else if (ctx.baseDays >= 25) length = 7;
+  else length = 3;
+
+  // Base tightness: smaller range = cleaner base
+  let tightness;
+  if (ctx.baseRange <= 0.15) tightness = 15;        // very tight base
+  else if (ctx.baseRange <= 0.25) tightness = 11;
+  else if (ctx.baseRange <= 0.40) tightness = 6;
+  else tightness = 2;                                // sloppy, choppy
+
+  // Pole-to-base ratio: big pole emerging from small base = explosive
+  let poleBaseRatio = 0;
+  if (ctx.baseRange > 0) {
+    const ratio = pole.magnitude / ctx.baseRange;
+    if (ratio >= 2.0) poleBaseRatio = 5;
+    else if (ratio >= 1.5) poleBaseRatio = 4;
+    else if (ratio >= 1.0) poleBaseRatio = 2;
+    else poleBaseRatio = 1;
+  }
+
+  return {
+    length,
+    tightness,
+    poleBaseRatio,
+    total: length + tightness + poleBaseRatio,
+  };
+}
+
+function scoreMarketOnly(context) {
+  const market = context.spyAbove50ma ? 5 : 0;
+  return { market, total: market };
+}
+
+// ─── TRADE LEVELS ───────────────────────────────────────────────────────
+
 export function tradeLevel(pattern) {
   const cur = pattern.current;
   const flag = pattern.flag;
+  const isFirstStage = pattern.context.setupType === 'first-stage';
 
-  // Entry: at the 20-EMA (limit order zone)
+  // Entry: at the 20-EMA
   const entry = cur.ema20 ?? cur.price;
 
-  // Stop: max of (50-EMA, flag low * 0.99) — structural floor
+  // Stop: structural floor
   const ema50 = cur.ema50;
   const flagLow = flag.low;
   let stop;
@@ -159,8 +281,11 @@ export function tradeLevel(pattern) {
     stop = entry * 0.93;
   }
 
-  // Target: project conservative half-pole gain from entry
-  const target = entry * (1 + pattern.pole.magnitude * 0.5);
+  // Target depends on setup type:
+  //   Continuation: conservative half-pole projection
+  //   First-stage:  full-pole projection (asymmetric upside is the point)
+  const targetMultiplier = isFirstStage ? 1.0 : 0.5;
+  const target = entry * (1 + pattern.pole.magnitude * targetMultiplier);
 
   const riskPct = (entry - stop) / entry;
   const rewardPct = (target - entry) / entry;
@@ -176,10 +301,5 @@ export function tradeLevel(pattern) {
   };
 }
 
-function round2(n) {
-  return Math.round(n * 100) / 100;
-}
-
-function round4(n) {
-  return Math.round(n * 10000) / 10000;
-}
+function round2(n) { return Math.round(n * 100) / 100; }
+function round4(n) { return Math.round(n * 10000) / 10000; }
