@@ -16,13 +16,37 @@ function loadLatestScan() {
   }
 }
 
+function formatScanTime(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const date = d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    const time = d.toLocaleTimeString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return `${date} ${time} ET`;
+  } catch {
+    return iso;
+  }
+}
+
 export default function FiftyTwoWeekPage() {
   const data = loadLatestScan();
   const candidates = data?.fiftyTwoWeekCandidates ?? [];
 
+  // Detect placeholder
+  const isPlaceholder = data?.scanDate === '1970-01-01';
+  const subtitle = !data
+    ? '52w radar'
+    : isPlaceholder
+      ? '52w radar · awaiting first scan'
+      : `52w radar · last scan ${formatScanTime(data.timestamp)} · ${candidates.length} breakouts`;
+
   return (
     <>
-      <Header subtitle={data ? `52w radar · ${data.scanDate} · ${candidates.length} breakouts` : '52w radar'} />
+      <Header subtitle={subtitle} />
 
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
         <section className="mb-6">

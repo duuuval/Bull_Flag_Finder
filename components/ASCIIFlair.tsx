@@ -39,21 +39,27 @@ export function Divider({ label }: { label?: string }) {
 }
 
 export function EmptyFlag({ message }: { message?: string }) {
+  // Proper bull flag: pole rises bottom-left to top-right,
+  // flag drifts slightly down-right from the peak (consolidation).
   return (
     <div className="text-center py-12 px-4">
-      <pre className="ascii text-terminal-gray inline-block text-xs leading-[1.1]">
-{`         ▲
-        ╱│
-       ╱ │
-      ╱  │
-     ╱   │
-    ╱    │
-   ╱     │
-  ╱      │
- ╱_______│
-         │
-         │
-         │`}
+      <pre className="ascii text-terminal-gray inline-block text-xs leading-[1.1] text-left">
+{`                ▲
+               ╱ ╲___
+              ╱      ╲___
+             ╱           ╲
+            ╱
+           ╱
+          ╱
+         ╱
+        ╱
+       ╱
+      ╱
+     ╱
+    ╱
+   ╱
+  ╱
+ ╱______________________`}
       </pre>
       <p className="text-terminal-gray mt-4 text-sm">
         {message || 'no flags today. markets need to move first.'}

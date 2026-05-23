@@ -39,6 +39,24 @@ function loadLatestScan(): ScanData | null {
   }
 }
 
+// Format an ISO timestamp as "YYYY-MM-DD HH:MM ET"
+// Uses America/New_York since US markets are the universe.
+function formatScanTime(iso: string): string {
+  try {
+    const d = new Date(iso);
+    const date = d.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); // YYYY-MM-DD
+    const time = d.toLocaleTimeString('en-US', {
+      timeZone: 'America/New_York',
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return `${date} ${time} ET`;
+  } catch {
+    return iso;
+  }
+}
+
 export default function Home() {
   const data = loadLatestScan();
 
@@ -57,9 +75,15 @@ export default function Home() {
   const late = stageCounts.late || 0;
   const total = data.flagCandidates.length;
 
+  // Detect placeholder data (epoch timestamp means no real scan has run yet)
+  const isPlaceholder = data.scanDate === '1970-01-01';
+  const lastScanLabel = isPlaceholder
+    ? 'awaiting first scan'
+    : `last scan · ${formatScanTime(data.timestamp)} · ${total} candidates`;
+
   return (
     <>
-      <Header subtitle={`scan · ${data.scanDate} · ${total} candidates`} />
+      <Header subtitle={lastScanLabel} />
 
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
         {/* Hero */}
@@ -143,6 +167,28 @@ function MarketBanner({ data }: { data: ScanData }) {
   const { market } = data;
   const bullish = market.spyAbove50ma;
   const vixHostile = market.vixHostile;
+  const hasData = market.spyPrice != null;
+
+  // Placeholder state — no scan has run yet
+  if (!hasData) {
+    return (
+      <div className="bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-3 flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4 text-xs font-mono">
+          <div>
+            <span className="text-text-muted">SPY </span>
+            <span className="text-text-muted tabular-nums">—</span>
+          </div>
+          <div>
+            <span className="text-text-muted">VIX </span>
+            <span className="text-text-muted tabular-nums">—</span>
+          </div>
+        </div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">
+          regime: unknown
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-3 flex items-center justify-between gap-4 flex-wrap">
