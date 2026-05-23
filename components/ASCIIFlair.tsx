@@ -1,0 +1,83 @@
+// ASCII flair components
+
+export function BFFLogoLarge() {
+  return (
+    <pre className="ascii text-terminal-green glow-sm text-[8px] leading-[1.1] sm:text-xs sm:leading-[1.1] inline-block">
+{` ██████╗ ███████╗███████╗
+ ██╔══██╗██╔════╝██╔════╝
+ ██████╔╝█████╗  █████╗  
+ ██╔══██╗██╔══╝  ██╔══╝  
+ ██████╔╝██║     ██║     
+ ╚═════╝ ╚═╝     ╚═╝     `}
+    </pre>
+  );
+}
+
+export function BFFLogoSmall() {
+  return (
+    <span className="font-display text-terminal-green glow-sm text-3xl tracking-tight">
+      BFF
+    </span>
+  );
+}
+
+export function Divider({ label }: { label?: string }) {
+  if (label) {
+    return (
+      <div className="flex items-center gap-3 my-6 text-terminal-gray-dim">
+        <span className="font-mono text-xs">═══════</span>
+        <span className="font-mono text-xs text-terminal-green uppercase tracking-widest">{label}</span>
+        <span className="font-mono text-xs flex-1">═══════════════════════════════════════════</span>
+      </div>
+    );
+  }
+  return (
+    <div className="my-6 text-terminal-gray-dim font-mono text-xs overflow-hidden whitespace-nowrap">
+      {'═'.repeat(80)}
+    </div>
+  );
+}
+
+export function EmptyFlag({ message }: { message?: string }) {
+  return (
+    <div className="text-center py-12 px-4">
+      <pre className="ascii text-terminal-gray inline-block text-xs leading-[1.1]">
+{`         ▲
+        ╱│
+       ╱ │
+      ╱  │
+     ╱   │
+    ╱    │
+   ╱     │
+  ╱      │
+ ╱_______│
+         │
+         │
+         │`}
+      </pre>
+      <p className="text-terminal-gray mt-4 text-sm">
+        {message || 'no flags today. markets need to move first.'}
+      </p>
+    </div>
+  );
+}
+
+export function ScanComplete() {
+  return (
+    <pre className="ascii text-terminal-green-dim text-[10px] leading-[1.1] inline-block">
+{`  ┌────────────────────────┐
+  │  ✓  SCAN COMPLETE      │
+  └────────────────────────┘`}
+    </pre>
+  );
+}
+
+export function TriggerBolt() {
+  return (
+    <pre className="ascii text-terminal-amber glow-sm text-[10px] leading-[1.1] inline-block">
+{` ⚡
+ ⚡⚡
+⚡⚡⚡`}
+    </pre>
+  );
+}

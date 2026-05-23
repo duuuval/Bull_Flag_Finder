@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=VT323&display=swap');
+
+:root {
+  --color-bg: #0a0e0a;
+  --color-terminal-green: #00ff66;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: #d4e0d4;
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* CRT scan-line overlay (subtle) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.08) 50%
+  );
+  background-size: 100% 3px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+}
+
+/* Subtle vignette */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+main, header, footer {
+  position: relative;
+  z-index: 3;
+}
+
+/* Glow utility */
+.glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+.glow-sm {
+  text-shadow: 0 0 4px currentColor;
+}
+
+/* ASCII art container */
+.ascii {
+  font-family: 'JetBrains Mono', monospace;
+  white-space: pre;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* Selection */
+::selection {
+  background: #00ff66;
+  color: #0a0e0a;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a2a1a;
+  border: 1px solid #00ff66;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2a3a2a;
+}
+
+/* Card hover */
+.card-interactive {
+  transition: all 0.15s ease-out;
+}
+
+.card-interactive:hover {
+  border-color: #00ff66;
+  box-shadow: 0 0 0 1px rgba(0, 255, 102, 0.2), 0 4px 12px rgba(0, 255, 102, 0.05);
+}
+
+/* Blinking cursor */
+.cursor-blink::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
