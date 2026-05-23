@@ -25,6 +25,8 @@ type Candidate = {
     flagLow: number;
     volumeContraction: number;
     poleVolumeRatio: number;
+    distAbove20Ema: number;
+    direction: 'descending' | 'flat' | 'ascending';
   };
   ema: {
     ema10: number | null;
@@ -45,13 +47,21 @@ type Candidate = {
   chartUrl: string;
 };
 
+const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: string }> = {
+  descending: { icon: '↘', label: 'descending', color: 'text-terminal-green' },
+  flat: { icon: '→', label: 'flat', color: 'text-terminal-blue' },
+  ascending: { icon: '↗', label: 'ascending', color: 'text-terminal-amber' },
+};
+
 export default function CandidateCard({ candidate }: { candidate: Candidate }) {
   const [expanded, setExpanded] = useState(false);
   const c = candidate;
 
   const polePct = (c.pattern.polePct * 100).toFixed(1);
   const pullbackPct = (c.pattern.pullbackPct * 100).toFixed(1);
+  const distPct = (c.pattern.distAbove20Ema * 100).toFixed(1);
   const rsRank = Math.round(c.rsPercentile * 100);
+  const dir = DIRECTION_DISPLAY[c.pattern.direction] ?? DIRECTION_DISPLAY.flat;
 
   return (
     <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4">
@@ -74,9 +84,15 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
         <ScoreDisplay score={c.score} size="md" />
       </div>
 
-      {/* Stage badge row */}
-      <div className="flex items-center gap-2 mb-3">
+      {/* Stage + direction badge row */}
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
         <StageBadge stage={c.stage} daysInFlag={c.daysInFlag} />
+        <span
+          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-gray-dim/40 bg-bg-elevated ${dir.color} text-[10px] tracking-wider uppercase`}
+        >
+          <span>{dir.icon}</span>
+          <span>{dir.label}</span>
+        </span>
         {rsRank >= 75 && (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-green/30 bg-terminal-green/5 text-terminal-green text-[10px] tracking-wider uppercase">
             RS {rsRank}
@@ -88,7 +104,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
       </div>
 
       {/* Key stats row */}
-      <div className="grid grid-cols-3 gap-3 mb-3 text-xs">
+      <div className="grid grid-cols-4 gap-2 mb-3 text-xs">
         <div>
           <div className="text-text-muted text-[9px] tracking-widest uppercase">Pole</div>
           <div className="font-mono text-text tabular-nums">
@@ -103,7 +119,13 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
           </div>
         </div>
         <div>
-          <div className="text-text-muted text-[9px] tracking-widest uppercase">Vol Ratio</div>
+          <div className="text-text-muted text-[9px] tracking-widest uppercase">From EMA</div>
+          <div className="font-mono text-text tabular-nums">
+            {c.pattern.distAbove20Ema >= 0 ? '+' : ''}{distPct}%
+          </div>
+        </div>
+        <div>
+          <div className="text-text-muted text-[9px] tracking-widest uppercase">Vol</div>
           <div className="font-mono text-text tabular-nums">
             {c.pattern.poleVolumeRatio.toFixed(1)}x
           </div>
@@ -169,7 +191,7 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
               <div className="font-mono space-y-0.5 text-text-dim">
                 <div>tight {c.breakdown.flagTightness}</div>
                 <div>vol {c.breakdown.flagContraction}</div>
-                <div>pos {c.breakdown.flagPosition}</div>
+                <div>entry {c.breakdown.flagEntry}</div>
               </div>
             </div>
             <div>
@@ -192,6 +214,8 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
             <div>20-EMA: <span className="text-text">${c.ema.ema20?.toFixed(2) ?? '—'}</span></div>
             <div>50-EMA: <span className="text-text">${c.ema.ema50?.toFixed(2) ?? '—'} {c.ema.ema50Rising && '↗'}</span></div>
             <div>60d ret: <span className="text-text">{(c.return60dPct * 100).toFixed(1)}%</span></div>
+            <div>direction: <span className={dir.color}>{dir.icon} {dir.label}</span></div>
+            <div>from 20-EMA: <span className="text-text">{c.pattern.distAbove20Ema >= 0 ? '+' : ''}{distPct}%</span></div>
           </div>
         </div>
       )}
