@@ -23,6 +23,12 @@ const config: Config = {
           gray: '#5a6b5a',
           'gray-dim': '#3a453a',
         },
+        // Bitcoin orange palette for crypto mode
+        crypto: {
+          orange: '#f7931a',
+          'orange-dim': '#c9761a',
+          'orange-glow': '#ffb950',
+        },
         text: {
           DEFAULT: '#d4e0d4',
           dim: '#7a8a7a',
