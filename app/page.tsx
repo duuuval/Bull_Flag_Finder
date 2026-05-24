@@ -92,6 +92,9 @@ export default function Home() {
           <p className="text-text-muted text-xs mt-2 font-mono">
             bull flag finder · daily scan of the S&amp;P 1500
           </p>
+          <p className="text-terminal-green text-xs mt-1 font-mono">
+            60% of the time, it works every time.
+          </p>
         </section>
 
         {/* SPY / VIX / regime */}
@@ -241,3 +244,4 @@ function SectionStat({
     </div>
   );
 }
+
