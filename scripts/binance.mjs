@@ -9,7 +9,7 @@
 // Binance global (api.binance.com) returns HTTP 451 "Unavailable For Legal Reasons"
 // to US-based IPs including GitHub Actions runners (Azure US data centers).
 // Binance.US (api.binance.us) is US-accessible and has the same API shape.
-// Pair coverage is smaller (~150 vs 1700+) but all top-30 coins by market cap are listed.
+// Pair coverage is smaller (~150 vs 1700+) but most top-30 coins by market cap are listed.
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -18,22 +18,24 @@ const USER_AGENT = 'Mozilla/5.0 (compatible; BFF-Crypto/1.0)';
 const BINANCE_API_BASE = 'https://api.binance.us';
 
 // Fetch 4h klines for a single Binance trading pair.
-// Returns: { bars: [{ date, open, high, low, close, volume }], meta: { symbol } } or null
-// `limit` defaults to 500 (Binance allows up to 1000 per request).
-// 500 4h bars = ~83 days of history, which is enough for our 50-bar EMA + ~30-bar pole/flag detection window.
-// Using 1000 gives us ~166 days = comfortably enough margin.
+// Returns: { bars, meta } or null. On failure, logs HTTP status + reason so we
+// can see which pairs are missing from Binance.US.
 export async function fetch4hBars(binanceSymbol, limit = 1000) {
   const url = `${BINANCE_API_BASE}/api/v3/klines?symbol=${encodeURIComponent(binanceSymbol)}&interval=4h&limit=${limit}`;
 
   try {
     const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      const reason = body.length > 0 ? body.slice(0, 100) : 'no body';
+      return { error: { status: res.status, reason } };
+    }
 
     const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return null;
+    if (!Array.isArray(data) || data.length === 0) {
+      return { error: { status: 200, reason: 'empty array' } };
+    }
 
-    // Binance kline format (array of arrays):
-    // [ openTime, open, high, low, close, volume, closeTime, ... ]
     const bars = [];
     for (const k of data) {
       const openTime = k[0];
@@ -56,7 +58,9 @@ export async function fetch4hBars(binanceSymbol, limit = 1000) {
       });
     }
 
-    if (bars.length < 60) return null;
+    if (bars.length < 60) {
+      return { error: { status: 200, reason: `only ${bars.length} bars (need >=60)` } };
+    }
 
     return {
       bars,
@@ -65,7 +69,7 @@ export async function fetch4hBars(binanceSymbol, limit = 1000) {
       },
     };
   } catch (e) {
-    return null;
+    return { error: { status: 0, reason: e.message } };
   }
 }
 
@@ -111,19 +115,27 @@ export async function fetchDailyBars(binanceSymbol, limit = 200) {
 }
 
 // Process universe in throttled batches.
-// `assets` is array of { id, symbol, name, binanceSymbol, ... } objects.
 // callback receives (asset, barsData, stats) and may return a result to collect.
+// Now logs per-symbol failures with HTTP status so we can see which pairs are missing.
 export async function processCryptoUniverse(assets, callback, options = {}) {
   const { delayMs = 200, progressEvery = 10 } = options;
   const results = [];
+  const failures = [];
   const stats = { fetched: 0, failed: 0, qualified: 0 };
 
   for (let i = 0; i < assets.length; i++) {
     const asset = assets[i];
     const data = await fetch4hBars(asset.binanceSymbol);
 
-    if (!data) {
+    if (!data || data.error) {
       stats.failed++;
+      const errInfo = data?.error || { status: 0, reason: 'no data' };
+      failures.push({
+        symbol: asset.binanceSymbol,
+        name: asset.name,
+        status: errInfo.status,
+        reason: errInfo.reason,
+      });
     } else {
       stats.fetched++;
       try {
@@ -144,5 +156,15 @@ export async function processCryptoUniverse(assets, callback, options = {}) {
     await sleep(delayMs);
   }
 
-  return { results, stats };
+  // Dump the failure list so we know which symbols to override or skip
+  if (failures.length > 0) {
+    console.log('');
+    console.log(`⚠️ ${failures.length} symbol fetch failures (will be skipped on this run):`);
+    for (const f of failures) {
+      console.log(`   ${f.symbol.padEnd(12)} HTTP ${f.status}  ${f.name.padEnd(20)} ${f.reason.slice(0, 60)}`);
+    }
+    console.log('');
+  }
+
+  return { results, stats, failures };
 }

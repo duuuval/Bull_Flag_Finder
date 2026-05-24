@@ -2,6 +2,9 @@
 //
 // Runs every 4 hours via GitHub Actions cron.
 // Writes public/latest-crypto.json (current) and public/scans-crypto/YYYY-MM-DD-HH.json (archive).
+//
+// Regime gate: BTC daily > 50-EMA. TOTAL3 is displayed for context but does NOT
+// trigger hostile/warning status (CoinGecko moved historical TOTAL3 to paid tier).
 
 import fs from 'fs';
 import path from 'path';
@@ -26,7 +29,7 @@ async function main() {
 
   // === REGIME ===
   console.log('🌍 Fetching crypto market regime...');
-  const [btcDailyData, total3Status] = await Promise.all([
+  const [btcDailyData, total3Snapshot] = await Promise.all([
     fetchDailyBars('BTCUSDT'),
     fetchTotal3Status(),
   ]);
@@ -55,15 +58,14 @@ async function main() {
   }
 
   const btcOk = btcRegime.above === true;
-  const total3Ok = total3Status?.above === true;
+
+  // TOTAL3 is now informational only — not a regime gate trigger.
   const triggered = [];
   if (!btcOk) triggered.push('btc_below_50ema');
-  if (!total3Ok) triggered.push('total3_below_20ema');
 
   let regimeStatus;
   if (triggered.length === 0) regimeStatus = 'ok';
-  else if (triggered.length === 1) regimeStatus = 'warning';
-  else regimeStatus = 'hostile';
+  else regimeStatus = 'warning';   // No more "hostile" (only one gate now)
 
   const regime = {
     status: regimeStatus,
@@ -73,21 +75,37 @@ async function main() {
       above: btcOk,
       deltaPct: btcRegime.deltaPct != null ? round4(btcRegime.deltaPct) : null,
     },
-    total3: total3Status ? {
-      cap: Math.round(total3Status.total3Cap),
-      ema20: Math.round(total3Status.total3Ema20),
-      above: total3Status.above,
-      deltaPct: round4(total3Status.deltaPct),
+    total3: total3Snapshot ? {
+      cap: Math.round(total3Snapshot.total3Cap),
+      btcDominancePct: round2(total3Snapshot.btcDominancePct),
+      ethDominancePct: round2(total3Snapshot.ethDominancePct),
+      totalCap: Math.round(total3Snapshot.totalCap),
+      // Following fields preserved for schema compat with the UI banner; always null on free tier.
+      ema20: null,
+      above: null,
+      deltaPct: null,
     } : {
       cap: null,
       ema20: null,
       above: null,
       deltaPct: null,
+      btcDominancePct: null,
+      ethDominancePct: null,
+      totalCap: null,
     },
     triggered,
   };
 
   console.log(`   Regime status: ${regimeStatus.toUpperCase()}${triggered.length > 0 ? ` (${triggered.join(', ')})` : ''}`);
+
+  // === SCAN CONTEXT (used by scoring) ===
+  // TOTAL3 status is no longer reliably available — treat it as "neutral" (true) so it
+  // doesn't penalize scores. Effectively, the structure score's regime component now
+  // hinges on BTC trend only.
+  const scanContext = {
+    btcAbove50ema: btcOk,
+    total3Above20ema: true,
+  };
 
   // === UNIVERSE ===
   console.log('');
@@ -97,12 +115,7 @@ async function main() {
   console.log('');
 
   // === SCAN ===
-  const scanContext = {
-    btcAbove50ema: btcOk,
-    total3Above20ema: total3Ok,
-  };
-
-  const { results: flagRaw, stats } = await processCryptoUniverse(universe, async (asset, data) => {
+  const { results: flagRaw, stats, failures } = await processCryptoUniverse(universe, async (asset, data) => {
     const { bars } = data;
     const pattern = detectCryptoFlag(bars);
     if (!pattern) return null;
@@ -145,6 +158,7 @@ async function main() {
     fetched: stats.fetched,
     failed: stats.failed,
     qualified: candidates.length,
+    failedSymbols: failures ? failures.map(f => f.symbol) : [],
   }, startedAt);
 }
 
@@ -219,8 +233,7 @@ async function writeOutputs(candidates, regime, stats, startedAt) {
   const completedAt = new Date();
   const durationMs = completedAt - startedAt;
 
-  // Archive filename: YYYY-MM-DD-HH (UTC) so 6 runs per day each get distinct files
-  const iso = completedAt.toISOString(); // 2026-05-24T14:30:00.000Z
+  const iso = completedAt.toISOString();
   const datePart = iso.split('T')[0];
   const hourPart = iso.split('T')[1].split(':')[0];
   const archiveName = `${datePart}-${hourPart}.json`;
@@ -254,14 +267,12 @@ async function writeOutputs(candidates, regime, stats, startedAt) {
   console.log('');
 }
 
-// Crypto prices range from $0.00001 (some shitcoins) to $100,000+ (BTC).
-// Use adaptive rounding: keep enough precision for sub-dollar tokens.
 function roundForPrice(n) {
   if (n == null) return null;
-  if (n >= 100) return Math.round(n * 100) / 100;          // BTC, ETH range: 2 decimals
-  if (n >= 1) return Math.round(n * 10000) / 10000;        // SOL, BNB range: 4 decimals
-  if (n >= 0.01) return Math.round(n * 1000000) / 1000000; // ADA, XRP range: 6 decimals
-  return Math.round(n * 100000000) / 100000000;             // Micro caps: 8 decimals
+  if (n >= 100) return Math.round(n * 100) / 100;
+  if (n >= 1) return Math.round(n * 10000) / 10000;
+  if (n >= 0.01) return Math.round(n * 1000000) / 1000000;
+  return Math.round(n * 100000000) / 100000000;
 }
 
 function round2(n) {
