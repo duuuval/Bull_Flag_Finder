@@ -2,32 +2,54 @@
   "schemaVersion": 1,
   "scanDate": "2026-05-24",
   "scanHourUtc": "20",
-  "timestamp": "2026-05-24T20:37:34.761Z",
+  "timestamp": "2026-05-24T20:45:41.980Z",
   "durationSec": 10,
   "regime": {
-    "status": "hostile",
+    "status": "warning",
     "btc": {
-      "price": 76709.7,
-      "ema50": 76751.41,
+      "price": 76706.84,
+      "ema50": 76751.3,
       "above": false,
-      "deltaPct": -0.0005
+      "deltaPct": -0.0006
     },
     "total3": {
-      "cap": null,
+      "cap": 850997937730,
+      "btcDominancePct": 58.17,
+      "ethDominancePct": 9.57,
+      "totalCap": 2637795402228,
       "ema20": null,
       "above": null,
       "deltaPct": null
     },
     "triggered": [
-      "btc_below_50ema",
-      "total3_below_20ema"
+      "btc_below_50ema"
     ]
   },
   "stats": {
     "universeSize": 44,
     "fetched": 26,
     "failed": 18,
-    "qualified": 0
+    "qualified": 0,
+    "failedSymbols": [
+      "FIGR_HELOCUSDT",
+      "LEOUSDT",
+      "XMRUSDT",
+      "WBTUSDT",
+      "CCUSDT",
+      "TONUSDT",
+      "MUSDT",
+      "RAINUSDT",
+      "CROUSDT",
+      "USYCUSDT",
+      "USDGUSDT",
+      "XAUTUSDT",
+      "TAOUSDT",
+      "BUIDLUSDT",
+      "MNTUSDT",
+      "USDYUSDT",
+      "HTXUSDT",
+      "USDFUSDT"
+    ]
   },
   "candidates": []
 }
