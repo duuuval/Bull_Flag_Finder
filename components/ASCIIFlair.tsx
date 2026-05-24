@@ -5,10 +5,10 @@ export function BFFLogoLarge() {
     <pre className="ascii text-terminal-green glow-sm text-[8px] leading-[1.1] sm:text-xs sm:leading-[1.1] inline-block">
 {` /$$$$$$$  /$$$$$$$$ /$$$$$$$$
 | $$__  $$| $$_____/| $$_____/
-| $$  | $$| $$      | $$      
+| $$  / $$| $$      | $$      
 | $$$$$$$ | $$$$$   | $$$$$   
 | $$__  $$| $$__/   | $$__/   
-| $$  | $$| $$      | $$      
+| $$  / $$| $$      | $$      
 | $$$$$$$/| $$      | $$      
 |_______/ |__/      |__/      `}
                               
