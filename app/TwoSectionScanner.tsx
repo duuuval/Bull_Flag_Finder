@@ -64,10 +64,8 @@ function SectionView({
 
   const visible = filtered.slice(0, limit);
 
-  // Per-accent styling: text color, glow, divider color
   const accentText = accent === 'green' ? 'text-terminal-green' : 'text-terminal-blue';
-  const accentDivider = accent === 'green' ? 'text-terminal-green/60' : 'text-terminal-blue/60';
-  // Tailwind doesn't have a "drop-shadow-glow" out of the box; use inline style for the glow
+  const accentDivider = accent === 'green' ? 'text-terminal-green/50' : 'text-terminal-blue/50';
   const accentGlow = accent === 'green'
     ? { textShadow: '0 0 8px rgba(74, 222, 128, 0.7), 0 0 16px rgba(74, 222, 128, 0.4)' }
     : { textShadow: '0 0 8px rgba(96, 165, 250, 0.7), 0 0 16px rgba(96, 165, 250, 0.4)' };
@@ -83,26 +81,19 @@ function SectionView({
 
   return (
     <section className="mb-12">
-      {/* LOUDER section header: bigger text, accent-colored glow, thicker dividers */}
-      <div className="flex items-center gap-3 my-7 overflow-hidden">
-        <span className={`font-mono text-base ${accentDivider} shrink-0`} aria-hidden>
-          ════
-        </span>
+      {/* Centered section header with minimal flanking dividers */}
+      <div className="flex items-center justify-center gap-3 my-7">
+        <span className={`font-mono text-base ${accentDivider} shrink-0`} aria-hidden>══</span>
         <span
-          className={`font-display text-2xl sm:text-3xl ${accentText} uppercase tracking-widest shrink-0`}
+          className={`font-display text-2xl sm:text-3xl ${accentText} uppercase tracking-widest text-center`}
           style={accentGlow}
         >
           <span className="mr-2 align-middle text-[1.2em]">{emoji}</span>
           {title}
         </span>
-        <span
-          className={`font-mono text-base ${accentDivider} flex-1 overflow-hidden whitespace-nowrap`}
-          aria-hidden
-        >
-          ═══════════════════════════════════════════════════════════════════════════════
-        </span>
+        <span className={`font-mono text-base ${accentDivider} shrink-0`} aria-hidden>══</span>
       </div>
-      <p className="text-text-muted text-[10px] font-mono mb-4 -mt-3">{subtitle}</p>
+      <p className="text-text-muted text-[10px] font-mono mb-4 -mt-3 text-center">{subtitle}</p>
 
       {candidates.length === 0 ? (
         <div className="text-center py-8 text-text-muted font-mono text-sm">
@@ -161,10 +152,10 @@ function SectionView({
             </div>
           </div>
 
-          {/* Ranked list: rank number to the left of each card */}
+          {/* Ranked list: rank prop passed into card, full horizontal width preserved */}
           <div className="space-y-3">
             {visible.map((c, idx) => (
-              <RankedCandidate key={c.ticker} rank={idx + 1} candidate={c} />
+              <CandidateCard key={c.ticker} candidate={c} rank={idx + 1} />
             ))}
           </div>
 
@@ -176,22 +167,5 @@ function SectionView({
         </>
       )}
     </section>
-  );
-}
-
-function RankedCandidate({ rank, candidate }: { rank: number; candidate: any }) {
-  const rankStr = String(rank).padStart(2, '0');
-  return (
-    <div className="flex items-start gap-2">
-      <div
-        className="font-display text-terminal-green-dim/70 text-base sm:text-lg tabular-nums pt-4 shrink-0 w-7 sm:w-8 text-right select-none"
-        aria-label={`rank ${rank}`}
-      >
-        #{rankStr}
-      </div>
-      <div className="flex-1 min-w-0">
-        <CandidateCard candidate={candidate} />
-      </div>
-    </div>
   );
 }
