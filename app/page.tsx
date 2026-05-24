@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { BFFLogoLarge, Divider, EmptyFlag } from '@/components/ASCIIFlair';
 import TwoSectionScanner from './TwoSectionScanner';
 import BackToTop from '@/components/BackToTop';
+import AssetToggle from '@/components/AssetToggle';
 
 export const dynamic = 'force-static';
 
@@ -80,7 +81,7 @@ export default function Home() {
     <>
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
         {/* Logo header — ASCII is the header. About link sits top-right. */}
-        <section className="mb-5 relative">
+        <section className="mb-3 relative">
           <Link
             href="/about"
             aria-label="about"
@@ -95,6 +96,11 @@ export default function Home() {
           <p className="text-terminal-green text-xs mt-1 font-mono">
             60% of the time, it works every time.
           </p>
+        </section>
+
+        {/* Asset toggle */}
+        <section className="mb-4">
+          <AssetToggle mode="stocks" />
         </section>
 
         {/* SPY / VIX / regime */}
@@ -170,6 +176,9 @@ function NoData() {
         </Link>
         <BFFLogoLarge />
       </section>
+      <div className="mt-6 mb-6">
+        <AssetToggle mode="stocks" />
+      </div>
       <div className="mt-8 space-y-3">
         <p className="text-text">
           <span className="cursor-blink">waiting for first scan</span>
@@ -244,4 +253,3 @@ function SectionStat({
     </div>
   );
 }
-

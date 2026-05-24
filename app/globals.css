@@ -7,6 +7,7 @@
 :root {
   --color-bg: #0a0e0a;
   --color-terminal-green: #00ff66;
+  --color-crypto-orange: #f7931a;
 }
 
 * {
@@ -106,7 +107,7 @@ main, header, footer {
   background: #2a3a2a;
 }
 
-/* Card hover */
+/* Card hover — green (stocks/default) */
 .card-interactive {
   transition: all 0.15s ease-out;
 }
@@ -114,6 +115,16 @@ main, header, footer {
 .card-interactive:hover {
   border-color: #00ff66;
   box-shadow: 0 0 0 1px rgba(0, 255, 102, 0.2), 0 4px 12px rgba(0, 255, 102, 0.05);
+}
+
+/* Card hover — orange (crypto) */
+.card-interactive-crypto {
+  transition: all 0.15s ease-out;
+}
+
+.card-interactive-crypto:hover {
+  border-color: #f7931a;
+  box-shadow: 0 0 0 1px rgba(247, 147, 26, 0.2), 0 4px 12px rgba(247, 147, 26, 0.05);
 }
 
 /* Blinking cursor */
