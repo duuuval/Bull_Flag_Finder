@@ -61,7 +61,7 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
 
 const EXTENDED_THRESHOLD = 0.15;
 
-export default function CandidateCard({ candidate }: { candidate: Candidate }) {
+export default function CandidateCard({ candidate, rank }: { candidate: Candidate; rank?: number }) {
   const [expanded, setExpanded] = useState(false);
   const [chartOpen, setChartOpen] = useState(false);
   const c = candidate;
@@ -77,11 +77,18 @@ export default function CandidateCard({ candidate }: { candidate: Candidate }) {
   const dist50Pct = dist50 !== null ? (dist50 * 100).toFixed(1) : null;
   const isExtended = dist50 !== null && dist50 >= EXTENDED_THRESHOLD;
 
+  const rankStr = rank !== undefined ? `#${String(rank).padStart(2, '0')}` : null;
+
   return (
     <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4 overflow-hidden">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-baseline gap-2 mb-1">
+          <div className="flex items-baseline gap-2 mb-1 flex-wrap">
+            {rankStr && (
+              <span className="font-display text-terminal-green-dim/70 text-base sm:text-lg tabular-nums shrink-0 select-none">
+                {rankStr}
+              </span>
+            )}
             <span className="font-display text-3xl font-bold text-text tracking-tight">{c.ticker}</span>
             <span className="text-terminal-gray-dim text-xs">·</span>
             <span className="font-mono text-text-dim text-sm tabular-nums">${c.price.toFixed(2)}</span>
