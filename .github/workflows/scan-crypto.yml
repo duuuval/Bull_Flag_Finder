@@ -1,0 +1,45 @@
+name: BFF Crypto Scan
+
+on:
+  schedule:
+    # Every 4 hours: 00:00, 04:00, 08:00, 12:00, 16:00, 20:00 UTC
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run BFF crypto scan
+        run: node scripts/scan-crypto.mjs
+
+      - name: Commit and push results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/latest-crypto.json public/scans-crypto/ public/crypto-universe-fallback.json
+          git diff --staged --quiet && exit 0
+          TS=$(date -u +'%Y-%m-%d %H:%M UTC')
+          git commit -m "🪙 Crypto scan: $TS"
+          # Retry loop: if remote moved while we were running, pull --rebase and try again
+          for i in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push failed, attempt $i. Pulling and retrying..."
+            git pull --rebase origin main
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
