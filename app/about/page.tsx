@@ -199,7 +199,7 @@ export default function AboutPage() {
         <ol className="space-y-2 text-sm list-decimal list-inside text-text-dim">
           <li>open the scanner — see today's candidates in both sections, ranked by score</li>
           <li>filter to <span className="text-terminal-green">prime</span> to see what's actionable today</li>
-          <li>tap <code className="text-terminal-green">chart →</code> to verify the setup on TradingView</li>
+          <li>tap <code className="text-terminal-green">chart →</code> to verify the setup in the TradingView widget</li>
           <li>if it looks clean, set a limit order at the suggested entry</li>
           <li>set the stop at the suggested level</li>
           <li>walk away</li>
