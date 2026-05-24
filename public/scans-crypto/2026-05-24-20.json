@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "scanDate": "2026-05-24",
+  "scanHourUtc": "20",
+  "timestamp": "2026-05-24T20:37:34.761Z",
+  "durationSec": 10,
+  "regime": {
+    "status": "hostile",
+    "btc": {
+      "price": 76709.7,
+      "ema50": 76751.41,
+      "above": false,
+      "deltaPct": -0.0005
+    },
+    "total3": {
+      "cap": null,
+      "ema20": null,
+      "above": null,
+      "deltaPct": null
+    },
+    "triggered": [
+      "btc_below_50ema",
+      "total3_below_20ema"
+    ]
+  },
+  "stats": {
+    "universeSize": 44,
+    "fetched": 26,
+    "failed": 18,
+    "qualified": 0
+  },
+  "candidates": []
+}
