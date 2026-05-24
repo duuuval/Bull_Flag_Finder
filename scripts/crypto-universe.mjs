@@ -13,15 +13,18 @@ const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currenc
 
 const FALLBACK_PATH = path.join(process.cwd(), 'public', 'crypto-universe-fallback.json');
 
-// Coins to exclude regardless of market cap rank:
-// - Stablecoins (won't form flags by design)
-// - Wrapped / staked / bridged versions of other assets (duplicate signals)
-// - Liquid staking tokens (mirror underlying)
+// Coins to exclude regardless of market cap rank.
 const EXCLUDED_IDS = new Set([
   // Stablecoins
   'tether', 'usd-coin', 'dai', 'ethena-usde', 'first-digital-usd',
   'paypal-usd', 'true-usd', 'usds', 'frax', 'paxos-standard',
   'gemini-dollar', 'liquity-usd', 'fei-usd', 'usdd', 'binance-usd',
+  // Yield-bearing / RWA stablecoins
+  'usyc', 'circle-usyc', 'global-dollar', 'usdg',
+  'ondo-us-dollar-yield', 'usdy', 'falcon-usd', 'usdf',
+  'blackrock-usd-institutional-digital-liquidity-fund', 'buidl',
+  // Tokenized commodities
+  'tether-gold', 'xaut', 'pax-gold', 'paxg',
   // Wrapped BTC
   'wrapped-bitcoin', 'binance-bitcoin', 'wbtc',
   // Wrapped / staked ETH
@@ -32,11 +35,15 @@ const EXCLUDED_IDS = new Set([
   'jito-staked-sol', 'binance-staked-sol', 'marinade-staked-sol', 'blazestake-staked-sol',
   // Bridged / wrapped variants
   'wrapped-eth', 'weth', 'wrapped-bnb',
+  // Exchange utility tokens (trade narrow, don't form flags)
+  'leo-token', 'whitebit', 'cronos', 'htx-dao', 'huobi-token',
+  // Known-not-on-binance-us large caps (skip cleanly rather than fail-log them)
+  'monero', 'the-open-network', 'bittensor', 'mantle',
+  // Speculative oddities that snuck into top 50
+  'figure-heloc', 'memecore', 'rain', 'canton-network', 'canton',
 ]);
 
 // Map CoinGecko symbol -> Binance USDT trading pair.
-// Most are just `${symbol.toUpperCase()}USDT`, but some need overrides
-// for tokens that list under different symbols on Binance.
 const BINANCE_SYMBOL_OVERRIDES = {
   // Add overrides here if a token's CoinGecko symbol differs from its Binance symbol
 };
@@ -87,7 +94,6 @@ function saveFallback(assets) {
 }
 
 // Returns an array of { id, symbol, name, binanceSymbol, marketCap, rank, image }
-// `binanceSymbol` is the trading pair (e.g. "BTCUSDT") used by the data fetcher.
 export async function getCryptoUniverse() {
   try {
     console.log('📡 Fetching top crypto from CoinGecko...');

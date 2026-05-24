@@ -5,6 +5,9 @@
 //
 // Regime gate: BTC daily > 50-EMA. TOTAL3 is displayed for context but does NOT
 // trigger hostile/warning status (CoinGecko moved historical TOTAL3 to paid tier).
+//
+// Output schema v2: adds `universe` field so the UI can show exactly which assets
+// were scanned (and which were skipped) for transparency.
 
 import fs from 'fs';
 import path from 'path';
@@ -59,13 +62,12 @@ async function main() {
 
   const btcOk = btcRegime.above === true;
 
-  // TOTAL3 is now informational only — not a regime gate trigger.
   const triggered = [];
   if (!btcOk) triggered.push('btc_below_50ema');
 
   let regimeStatus;
   if (triggered.length === 0) regimeStatus = 'ok';
-  else regimeStatus = 'warning';   // No more "hostile" (only one gate now)
+  else regimeStatus = 'warning';
 
   const regime = {
     status: regimeStatus,
@@ -80,7 +82,6 @@ async function main() {
       btcDominancePct: round2(total3Snapshot.btcDominancePct),
       ethDominancePct: round2(total3Snapshot.ethDominancePct),
       totalCap: Math.round(total3Snapshot.totalCap),
-      // Following fields preserved for schema compat with the UI banner; always null on free tier.
       ema20: null,
       above: null,
       deltaPct: null,
@@ -98,13 +99,9 @@ async function main() {
 
   console.log(`   Regime status: ${regimeStatus.toUpperCase()}${triggered.length > 0 ? ` (${triggered.join(', ')})` : ''}`);
 
-  // === SCAN CONTEXT (used by scoring) ===
-  // TOTAL3 status is no longer reliably available — treat it as "neutral" (true) so it
-  // doesn't penalize scores. Effectively, the structure score's regime component now
-  // hinges on BTC trend only.
   const scanContext = {
     btcAbove50ema: btcOk,
-    total3Above20ema: true,
+    total3Above20ema: true,   // hardcoded since we can't measure it on free tier
   };
 
   // === UNIVERSE ===
@@ -152,8 +149,19 @@ async function main() {
     });
   }
 
+  // Build universe output array for UI transparency
+  const failedSymbolSet = new Set(failures ? failures.map(f => f.symbol) : []);
+  const universeForOutput = universe.map(u => ({
+    symbol: u.symbol.toUpperCase(),
+    name: u.name,
+    binanceSymbol: u.binanceSymbol,
+    rank: u.rank,
+    marketCap: u.marketCap,
+    scanned: !failedSymbolSet.has(u.binanceSymbol),
+  }));
+
   // === WRITE OUTPUTS ===
-  await writeOutputs(candidates, regime, {
+  await writeOutputs(candidates, regime, universeForOutput, {
     universeSize: universe.length,
     fetched: stats.fetched,
     failed: stats.failed,
@@ -220,16 +228,11 @@ function buildCard(asset, pattern, score) {
   };
 }
 
-// Chart display: use BINANCE: (global) prefix even though we scan Binance.US data.
-// Reason: Binance global has 5-10x the volume of Binance.US, so the TradingView chart
-// will render with deeper liquidity and tighter spreads. Arbitrage keeps prices nearly
-// identical (sub-dollar differences on BTC), so the patterns we detect on Binance.US
-// data render the same on the Binance global chart the user views.
 function buildTradingViewUrl(binanceSymbol) {
   return `https://www.tradingview.com/symbols/${binanceSymbol}/?exchange=BINANCE`;
 }
 
-async function writeOutputs(candidates, regime, stats, startedAt) {
+async function writeOutputs(candidates, regime, universe, stats, startedAt) {
   const completedAt = new Date();
   const durationMs = completedAt - startedAt;
 
@@ -239,13 +242,14 @@ async function writeOutputs(candidates, regime, stats, startedAt) {
   const archiveName = `${datePart}-${hourPart}.json`;
 
   const payload = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     scanDate: datePart,
     scanHourUtc: hourPart,
     timestamp: completedAt.toISOString(),
     durationSec: Math.round(durationMs / 1000),
     regime,
     stats,
+    universe,
     candidates,
   };
 
