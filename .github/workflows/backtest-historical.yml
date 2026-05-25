@@ -16,4 +16,11 @@ jobs:
           node-version: '20'
 
       - name: Run Historical Backtest
-        run: node scripts/backtest-crypto-historical.mjs
+  run: |
+    echo "=== Pre-run debug ==="
+    pwd
+    ls scripts/ | head
+    node --version
+    echo "=== Running script ==="
+    node scripts/backtest-crypto-historical.mjs
+    echo "=== Script exited with $? ==="
