@@ -6,6 +6,7 @@ import BackToTop from '@/components/BackToTop';
 import CryptoRegimeBanner from '@/components/CryptoRegimeBanner';
 import AssetToggle from '@/components/AssetToggle';
 import CryptoScanner from './CryptoScanner';
+import MajorCard from '@/components/MajorCard';
 import { BFFLogoLargeOrange } from '@/components/ASCIIFlairOrange';
 
 export const dynamic = 'force-static';
@@ -33,6 +34,7 @@ type CryptoScan = {
     qualified: number;
   };
   universe?: UniverseEntry[];
+  majors?: any[];
   candidates: any[];
 };
 
@@ -70,15 +72,15 @@ export default function CryptoHome() {
   }
 
   const total = data.candidates.length;
-  const lastScanLabel = `last scan · ${formatScanTime(data.timestamp)} · ${total} candidates`;
+  const lastScanLabel = `last scan · ${formatScanTime(data.timestamp)} · ${total} flag${total === 1 ? '' : 's'}`;
 
   const btcBelow = data.regime?.btc?.above === false;
   const emptyMessage = btcBelow
     ? 'no flags in this run. BTC is below its 50-EMA — alt flags are unlikely until the macro trend turns. check back in a day or two.'
     : "no flags this run. the gates are tight by design — flat or noisy market conditions produce zero. wait for a real move.";
 
-  // Only show assets that actually got scanned. Skipped ones aren't useful info.
   const scannedUniverse = data.universe?.filter((u) => u.scanned) ?? [];
+  const majors = data.majors ?? [];
 
   return (
     <>
@@ -95,6 +97,9 @@ export default function CryptoHome() {
           <BFFLogoLargeOrange />
           <p className="text-text-muted text-xs mt-2 font-mono">
             bull flag finder · crypto · scanned every 4 hours on 4h bars
+          </p>
+          <p className="text-crypto-orange text-xs mt-1 font-mono">
+            60% of the time, it works every time.
           </p>
         </section>
 
@@ -120,7 +125,21 @@ export default function CryptoHome() {
           <div className="text-text-muted text-[10px] font-mono">{lastScanLabel}</div>
         </section>
 
-        <Divider label="today" accent="orange" />
+        {/* Persistent BTC/ETH cards */}
+        {majors.length > 0 && (
+          <section className="mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {majors.map((m: any) => (
+                <MajorCard key={m.binanceSymbol} major={m} />
+              ))}
+            </div>
+            <p className="text-text-muted text-[10px] font-mono mt-2 italic">
+              persistent reference · scanned with looser gates (pole 7-40% · pullback ≤50% of pole)
+            </p>
+          </section>
+        )}
+
+        <Divider label="today's flags" accent="orange" />
 
         <section className="mb-6">
           <SectionStat count={total} />
@@ -192,10 +211,10 @@ function SectionStat({ count }: { count: number }) {
         <span className="text-base">₿</span>
         <div>
           <div className="text-text text-[11px] font-mono uppercase tracking-widest">
-            Bull Flags
+            Today's Flags
           </div>
           <div className="text-text-muted text-[9px] font-mono uppercase tracking-widest">
-            large-cap crypto · 4h
+            scanner output · 4h
           </div>
         </div>
       </div>
@@ -208,7 +227,7 @@ function SectionStat({ count }: { count: number }) {
           {count}
         </span>
         <span className="text-text-muted text-[10px] font-mono uppercase tracking-widest">
-          candidates
+          flag{count === 1 ? '' : 's'}
         </span>
       </div>
     </div>
@@ -256,6 +275,7 @@ function ScanningUniverse({ universe }: { universe: UniverseEntry[] }) {
         </div>
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30 text-text-muted text-[9px] font-mono leading-relaxed">
           large-cap crypto by market cap, scanned on binance.us with 4h bars.
+          BTC and ETH are tracked separately at top of page with looser gates.
           excludes stablecoins, wrapped/staked tokens, exchange utility tokens,
           and assets not listed on a us-accessible exchange.
         </div>
