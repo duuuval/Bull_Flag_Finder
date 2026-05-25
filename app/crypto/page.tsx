@@ -77,6 +77,9 @@ export default function CryptoHome() {
     ? 'no flags in this run. BTC is below its 50-EMA — alt flags are unlikely until the macro trend turns. check back in a day or two.'
     : "no flags this run. the gates are tight by design — flat or noisy market conditions produce zero. wait for a real move.";
 
+  // Only show assets that actually got scanned. Skipped ones aren't useful info.
+  const scannedUniverse = data.universe?.filter((u) => u.scanned) ?? [];
+
   return (
     <>
       <main className="max-w-5xl mx-auto px-4 py-6 relative z-10">
@@ -105,10 +108,10 @@ export default function CryptoHome() {
           <CryptoRegimeBanner regime={data.regime} />
         </section>
 
-        {/* Scanning universe (transparency) */}
-        {data.universe && data.universe.length > 0 && (
+        {/* Scanning universe */}
+        {scannedUniverse.length > 0 && (
           <section className="mb-2">
-            <ScanningUniverse universe={data.universe} />
+            <ScanningUniverse universe={scannedUniverse} />
           </section>
         )}
 
@@ -213,25 +216,17 @@ function SectionStat({ count }: { count: number }) {
 }
 
 function ScanningUniverse({ universe }: { universe: UniverseEntry[] }) {
-  const scanned = universe.filter((u) => u.scanned);
-  const skipped = universe.filter((u) => !u.scanned);
-
   return (
     <details className="bg-bg-card border border-terminal-gray-dim/40 rounded-sm">
       <summary className="px-3 py-2 cursor-pointer hover:bg-bg-elevated transition list-none">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="text-text-muted text-[10px] font-mono uppercase tracking-widest">
-            scanning {scanned.length} assets
-            {skipped.length > 0 && (
-              <span className="text-text-muted/60">
-                {' '}· {skipped.length} skipped
-              </span>
-            )}
+            watchlist · {universe.length} assets
           </div>
           <div className="text-crypto-orange-dim text-[10px] font-mono">tap for full list →</div>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
-          {scanned.map((u) => (
+          {universe.map((u) => (
             <span
               key={u.binanceSymbol}
               className="px-1.5 py-0.5 text-[10px] font-mono bg-bg-elevated text-text-dim border border-terminal-gray-dim/40 rounded-sm"
@@ -243,7 +238,7 @@ function ScanningUniverse({ universe }: { universe: UniverseEntry[] }) {
       </summary>
       <div className="px-3 pb-3 pt-1 border-t border-terminal-gray-dim/30">
         <div className="text-text-muted text-[10px] font-mono mb-2 mt-2">
-          full universe (by market cap rank)
+          full watchlist (by market cap rank)
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[11px] font-mono">
           {[...universe]
@@ -251,35 +246,20 @@ function ScanningUniverse({ universe }: { universe: UniverseEntry[] }) {
             .map((u) => (
               <div
                 key={u.binanceSymbol}
-                className={`flex items-center justify-between gap-2 ${
-                  u.scanned ? 'text-text-dim' : 'text-text-muted/50'
-                }`}
+                className="flex items-center gap-2 text-text-dim"
               >
-                <div className="truncate">
-                  <span className="tabular-nums text-text-muted">#{u.rank ?? '—'}</span>{' '}
-                  <span className="text-text">{u.symbol}</span>
-                  <span className="text-text-muted ml-1 truncate">{u.name}</span>
-                </div>
-                <span className="text-[9px] uppercase tracking-widest shrink-0">
-                  {u.scanned ? (
-                    <span className="text-crypto-orange-dim">scanned</span>
-                  ) : (
-                    <span className="text-terminal-red/60">skipped</span>
-                  )}
-                </span>
+                <span className="tabular-nums text-text-muted shrink-0">#{u.rank ?? '—'}</span>
+                <span className="text-text">{u.symbol}</span>
+                <span className="text-text-muted truncate">{u.name}</span>
               </div>
             ))}
         </div>
-        {skipped.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30 text-text-muted text-[9px] font-mono leading-relaxed">
-            skipped assets aren't listed on binance.us (privacy coins, non-us
-            exchange tokens, etc) or are stablecoins/wrapped tokens that don't
-            form flags. coverage gap is intentional — we live with it rather
-            than fragment the data source.
-          </div>
-        )}
+        <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30 text-text-muted text-[9px] font-mono leading-relaxed">
+          large-cap crypto by market cap, scanned on binance.us with 4h bars.
+          excludes stablecoins, wrapped/staked tokens, exchange utility tokens,
+          and assets not listed on a us-accessible exchange.
+        </div>
       </div>
     </details>
   );
 }
-
