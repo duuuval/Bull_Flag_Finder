@@ -19,6 +19,7 @@ const EXCLUDED_IDS = new Set([
   'tether', 'usd-coin', 'dai', 'ethena-usde', 'first-digital-usd',
   'paypal-usd', 'true-usd', 'usds', 'frax', 'paxos-standard',
   'gemini-dollar', 'liquity-usd', 'fei-usd', 'usdd', 'binance-usd',
+  'usd1-wlfi',
   // Yield-bearing / RWA stablecoins
   'usyc', 'circle-usyc', 'global-dollar', 'usdg',
   'ondo-us-dollar-yield', 'usdy', 'falcon-usd', 'usdf',
