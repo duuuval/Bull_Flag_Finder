@@ -3,23 +3,39 @@
 // Runs every 4 hours via GitHub Actions cron.
 // Writes public/latest-crypto.json (current) and public/scans-crypto/YYYY-MM-DD-HH.json (archive).
 //
+// BTC and ETH get persistent treatment: scanned with MAJOR_GATES (looser, see
+// crypto-detection.mjs), and always emitted to output with at least a price/EMA
+// context block even when no flag fires. The UI uses this for two always-on
+// reference cards at the top of the crypto page.
+//
+// Everything else uses ALT_GATES (current production gates) and only appears in
+// output when a flag fires.
+//
 // Regime gate: BTC daily > 50-EMA. TOTAL3 is displayed for context but does NOT
 // trigger hostile/warning status (CoinGecko moved historical TOTAL3 to paid tier).
 //
-// Output schema v2: adds `universe` field so the UI can show exactly which assets
-// were scanned (and which were skipped) for transparency.
+// Output schema v3: adds top-level `majors` array of {asset, context, flag} for
+// BTC + ETH always-on cards. Existing `candidates` array continues to contain
+// the alt-tier scanner output unchanged.
 
 import fs from 'fs';
 import path from 'path';
 import { getCryptoUniverse } from './crypto-universe.mjs';
-import { fetchDailyBars, processCryptoUniverse } from './binance.mjs';
+import { fetch4hBars, fetchDailyBars, processCryptoUniverse } from './binance.mjs';
 import { fetchTotal3Status } from './coingecko-total3.mjs';
-import { detectCryptoFlag } from './crypto-detection.mjs';
+import { detectCryptoFlag, computeAssetContext, ALT_GATES, MAJOR_GATES } from './crypto-detection.mjs';
 import { scoreCryptoFlag } from './crypto-scoring.mjs';
 import { calculateEMA } from './ema.mjs';
 
 const OUTPUT_DIR = path.join(process.cwd(), 'public');
 const ARCHIVE_DIR = path.join(OUTPUT_DIR, 'scans-crypto');
+
+// BTC and ETH are always-on reference assets, scanned with MAJOR_GATES,
+// emitted to output regardless of whether a flag fires.
+const MAJOR_ASSETS = [
+  { symbol: 'BTC', name: 'Bitcoin', binanceSymbol: 'BTCUSDT', rank: 1 },
+  { symbol: 'ETH', name: 'Ethereum', binanceSymbol: 'ETHUSDT', rank: 2 },
+];
 
 async function main() {
   const startedAt = new Date();
@@ -61,13 +77,10 @@ async function main() {
   }
 
   const btcOk = btcRegime.above === true;
-
   const triggered = [];
   if (!btcOk) triggered.push('btc_below_50ema');
 
-  let regimeStatus;
-  if (triggered.length === 0) regimeStatus = 'ok';
-  else regimeStatus = 'warning';
+  const regimeStatus = triggered.length === 0 ? 'ok' : 'warning';
 
   const regime = {
     status: regimeStatus,
@@ -101,30 +114,54 @@ async function main() {
 
   const scanContext = {
     btcAbove50ema: btcOk,
-    total3Above20ema: true,   // hardcoded since we can't measure it on free tier
+    total3Above20ema: true,
   };
 
-  // === UNIVERSE ===
+  // === MAJORS: BTC + ETH, always emitted ===
+  console.log('');
+  console.log('🟠 Scanning majors (BTC, ETH) with major gates...');
+  const majors = [];
+  for (const asset of MAJOR_ASSETS) {
+    const data = await fetch4hBars(asset.binanceSymbol);
+    if (!data || data.error) {
+      console.warn(`   ⚠️ ${asset.symbol}: fetch failed — ${data?.error?.reason || 'unknown'}`);
+      majors.push(buildMajorCard(asset, null, null, scanContext));
+      continue;
+    }
+    const { bars } = data;
+    const pattern = detectCryptoFlag(bars, MAJOR_GATES);
+    const context = computeAssetContext(bars);
+    const card = buildMajorCard(asset, pattern, context, scanContext);
+    majors.push(card);
+    if (pattern) {
+      console.log(`   ✓ ${asset.symbol}: FLAG  pole ${(pattern.pole.magnitude * 100).toFixed(1)}%  ${pattern.stage}  score ${card.score}`);
+    } else if (context) {
+      console.log(`   · ${asset.symbol}: no flag  $${formatPriceLog(context.price)}  ${context.aboveEma50 ? 'above' : 'below'} 50ema  stack:${context.stack}`);
+    } else {
+      console.log(`   ! ${asset.symbol}: insufficient data`);
+    }
+  }
+
+  // === UNIVERSE (alts) ===
   console.log('');
   console.log('📡 Fetching crypto universe...');
-  const universe = await getCryptoUniverse();
-  console.log(`   Scanning ${universe.length} assets...`);
+  let universe = await getCryptoUniverse();
+  // Exclude BTC and ETH from the alt scan — they're already covered as majors.
+  const majorSymbols = new Set(MAJOR_ASSETS.map(a => a.binanceSymbol));
+  universe = universe.filter(u => !majorSymbols.has(u.binanceSymbol));
+  console.log(`   Scanning ${universe.length} alt assets...`);
   console.log('');
 
-  // === SCAN ===
+  // === ALT SCAN ===
   const { results: flagRaw, stats, failures } = await processCryptoUniverse(universe, async (asset, data) => {
     const { bars } = data;
-    const pattern = detectCryptoFlag(bars);
+    const pattern = detectCryptoFlag(bars, ALT_GATES);
     if (!pattern) return null;
-
-    return {
-      asset,
-      pattern,
-    };
+    return { asset, pattern };
   }, { delayMs: 200, progressEvery: 10 });
 
   console.log('');
-  console.log('📈 Scan stats:');
+  console.log('📈 Alt scan stats:');
   console.log(`   Universe: ${universe.length}`);
   console.log(`   Fetched: ${stats.fetched}`);
   console.log(`   Failed: ${stats.failed}`);
@@ -132,7 +169,7 @@ async function main() {
 
   // === SCORE ===
   console.log('');
-  console.log(`🎯 Scoring ${flagRaw.length} candidates...`);
+  console.log(`🎯 Scoring ${flagRaw.length} alt candidates...`);
 
   const candidates = flagRaw.map(c => {
     const score = scoreCryptoFlag(c.pattern, scanContext);
@@ -143,7 +180,7 @@ async function main() {
 
   if (candidates.length > 0) {
     console.log('');
-    console.log('   Top 10 candidates:');
+    console.log('   Top 10 alt candidates:');
     candidates.slice(0, 10).forEach((c, i) => {
       console.log(`   ${i + 1}. ${c.symbol.padEnd(8)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${(c.pattern.polePct * 100).toFixed(1)}%`);
     });
@@ -161,13 +198,72 @@ async function main() {
   }));
 
   // === WRITE OUTPUTS ===
-  await writeOutputs(candidates, regime, universeForOutput, {
+  await writeOutputs(majors, candidates, regime, universeForOutput, {
     universeSize: universe.length,
     fetched: stats.fetched,
     failed: stats.failed,
     qualified: candidates.length,
     failedSymbols: failures ? failures.map(f => f.symbol) : [],
   }, startedAt);
+}
+
+// Build a major-asset card for BTC/ETH.
+// Always emits something; `flag` may be null when no pattern fires.
+function buildMajorCard(asset, pattern, context, scanContext) {
+  const base = {
+    symbol: asset.symbol,
+    name: asset.name,
+    binanceSymbol: asset.binanceSymbol,
+    rank: asset.rank,
+    chartUrl: buildTradingViewUrl(asset.binanceSymbol),
+    tier: 'major',
+  };
+
+  if (!context) {
+    return {
+      ...base,
+      context: null,
+      flag: null,
+      score: null,
+      stage: null,
+    };
+  }
+
+  const contextOut = {
+    price: roundForPrice(context.price),
+    change24h: round4(context.change24h),
+    ema10: roundForPrice(context.ema10),
+    ema20: roundForPrice(context.ema20),
+    ema50: roundForPrice(context.ema50),
+    ema50Rising: context.ema50Rising,
+    aboveEma50: context.aboveEma50,
+    stack: context.stack,
+    direction: context.direction,
+    distAbove20Ema: round4(context.distAbove20Ema),
+    asOf: context.date,
+  };
+
+  if (!pattern) {
+    return {
+      ...base,
+      context: contextOut,
+      flag: null,
+      score: null,
+      stage: null,
+    };
+  }
+
+  // Flag fired — score it and emit the full card shape, alongside the context block
+  const score = scoreCryptoFlag(pattern, scanContext);
+  const flagCard = buildCard(asset, pattern, score);
+
+  return {
+    ...base,
+    context: contextOut,
+    flag: flagCard,
+    score: flagCard.score,
+    stage: flagCard.stage,
+  };
 }
 
 function buildCard(asset, pattern, score) {
@@ -232,7 +328,7 @@ function buildTradingViewUrl(binanceSymbol) {
   return `https://www.tradingview.com/symbols/${binanceSymbol}/?exchange=BINANCE`;
 }
 
-async function writeOutputs(candidates, regime, universe, stats, startedAt) {
+async function writeOutputs(majors, candidates, regime, universe, stats, startedAt) {
   const completedAt = new Date();
   const durationMs = completedAt - startedAt;
 
@@ -242,7 +338,7 @@ async function writeOutputs(candidates, regime, universe, stats, startedAt) {
   const archiveName = `${datePart}-${hourPart}.json`;
 
   const payload = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     scanDate: datePart,
     scanHourUtc: hourPart,
     timestamp: completedAt.toISOString(),
@@ -250,6 +346,7 @@ async function writeOutputs(candidates, regime, universe, stats, startedAt) {
     regime,
     stats,
     universe,
+    majors,
     candidates,
   };
 
@@ -277,6 +374,13 @@ function roundForPrice(n) {
   if (n >= 1) return Math.round(n * 10000) / 10000;
   if (n >= 0.01) return Math.round(n * 1000000) / 1000000;
   return Math.round(n * 100000000) / 100000000;
+}
+
+function formatPriceLog(n) {
+  if (n == null) return '—';
+  if (n >= 100) return n.toFixed(0);
+  if (n >= 1) return n.toFixed(2);
+  return n.toFixed(4);
 }
 
 function round2(n) {
