@@ -2,16 +2,14 @@
 //
 // Historical backtest of BFF's crypto flag detection on BTC/ETH/SOL across 2024.
 //
-// Why this exists: Binance's klines endpoint caps at 1000 bars per call, which
-// limits the default backtest to ~166 days on 4h bars. This script paginates
-// backwards to cover the full year, so we can test whether BFF would have caught
-// the major 2024 BTC rallies (Feb-March, Oct-Nov) and correctly stayed quiet
-// during the chop (April-Sept).
+// Uses api.binance.us (not api.binance.com) to match production. GitHub Actions
+// runners are US-based and Binance.com geo-blocks them; Binance.US is the host
+// production uses and the host the runners can reach.
 //
-// Imports BFF's production detection code unchanged — this is a test of the
-// real rules, not a re-implementation.
+// Binance's klines endpoint caps at 1000 bars per call, so this paginates
+// forward through 2024 to cover the full year on 4h bars (~2,200 bars).
 //
-// Trigger via the matching workflow file. Output is console logs only.
+// Imports BFF's production detection code unchanged.
 
 import { detectCryptoFlag } from './crypto-detection.mjs';
 
@@ -31,18 +29,17 @@ const INTERVAL = '4h';
 const RANGE_START = new Date('2023-12-14T00:00:00Z').getTime();
 const RANGE_END = new Date('2025-01-01T00:00:00Z').getTime();
 
-// Binance hard cap per request
 const BARS_PER_REQUEST = 1000;
-
-// Polite throttle between requests (Binance public limit is generous, but no need to push it)
 const REQUEST_DELAY_MS = 300;
 
+const BINANCE_HOST = 'https://api.binance.us'; // matches production
+
 // ---------------------------------------------------------------------------
-// Binance fetch with backward pagination
+// Binance fetch with forward pagination
 // ---------------------------------------------------------------------------
 
 async function fetchKlines(binanceSymbol, startTime, endTime) {
-  const url = new URL('https://api.binance.com/api/v3/klines');
+  const url = new URL(`${BINANCE_HOST}/api/v3/klines`);
   url.searchParams.set('symbol', binanceSymbol);
   url.searchParams.set('interval', INTERVAL);
   url.searchParams.set('startTime', String(startTime));
@@ -60,15 +57,8 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-/**
- * Fetch all 4h bars for an asset between RANGE_START and RANGE_END.
- *
- * Strategy: walk forward from RANGE_START in 1000-bar chunks. Each chunk's
- * startTime becomes the previous chunk's last bar + 1ms. Stop when we either
- * pass RANGE_END or get an empty response.
- */
 async function fetchHistoricalBars(asset) {
-  console.log(`📡 ${asset.symbol}: fetching ${INTERVAL} bars for 2024...`);
+  console.log(`📡 ${asset.symbol}: fetching ${INTERVAL} bars...`);
 
   const allBars = [];
   let cursor = RANGE_START;
@@ -78,9 +68,7 @@ async function fetchHistoricalBars(asset) {
     chunkCount++;
     const raw = await fetchKlines(asset.binanceSymbol, cursor, RANGE_END);
 
-    if (!Array.isArray(raw) || raw.length === 0) {
-      break;
-    }
+    if (!Array.isArray(raw) || raw.length === 0) break;
 
     // Binance kline format: [openTime, open, high, low, close, volume, closeTime, ...]
     for (const k of raw) {
@@ -95,15 +83,10 @@ async function fetchHistoricalBars(asset) {
       });
     }
 
-    // Advance cursor to 1ms past the last bar's open time
     const lastOpenTime = raw[raw.length - 1][0];
     cursor = lastOpenTime + 1;
 
-    // If we got fewer than the cap, we're at the end of available data
-    if (raw.length < BARS_PER_REQUEST) {
-      break;
-    }
-
+    if (raw.length < BARS_PER_REQUEST) break;
     await sleep(REQUEST_DELAY_MS);
   }
 
@@ -115,19 +98,12 @@ async function fetchHistoricalBars(asset) {
 // Time-travel detection
 // ---------------------------------------------------------------------------
 
-/**
- * Walk forward through history one bar at a time. For each step, hand the
- * detector everything up to and including that bar, exactly as production
- * would see it on a live scan. Deduplicate by pole start so we report each
- * distinct flag once.
- */
 function runTimeTravel(asset, bars) {
   console.log(`\n🔬 ${asset.symbol}: running detection across ${bars.length} bars...`);
 
   const hits = [];
   const seenPoles = new Set();
 
-  // Need at least 100 bars for EMA warmup before detection makes sense
   for (let i = 100; i <= bars.length; i++) {
     const slice = bars.slice(0, i);
     const pattern = detectCryptoFlag(slice);
@@ -143,8 +119,8 @@ function runTimeTravel(asset, bars) {
       polePct: pattern.pole.magnitude,
       poleStart: pattern.pole.startDate?.split('T')[0],
       flagBars: pattern.flag.bars,
-      pullbackPct: pattern.flag.pullbackFrac,
-      direction: pattern.current.direction,
+      pullbackPct: pattern.flag.pullbackFrac ?? pattern.flag.pullbackFracOfPole,
+      direction: pattern.current?.direction,
     });
   }
 
@@ -160,6 +136,7 @@ async function main() {
   console.log('║  BFF · HISTORICAL BACKTEST · BTC/ETH/SOL · ALL OF 2024   ║');
   console.log('╚══════════════════════════════════════════════════════════╝\n');
 
+  console.log(`Host: ${BINANCE_HOST}`);
   console.log(`Window: ${new Date(RANGE_START).toISOString().split('T')[0]} → ${new Date(RANGE_END).toISOString().split('T')[0]}`);
   console.log(`Interval: ${INTERVAL}`);
   console.log(`Assets: ${ASSETS.map(a => a.symbol).join(', ')}\n`);
@@ -172,11 +149,13 @@ async function main() {
       bars = await fetchHistoricalBars(asset);
     } catch (err) {
       console.error(`❌ ${asset.symbol}: fetch failed — ${err.message}`);
+      summary.push({ symbol: asset.symbol, hits: 'FETCH FAILED' });
       continue;
     }
 
     if (bars.length < 100) {
       console.log(`⚠️  ${asset.symbol}: only ${bars.length} bars returned, skipping`);
+      summary.push({ symbol: asset.symbol, hits: 'INSUFFICIENT DATA' });
       continue;
     }
 
@@ -196,7 +175,6 @@ async function main() {
     }
 
     summary.push({ symbol: asset.symbol, hits: hits.length });
-
     await sleep(REQUEST_DELAY_MS);
   }
 
@@ -204,7 +182,7 @@ async function main() {
   console.log('║                      SUMMARY                             ║');
   console.log('╚══════════════════════════════════════════════════════════╝');
   for (const s of summary) {
-    console.log(`   ${s.symbol.padEnd(5)} ${s.hits} flag(s)`);
+    console.log(`   ${s.symbol.padEnd(5)} ${s.hits} ${typeof s.hits === 'number' ? 'flag(s)' : ''}`);
   }
   console.log('');
 }
