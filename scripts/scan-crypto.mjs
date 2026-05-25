@@ -11,8 +11,15 @@
 // Everything else uses ALT_GATES (current production gates) and only appears in
 // output when a flag fires.
 //
-// Regime gate: BTC daily > 50-EMA. TOTAL3 is displayed for context but does NOT
-// trigger hostile/warning status (CoinGecko moved historical TOTAL3 to paid tier).
+// Market state (replaces the old "regime" terminology):
+//   STRONG  = BTC > daily 50-EMA AND 50-EMA rising over last 10 days
+//   WEAK    = BTC < daily 50-EMA AND 50-EMA falling over last 10 days
+//   MIXED   = anything else (side and slope disagree, or in transition)
+//
+// MIXED is intentionally the default. STRONG and WEAK each require BOTH side
+// and slope to agree, which means most market conditions land in the middle
+// "no strong tilt either way" bucket. That's honest about what a 50-day moving
+// average can and cannot tell us.
 //
 // Output schema v3: adds top-level `majors` array of {asset, context, flag} for
 // BTC + ETH always-on cards. Existing `candidates` array continues to contain
@@ -37,6 +44,10 @@ const MAJOR_ASSETS = [
   { symbol: 'ETH', name: 'Ethereum', binanceSymbol: 'ETHUSDT', rank: 2 },
 ];
 
+// How many DAILY bars back to measure the 50-EMA slope.
+// 10 daily bars = 10 trading days ≈ 2 weeks of trend context.
+const EMA_SLOPE_LOOKBACK_DAYS = 10;
+
 async function main() {
   const startedAt = new Date();
   console.log('');
@@ -46,75 +57,79 @@ async function main() {
   console.log('╚════════════════════════════════════════════╝');
   console.log('');
 
-  // === REGIME ===
-  console.log('🌍 Fetching crypto market regime...');
+  // === MARKET STATE (formerly regime) ===
+  console.log('🌍 Computing market state...');
   const [btcDailyData, total3Snapshot] = await Promise.all([
     fetchDailyBars('BTCUSDT'),
     fetchTotal3Status(),
   ]);
 
-  let btcRegime = {
+  let btcMarket = {
     price: null,
     ema50: null,
     above: false,
     deltaPct: null,
+    ema50Rising: null,
+    ema50SlopePct: null,
   };
 
-  if (btcDailyData?.bars && btcDailyData.bars.length >= 50) {
+  if (btcDailyData?.bars && btcDailyData.bars.length >= 50 + EMA_SLOPE_LOOKBACK_DAYS) {
     const closes = btcDailyData.bars.map(b => b.close);
     const ema = calculateEMA(closes, 50);
-    const ema50 = ema[ema.length - 1];
+    const ema50Now = ema[ema.length - 1];
+    const ema50Past = ema[ema.length - 1 - EMA_SLOPE_LOOKBACK_DAYS];
     const price = closes[closes.length - 1];
-    btcRegime = {
+
+    const slopePct = ema50Past != null ? (ema50Now - ema50Past) / ema50Past : null;
+
+    btcMarket = {
       price,
-      ema50,
-      above: price > ema50,
-      deltaPct: (price - ema50) / ema50,
+      ema50: ema50Now,
+      above: price > ema50Now,
+      deltaPct: (price - ema50Now) / ema50Now,
+      ema50Rising: ema50Past != null ? ema50Now > ema50Past : null,
+      ema50SlopePct: slopePct,
     };
-    console.log(`   BTC: $${price.toFixed(0)}, 50-EMA daily: $${ema50.toFixed(0)} (${btcRegime.above ? 'ABOVE' : 'BELOW'})`);
   } else {
-    console.warn('⚠️ Could not fetch BTC daily bars for regime check');
+    console.warn('⚠️ Could not fetch enough BTC daily bars to compute market state');
   }
 
-  const btcOk = btcRegime.above === true;
-  const triggered = [];
-  if (!btcOk) triggered.push('btc_below_50ema');
+  // Classify market state: STRONG / MIXED / WEAK
+  let state = 'mixed';
+  if (btcMarket.above === true && btcMarket.ema50Rising === true) {
+    state = 'strong';
+  } else if (btcMarket.above === false && btcMarket.ema50Rising === false) {
+    state = 'weak';
+  }
 
-  const regimeStatus = triggered.length === 0 ? 'ok' : 'warning';
+  console.log(`   BTC: $${btcMarket.price?.toFixed(0) ?? '—'}, 50-EMA daily: $${btcMarket.ema50?.toFixed(0) ?? '—'}`);
+  console.log(`   ${btcMarket.above ? 'ABOVE' : 'BELOW'} 50-EMA · 50-EMA ${btcMarket.ema50Rising === true ? 'rising' : btcMarket.ema50Rising === false ? 'falling' : 'unknown'} over last ${EMA_SLOPE_LOOKBACK_DAYS} days`);
+  console.log(`   Market state: ${state.toUpperCase()}`);
 
   const regime = {
-    status: regimeStatus,
+    state,
     btc: {
-      price: btcRegime.price != null ? round2(btcRegime.price) : null,
-      ema50: btcRegime.ema50 != null ? round2(btcRegime.ema50) : null,
-      above: btcOk,
-      deltaPct: btcRegime.deltaPct != null ? round4(btcRegime.deltaPct) : null,
+      price: btcMarket.price != null ? round2(btcMarket.price) : null,
+      ema50: btcMarket.ema50 != null ? round2(btcMarket.ema50) : null,
+      above: btcMarket.above,
+      deltaPct: btcMarket.deltaPct != null ? round4(btcMarket.deltaPct) : null,
+      ema50Rising: btcMarket.ema50Rising,
+      ema50SlopePct: btcMarket.ema50SlopePct != null ? round4(btcMarket.ema50SlopePct) : null,
     },
     total3: total3Snapshot ? {
       cap: Math.round(total3Snapshot.total3Cap),
       btcDominancePct: round2(total3Snapshot.btcDominancePct),
       ethDominancePct: round2(total3Snapshot.ethDominancePct),
       totalCap: Math.round(total3Snapshot.totalCap),
-      ema20: null,
-      above: null,
-      deltaPct: null,
-    } : {
-      cap: null,
-      ema20: null,
-      above: null,
-      deltaPct: null,
-      btcDominancePct: null,
-      ethDominancePct: null,
-      totalCap: null,
-    },
-    triggered,
+    } : null,
+    status: state === 'strong' ? 'ok' : state === 'weak' ? 'hostile' : 'warning',
+    triggered: state === 'weak' ? ['btc_below_50ema_and_falling'] : state === 'mixed' ? ['mixed_signals'] : [],
   };
 
-  console.log(`   Regime status: ${regimeStatus.toUpperCase()}${triggered.length > 0 ? ` (${triggered.join(', ')})` : ''}`);
-
   const scanContext = {
-    btcAbove50ema: btcOk,
+    btcAbove50ema: btcMarket.above === true,
     total3Above20ema: true,
+    marketState: state,
   };
 
   // === MAJORS: BTC + ETH, always emitted ===
@@ -146,7 +161,6 @@ async function main() {
   console.log('');
   console.log('📡 Fetching crypto universe...');
   let universe = await getCryptoUniverse();
-  // Exclude BTC and ETH from the alt scan — they're already covered as majors.
   const majorSymbols = new Set(MAJOR_ASSETS.map(a => a.binanceSymbol));
   universe = universe.filter(u => !majorSymbols.has(u.binanceSymbol));
   console.log(`   Scanning ${universe.length} alt assets...`);
@@ -186,7 +200,6 @@ async function main() {
     });
   }
 
-  // Build universe output array for UI transparency
   const failedSymbolSet = new Set(failures ? failures.map(f => f.symbol) : []);
   const universeForOutput = universe.map(u => ({
     symbol: u.symbol.toUpperCase(),
@@ -197,7 +210,6 @@ async function main() {
     scanned: !failedSymbolSet.has(u.binanceSymbol),
   }));
 
-  // === WRITE OUTPUTS ===
   await writeOutputs(majors, candidates, regime, universeForOutput, {
     universeSize: universe.length,
     fetched: stats.fetched,
@@ -207,8 +219,6 @@ async function main() {
   }, startedAt);
 }
 
-// Build a major-asset card for BTC/ETH.
-// Always emits something; `flag` may be null when no pattern fires.
 function buildMajorCard(asset, pattern, context, scanContext) {
   const base = {
     symbol: asset.symbol,
@@ -220,13 +230,7 @@ function buildMajorCard(asset, pattern, context, scanContext) {
   };
 
   if (!context) {
-    return {
-      ...base,
-      context: null,
-      flag: null,
-      score: null,
-      stage: null,
-    };
+    return { ...base, context: null, flag: null, score: null, stage: null };
   }
 
   const contextOut = {
@@ -244,16 +248,9 @@ function buildMajorCard(asset, pattern, context, scanContext) {
   };
 
   if (!pattern) {
-    return {
-      ...base,
-      context: contextOut,
-      flag: null,
-      score: null,
-      stage: null,
-    };
+    return { ...base, context: contextOut, flag: null, score: null, stage: null };
   }
 
-  // Flag fired — score it and emit the full card shape, alongside the context block
   const score = scoreCryptoFlag(pattern, scanContext);
   const flagCard = buildCard(asset, pattern, score);
 
