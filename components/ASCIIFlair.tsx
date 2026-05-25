@@ -28,12 +28,21 @@ export function BFFLogoSmall() {
   );
 }
 
-export function Divider({ label }: { label?: string }) {
+export function Divider({
+  label,
+  accent = 'green',
+}: {
+  label?: string;
+  accent?: 'green' | 'orange';
+}) {
+  const labelColor =
+    accent === 'orange' ? 'text-crypto-orange' : 'text-terminal-green';
+
   if (label) {
     return (
       <div className="flex items-center gap-3 my-6 text-terminal-gray-dim overflow-hidden">
         <span className="font-mono text-xs shrink-0">═══════</span>
-        <span className="font-mono text-xs text-terminal-green uppercase tracking-widest shrink-0">{label}</span>
+        <span className={`font-mono text-xs ${labelColor} uppercase tracking-widest shrink-0`}>{label}</span>
         <span className="font-mono text-xs flex-1 overflow-hidden whitespace-nowrap">
           {/* Make this string long enough for wide desktop screens; the overflow classes will clip it cleanly on mobile */}
           ════════════════════════════════════════════════════════════════════════════════════════════
