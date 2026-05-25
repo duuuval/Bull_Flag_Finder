@@ -20,13 +20,30 @@ async function main() {
   console.log('╚════════════════════════════════════════════╝');
   console.log('');
 
-  console.log('🌍 Fetching market regime...');
+  console.log('🌍 Computing market state...');
   const [vix, spyData] = await Promise.all([fetchVix(), fetchSPY()]);
+
+  // Constants for market state classification
+  const EMA_SLOPE_LOOKBACK_DAYS = 10;
+  const VIX_ELEVATED_THRESHOLD = 22;
 
   let spyAbove50ma = false;
   let spyPrice = null;
   let spy50ma = null;
-  if (spyData?.bars && spyData.bars.length >= 50) {
+  let spy50maRising = null;
+  let spy50maSlopePct = null;
+
+  if (spyData?.bars && spyData.bars.length >= 50 + EMA_SLOPE_LOOKBACK_DAYS) {
+    const spyCloses = spyData.bars.map(b => b.close);
+    const ema = calculateEMA(spyCloses, 50);
+    spy50ma = ema[ema.length - 1];
+    const spy50maPast = ema[ema.length - 1 - EMA_SLOPE_LOOKBACK_DAYS];
+    spyPrice = spyCloses[spyCloses.length - 1];
+    spyAbove50ma = spyPrice > spy50ma;
+    spy50maRising = spy50maPast != null ? spy50ma > spy50maPast : null;
+    spy50maSlopePct = spy50maPast != null ? (spy50ma - spy50maPast) / spy50maPast : null;
+  } else if (spyData?.bars && spyData.bars.length >= 50) {
+    // Have enough for EMA but not enough for slope — fall back to slope=null
     const spyCloses = spyData.bars.map(b => b.close);
     const ema = calculateEMA(spyCloses, 50);
     spy50ma = ema[ema.length - 1];
@@ -34,15 +51,34 @@ async function main() {
     spyAbove50ma = spyPrice > spy50ma;
   }
 
-  console.log(`   VIX: ${vix?.toFixed(2) ?? 'unknown'}`);
-  console.log(`   SPY: ${spyPrice?.toFixed(2) ?? '?'} (50-MA: ${spy50ma?.toFixed(2) ?? '?'}) — ${spyAbove50ma ? 'BULLISH' : 'BEARISH'}`);
+  const vixElevated = vix != null && vix > VIX_ELEVATED_THRESHOLD;
+
+  // Classify market state: STRONG / MIXED / WEAK
+  // STRONG: trend up AND 50-EMA rising AND VIX calm
+  // WEAK:   trend down AND 50-EMA falling (VIX doesn't independently create WEAK)
+  // MIXED:  anything else (including "trend up but VIX elevated" — chop with vol risk)
+  let state = 'mixed';
+  if (spyAbove50ma === true && spy50maRising === true && !vixElevated) {
+    state = 'strong';
+  } else if (spyAbove50ma === false && spy50maRising === false) {
+    state = 'weak';
+  }
+
+  console.log(`   VIX: ${vix?.toFixed(2) ?? 'unknown'}${vixElevated ? ' (ELEVATED)' : ''}`);
+  console.log(`   SPY: ${spyPrice?.toFixed(2) ?? '?'} (50-MA: ${spy50ma?.toFixed(2) ?? '?'})`);
+  console.log(`   ${spyAbove50ma ? 'ABOVE' : 'BELOW'} 50-EMA · 50-EMA ${spy50maRising === true ? 'rising' : spy50maRising === false ? 'falling' : 'unknown'} over last ${EMA_SLOPE_LOOKBACK_DAYS} days`);
+  console.log(`   Market state: ${state.toUpperCase()}`);
 
   const marketRegime = {
+    state, // 'strong' | 'mixed' | 'weak'
     vix: vix ?? null,
-    vixHostile: vix != null && vix > 22,
+    vixHostile: vixElevated, // legacy field name preserved for back-compat
+    vixElevated,
     spyPrice: spyPrice ? round2(spyPrice) : null,
     spy50ma: spy50ma ? round2(spy50ma) : null,
     spyAbove50ma,
+    spy50maRising,
+    spy50maSlopePct: spy50maSlopePct != null ? round4(spy50maSlopePct) : null,
   };
 
   console.log('');
@@ -100,53 +136,50 @@ async function main() {
       subscores: buildSubscores(score),
       breakdown: buildBreakdown(score),
       stage: c.pattern.stage,
-      daysInFlag: c.pattern.flag.days,
+      daysInFlag: c.pattern.flag.daysInFlag,
       pattern: {
         polePct: round4(c.pattern.pole.magnitude),
-        poleDays: c.pattern.pole.days,
         poleStartDate: c.pattern.pole.startDate,
         poleStartPrice: round2(c.pattern.pole.startPrice),
         recentHigh: round2(c.pattern.pole.endPrice),
         recentHighDate: c.pattern.pole.endDate,
         pullbackPct: round4(c.pattern.flag.pullbackPct),
         flagLow: round2(c.pattern.flag.low),
-        volumeContraction: round2(c.pattern.flag.volumeContractionRatio),
-        poleVolumeRatio: round2(c.pattern.pole.maxVolumeRatio),
-        distAbove20Ema: round4(c.pattern.current.distAbove20Ema),
+        flagHigh: round2(c.pattern.flag.high),
+        volumeRatio: round2(c.pattern.pole.maxVolumeRatio),
+        distFromEma: round4(c.pattern.current.distAbove20Ema),
         direction: c.pattern.current.direction,
       },
-      base: {
-        baseDays: c.pattern.context.baseDays,
-        baseRange: round4(c.pattern.context.baseRange),
-        prePoleSlope: round4(c.pattern.context.prePoleSlope),
-      },
       ema: {
-        ema10: round2(c.pattern.current.ema10),
-        ema20: round2(c.pattern.current.ema20),
-        ema50: round2(c.pattern.current.ema50),
+        ema10: c.pattern.current.ema10 != null ? round2(c.pattern.current.ema10) : null,
+        ema20: c.pattern.current.ema20 != null ? round2(c.pattern.current.ema20) : null,
+        ema50: c.pattern.current.ema50 != null ? round2(c.pattern.current.ema50) : null,
         ema50Rising: c.pattern.current.ema50Rising,
       },
-      levels,
       rsPercentile: round4(rsPercentile),
-      return60dPct: round4(c.pattern.current.return60d),
-      chartUrl: buildChartUrl(c.exchange, c.ticker),
+      return60d: round4(c.pattern.current.return60d),
+      trade: levels && {
+        entry: round2(levels.entry),
+        stop: round2(levels.stop),
+        target: round2(levels.target),
+        rr: round2(levels.rr),
+      },
+      chartUrl: `https://www.tradingview.com/symbols/${cleanExchange(c.exchange)}-${c.ticker}/`,
     };
+
+    if (c.pattern.context.setupType === 'first-stage') {
+      card.baseMetrics = {
+        baseDays: c.pattern.base.baseDays,
+        baseRange: round4(c.pattern.base.baseRange),
+        poleBaseRatio: round2(c.pattern.base.poleBaseRatio),
+      };
+    }
+
     return card;
   });
 
-  // Split into two lists, each sorted by score
-  const continuationCandidates = allCandidates
-    .filter(c => c.setupType === 'continuation')
-    .sort((a, b) => b.score - a.score);
-
-  const firstStageCandidates = allCandidates
-    .filter(c => c.setupType === 'first-stage')
-    .sort((a, b) => b.score - a.score);
-
-  console.log('');
-  console.log('📋 Split by setup type:');
-  console.log(`   💪 Continuation: ${continuationCandidates.length}`);
-  console.log(`   🌱 First-stage:  ${firstStageCandidates.length}`);
+  const continuationCandidates = allCandidates.filter(c => c.setupType !== 'first-stage').sort((a, b) => b.score - a.score);
+  const firstStageCandidates = allCandidates.filter(c => c.setupType === 'first-stage').sort((a, b) => b.score - a.score);
 
   if (continuationCandidates.length > 0) {
     console.log('');
@@ -218,55 +251,56 @@ function buildBreakdown(score) {
 }
 
 function runFiftyTwoWeekCheck(ticker, bars, meta, collector) {
-  if (bars.length < 60) return;
-  const todayBar = bars[bars.length - 1];
+  if (!bars || bars.length < 252) return;
+
+  const closes = bars.map(b => b.close);
+  const highs = bars.map(b => b.high);
+  const volumes = bars.map(b => b.volume);
+  const today = bars.length - 1;
+  const todayBar = bars[today];
+
   if (todayBar.close < 5) return;
-  const lookback = Math.min(252, bars.length);
-  let high52w = 0;
-  for (let i = bars.length - lookback; i < bars.length; i++) {
-    if (bars[i].high > high52w) high52w = bars[i].high;
+
+  let highestPrior = -Infinity;
+  for (let i = today - 251; i < today; i++) {
+    if (highs[i] > highestPrior) highestPrior = highs[i];
   }
-  const recentVols = bars.slice(-21, -1).map(b => b.volume);
-  const avgVol = recentVols.reduce((a, b) => a + b, 0) / recentVols.length;
-  if (avgVol < 300000) return;
-  const distFromHigh = (high52w - todayBar.close) / high52w;
-  if (distFromHigh > 0.03) return;
-  const todayVol = todayBar.volume;
-  const volRatio = avgVol > 0 ? todayVol / avgVol : 0;
-  if (volRatio < 1.2) return;
-  const dayChange = bars.length >= 2
-    ? (todayBar.close - bars[bars.length - 2].close) / bars[bars.length - 2].close
-    : 0;
+
+  if (todayBar.close <= highestPrior) return;
+
+  const volStart = Math.max(0, today - 49);
+  let volSum = 0;
+  let volCount = 0;
+  for (let i = volStart; i < today; i++) {
+    volSum += volumes[i];
+    volCount++;
+  }
+  const avgVolume = volCount > 0 ? volSum / volCount : 0;
+  const volRatio = avgVolume > 0 ? todayBar.volume / avgVolume : 0;
+
+  if (volRatio < 1.5) return;
+
   collector.push({
     ticker,
     name: meta.name,
     exchange: cleanExchange(meta.exchange),
     price: round2(todayBar.close),
-    high52w: round2(high52w),
-    distFromHighPct: round4(distFromHigh),
-    avgVolume: Math.round(avgVol),
-    todayVolume: todayVol,
+    priorHigh: round2(highestPrior),
+    breakoutPct: round4((todayBar.close - highestPrior) / highestPrior),
+    volume: todayBar.volume,
+    avgVolume: Math.round(avgVolume),
     volRatio: round2(volRatio),
-    dayChangePct: round4(dayChange),
-    chartUrl: buildChartUrl(cleanExchange(meta.exchange), ticker),
+    chartUrl: `https://www.tradingview.com/symbols/${cleanExchange(meta.exchange)}-${ticker}/`,
   });
 }
 
-function cleanExchange(raw) {
-  if (!raw) return '';
-  const s = raw.toUpperCase();
-  if (s.includes('NASDAQ') || s.includes('NMS')) return 'NASDAQ';
-  if (s.includes('NYSE') || s.includes('NYQ')) return 'NYSE';
-  if (s.includes('AMEX') || s.includes('ASE')) return 'AMEX';
-  return raw;
-}
-
-function buildChartUrl(exchange, ticker) {
-  const exch = exchange?.toUpperCase();
-  if (exch === 'NASDAQ' || exch === 'NYSE' || exch === 'AMEX') {
-    return `https://www.tradingview.com/symbols/${exch}-${ticker}/`;
-  }
-  return `https://www.tradingview.com/symbols/${ticker}/`;
+function cleanExchange(exchange) {
+  if (!exchange) return 'NASDAQ';
+  const upper = exchange.toUpperCase();
+  if (upper.includes('NASDAQ') || upper === 'NMS' || upper === 'NGM') return 'NASDAQ';
+  if (upper.includes('NYSE') || upper === 'NYQ' || upper === 'PCX') return 'NYSE';
+  if (upper === 'ASE' || upper.includes('AMEX')) return 'AMEX';
+  return upper;
 }
 
 async function writeOutputs(continuation, firstStage, fiftyTwoWeek, marketRegime, stats, startedAt) {
