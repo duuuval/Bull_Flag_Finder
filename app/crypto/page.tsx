@@ -98,9 +98,6 @@ export default function CryptoHome() {
           <p className="text-text-muted text-xs mt-2 font-mono">
             bull flag finder · crypto · scanned every 4 hours on 4h bars
           </p>
-          <p className="text-crypto-orange text-xs mt-1 font-mono">
-            60% of the time, it works every time.
-          </p>
         </section>
 
         {/* Asset toggle */}
