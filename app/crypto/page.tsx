@@ -98,6 +98,9 @@ export default function CryptoHome() {
           <p className="text-text-muted text-xs mt-2 font-mono">
             bull flag finder · crypto · scanned every 4 hours on 4h bars
           </p>
+          <p className="text-crypto-orange text-xs mt-1 font-mono">
+            60% of the time, it works every time.
+          </p>
         </section>
 
         {/* Asset toggle */}
@@ -110,13 +113,6 @@ export default function CryptoHome() {
           <CryptoRegimeBanner regime={data.regime} />
         </section>
 
-        {/* Scanning universe */}
-        {scannedUniverse.length > 0 && (
-          <section className="mb-2">
-            <ScanningUniverse universe={scannedUniverse} />
-          </section>
-        )}
-
         {/* Last scan */}
         <section className="mb-6">
           <div className="text-text-muted text-[10px] font-mono">{lastScanLabel}</div>
@@ -124,7 +120,7 @@ export default function CryptoHome() {
 
         {/* Persistent BTC/ETH cards */}
         {majors.length > 0 && (
-          <section className="mb-8">
+          <section className="mb-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {majors.map((m: any) => (
                 <MajorCard key={m.binanceSymbol} major={m} />
@@ -133,6 +129,13 @@ export default function CryptoHome() {
             <p className="text-text-muted text-[10px] font-mono mt-2 italic">
               persistent reference · scanned with looser gates (pole 7-40% · pullback ≤50% of pole)
             </p>
+          </section>
+        )}
+
+        {/* Scanning universe (moved below majors so the cards take pole position) */}
+        {scannedUniverse.length > 0 && (
+          <section className="mb-6">
+            <ScanningUniverse universe={scannedUniverse} />
           </section>
         )}
 
