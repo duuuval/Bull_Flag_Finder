@@ -250,16 +250,17 @@ function MarketBanner({ data }: { data: ScanData }) {
         ? 'falling'
         : null;
 
-  // Plain-English descriptions of what's been happening. Past-tense, no forecasting,
-  // no professional-trader jargon. VIX gets a callout only when it's actually elevated.
+  // Plain-English descriptions of current state. Present-tense, no forecasting,
+  // no claims about duration since we only measure now vs 10 days ago — not the path.
+  // VIX gets a callout only when it's actually elevated.
   const subline = {
     strong:
-      'SPY has been trending up. its 50-day average has been rising for about two weeks. volatility is calm.',
+      'SPY is above its 50-day average, and that average is rising. volatility is calm.',
     mixed: vixElevated
       ? 'SPY and its 50-day average are sending mixed signals, or VIX is elevated. expect more whipsaws — flags can still form, you decide which to act on.'
-      : 'SPY and its 50-day average are sending mixed signals, or the trend has flattened. expect more whipsaws — flags can still form, you decide which to act on.',
+      : 'SPY and its 50-day average are sending mixed signals. expect more whipsaws — flags can still form, you decide which to act on.',
     weak:
-      'SPY has been trending down. its 50-day average has been falling for about two weeks. flags can still form but tend to fail more often in this kind of market.',
+      'SPY is below its 50-day average, and that average is falling. flags can still form but tend to fail more often in this kind of market.',
   }[state];
 
   return (
