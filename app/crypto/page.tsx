@@ -120,7 +120,7 @@ export default function CryptoHome() {
           <div className="text-text-muted text-[10px] font-mono">{lastScanLabel}</div>
         </section>
 
-        <Divider label="today" />
+        <Divider label="today" accent="orange" />
 
         <section className="mb-6">
           <SectionStat count={total} />
