@@ -69,14 +69,15 @@ export default function CryptoRegimeBanner({ regime }: { regime: Regime }) {
         ? 'falling'
         : null;
 
-  // Short, action-oriented sub-line that translates the state into "what this means for finding flags"
+  // Plain-English descriptions of what's been happening. Past-tense, no forecasting,
+  // no professional-trader jargon. Reads like a friend explaining the chart.
   const sublineByState: Record<'strong' | 'mixed' | 'weak', string> = {
     strong:
-      'BTC above its daily 50-EMA and 50-EMA rising. setups have the broader tape behind them.',
+      'BTC has been trending up. its 50-day average has been rising for about two weeks.',
     mixed:
-      'BTC and its 50-EMA disagree, or trend is flat. expect more noise, more false starts — flags still surface, you decide.',
+      'BTC and its 50-day average are sending mixed signals, or the trend has flattened. expect more whipsaws — flags can still form, you decide which to act on.',
     weak:
-      'BTC below its daily 50-EMA and 50-EMA falling. flags can still form but tend to fail more often. scans still run; you decide.',
+      'BTC has been trending down. its 50-day average has been falling for about two weeks. flags can still form but tend to fail more often in this kind of market.',
   };
 
   return (
@@ -104,7 +105,7 @@ export default function CryptoRegimeBanner({ regime }: { regime: Regime }) {
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-text-muted text-[9px] font-mono uppercase tracking-widest">
-            market state
+            recent trend
           </span>
           <span
             className={`text-[11px] font-mono uppercase tracking-widest ${display.color}`}
