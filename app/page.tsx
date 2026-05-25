@@ -107,7 +107,7 @@ export default function Home() {
           <AssetToggle mode="stocks" />
         </section>
 
-        {/* Market state · SPY / VIX */}
+        {/* Recent trend · SPY / VIX */}
         <section className="mb-2">
           <MarketBanner data={data} />
         </section>
@@ -206,13 +206,13 @@ function MarketBanner({ data }: { data: ScanData }) {
           <div><span className="text-text-muted">SPY </span><span className="text-text-muted tabular-nums">—</span></div>
           <div><span className="text-text-muted">VIX </span><span className="text-text-muted tabular-nums">—</span></div>
         </div>
-        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">market state · unknown</div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">recent trend · unknown</div>
       </div>
     );
   }
 
-  // Resolve market state from new field if present, otherwise derive from legacy fields
-  // (covers the deploy window before the next scan writes the new schema).
+  // Resolve state from new field if present, otherwise derive from legacy fields
+  // so the page renders during the deploy window before the next scan writes the new schema.
   const state: 'strong' | 'mixed' | 'weak' =
     market.state ??
     (market.spyAbove50ma && !market.vixHostile
@@ -250,13 +250,16 @@ function MarketBanner({ data }: { data: ScanData }) {
         ? 'falling'
         : null;
 
+  // Plain-English descriptions of what's been happening. Past-tense, no forecasting,
+  // no professional-trader jargon. VIX gets a callout only when it's actually elevated.
   const subline = {
     strong:
-      'SPY above its 50-EMA and 50-EMA rising, VIX calm. setups have the broader tape behind them.',
-    mixed:
-      'SPY and its 50-EMA disagree, trend is flat, or VIX is elevated. expect more noise and more false starts — flags still surface, you decide.',
+      'SPY has been trending up. its 50-day average has been rising for about two weeks. volatility is calm.',
+    mixed: vixElevated
+      ? 'SPY and its 50-day average are sending mixed signals, or VIX is elevated. expect more whipsaws — flags can still form, you decide which to act on.'
+      : 'SPY and its 50-day average are sending mixed signals, or the trend has flattened. expect more whipsaws — flags can still form, you decide which to act on.',
     weak:
-      'SPY below its 50-EMA and 50-EMA falling. flags can still form but tend to fail more often. scans still run; you decide.',
+      'SPY has been trending down. its 50-day average has been falling for about two weeks. flags can still form but tend to fail more often in this kind of market.',
   }[state];
 
   return (
@@ -281,7 +284,7 @@ function MarketBanner({ data }: { data: ScanData }) {
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-text-muted text-[9px] font-mono uppercase tracking-widest">
-            market state
+            recent trend
           </span>
           <span className={`text-[11px] font-mono uppercase tracking-widest ${stateDisplay.color}`}>
             {stateDisplay.symbol} {stateDisplay.label}
