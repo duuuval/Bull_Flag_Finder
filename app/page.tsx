@@ -14,11 +14,15 @@ type ScanData = {
   timestamp: string;
   durationSec: number;
   market: {
+    state?: 'strong' | 'mixed' | 'weak';
     vix: number | null;
     vixHostile: boolean;
+    vixElevated?: boolean;
     spyPrice: number | null;
     spy50ma: number | null;
     spyAbove50ma: boolean;
+    spy50maRising?: boolean | null;
+    spy50maSlopePct?: number | null;
   };
   stats: {
     universeSize: number;
@@ -103,7 +107,7 @@ export default function Home() {
           <AssetToggle mode="stocks" />
         </section>
 
-        {/* SPY / VIX / regime */}
+        {/* Market state · SPY / VIX */}
         <section className="mb-2">
           <MarketBanner data={data} />
         </section>
@@ -193,8 +197,6 @@ function NoData() {
 
 function MarketBanner({ data }: { data: ScanData }) {
   const { market } = data;
-  const bullish = market.spyAbove50ma;
-  const vixHostile = market.vixHostile;
   const hasData = market.spyPrice != null;
 
   if (!hasData) {
@@ -204,29 +206,91 @@ function MarketBanner({ data }: { data: ScanData }) {
           <div><span className="text-text-muted">SPY </span><span className="text-text-muted tabular-nums">—</span></div>
           <div><span className="text-text-muted">VIX </span><span className="text-text-muted tabular-nums">—</span></div>
         </div>
-        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">regime: unknown</div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-text-muted">market state · unknown</div>
       </div>
     );
   }
 
+  // Resolve market state from new field if present, otherwise derive from legacy fields
+  // (covers the deploy window before the next scan writes the new schema).
+  const state: 'strong' | 'mixed' | 'weak' =
+    market.state ??
+    (market.spyAbove50ma && !market.vixHostile
+      ? 'strong'
+      : !market.spyAbove50ma
+        ? 'weak'
+        : 'mixed');
+
+  const stateDisplay = {
+    strong: {
+      label: 'STRONG',
+      color: 'text-terminal-green',
+      border: 'border-terminal-green/40',
+      symbol: '▲',
+    },
+    mixed: {
+      label: 'MIXED',
+      color: 'text-terminal-amber',
+      border: 'border-terminal-amber/40',
+      symbol: '◆',
+    },
+    weak: {
+      label: 'WEAK',
+      color: 'text-terminal-red',
+      border: 'border-terminal-red/40',
+      symbol: '▼',
+    },
+  }[state];
+
+  const vixElevated = market.vixElevated ?? market.vixHostile;
+  const slopeText =
+    market.spy50maRising === true
+      ? 'rising'
+      : market.spy50maRising === false
+        ? 'falling'
+        : null;
+
+  const subline = {
+    strong:
+      'SPY above its 50-EMA and 50-EMA rising, VIX calm. setups have the broader tape behind them.',
+    mixed:
+      'SPY and its 50-EMA disagree, trend is flat, or VIX is elevated. expect more noise and more false starts — flags still surface, you decide.',
+    weak:
+      'SPY below its 50-EMA and 50-EMA falling. flags can still form but tend to fail more often. scans still run; you decide.',
+  }[state];
+
   return (
-    <div className="bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-3 flex items-center justify-between gap-4 flex-wrap">
-      <div className="flex items-center gap-4 text-xs font-mono">
-        <div>
-          <span className="text-text-muted">SPY </span>
-          <span className="text-text tabular-nums">${market.spyPrice?.toFixed(2) ?? '—'}</span>
-          <span className={`ml-1 ${bullish ? 'text-terminal-green' : 'text-terminal-red'}`}>{bullish ? '↗' : '↘'}</span>
+    <div className={`bg-bg-card border ${stateDisplay.border} rounded-sm p-3`}>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4 text-xs font-mono">
+          <div>
+            <span className="text-text-muted">SPY </span>
+            <span className="text-text tabular-nums">${market.spyPrice?.toFixed(2) ?? '—'}</span>
+            <span className={`ml-1 ${market.spyAbove50ma ? 'text-terminal-green' : 'text-terminal-red'}`}>{market.spyAbove50ma ? '↗' : '↘'}</span>
+            {slopeText && (
+              <span className="ml-1 text-[10px] text-text-muted">
+                (50-EMA {slopeText})
+              </span>
+            )}
+          </div>
+          <div>
+            <span className="text-text-muted">VIX </span>
+            <span className={`tabular-nums ${vixElevated ? 'text-terminal-red glow-sm' : 'text-text'}`}>{market.vix?.toFixed(2) ?? '—'}</span>
+            {vixElevated && <span className="ml-1 text-[10px] text-terminal-red">elevated</span>}
+          </div>
         </div>
-        <div>
-          <span className="text-text-muted">VIX </span>
-          <span className={`tabular-nums ${vixHostile ? 'text-terminal-red glow-sm' : 'text-text'}`}>{market.vix?.toFixed(2) ?? '—'}</span>
+        <div className="flex items-baseline gap-2">
+          <span className="text-text-muted text-[9px] font-mono uppercase tracking-widest">
+            market state
+          </span>
+          <span className={`text-[11px] font-mono uppercase tracking-widest ${stateDisplay.color}`}>
+            {stateDisplay.symbol} {stateDisplay.label}
+          </span>
         </div>
       </div>
-      <div className={`text-[10px] font-mono uppercase tracking-widest ${
-        bullish && !vixHostile ? 'text-terminal-green' : vixHostile ? 'text-terminal-red' : 'text-terminal-amber'
-      }`}>
-        {vixHostile && '⚠ vix hostile · '}
-        {bullish ? 'regime: bull' : 'regime: bear'}
+
+      <div className="text-[10px] font-mono text-text-muted pt-2 mt-2 border-t border-terminal-gray-dim/30">
+        {subline}
       </div>
     </div>
   );
