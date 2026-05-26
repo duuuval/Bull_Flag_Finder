@@ -1,49 +1,66 @@
-// Crypto bull flag pattern detection (4h bars)
+// Crypto bull flag pattern detection (4h bars) — RECONCEIVED for crypto-native timescales.
 //
-// Default gates (ALT tier):
-// - Pole magnitude: 12-60% (crypto moves faster, but parabolas reverse harder)
-// - Pole duration: 6-30 bars (1-5 days at 4h)
-// - Flag duration: 4-40 bars (1-7 days at 4h)
-// - Max pullback: 38.2% OF POLE MAGNITUDE (Fibonacci floor, NOT absolute)
-// - Pole volume: CUMULATIVE >= 2.0x rolling average
-// - Flag volume contraction: <= 0.8x pole avg volume
-// - Flag slope: highs slope <= 0, lows slope >= -tolerance
-// - Entry zone: +-5% of 20-EMA on 4h
-// - Trend filter: price > 50-EMA on 4h
+// Design intent: catch sharp 1-5 bar spikes that pause briefly before continuation.
+// This is "fully crypto" — not a stock-detector with crypto numbers, but built around
+// how crypto actually moves on a 4h chart.
 //
-// MAJORS tier (BTC, ETH only):
-// Same gates EXCEPT looser pole magnitude (7-40%) and looser pullback cap (50%).
+// Key shifts from prior versions:
+// - Pole: 1-8 bars (was 6-30, then 3-30). One-bar vertical breakouts are valid.
+// - Flag: 2-20 bars (was 12-40, then 4-40). 8-hour pauses count.
+// - Volume confirmation: PEAK pole-bar volume >= 2.0x of 20-BAR base
+//   (was cumulative pole avg >= 2.0x of N-bar base where N = pole length).
+//   Old gate diluted the breakout candle across continuation bars and used too short
+//   a base window. New gate matches how chart-readers actually evaluate volume.
+// - Flag volume contraction: <= 1.0x pole avg (was 0.8x). Tight crypto flags don't
+//   always contract dramatically; this gate was rejecting valid setups.
+// - Pullback: <= 50% of pole (was 38.2%). Single liquidation wicks routinely pierce
+//   38.2% on otherwise valid alt setups.
+// - Slope tolerances: widened. Short flag windows make per-bar slope arithmetic
+//   noisy — a 3% wick on a 3-bar flag is -1% per bar in raw terms.
+// - Per-asset trend filter (50-EMA rising over 10 bars) retained.
+// - Entry zone (+-5% of 20-EMA) retained.
+//
+// MAJORS tier (BTC, ETH only) keeps slightly looser pole magnitude floor.
 //
 // DIAGNOSTIC MODE: pass debugSymbol='near' as third arg to get gate-failure logs
-// for NEAR bars dated 2026-05-05 through 2026-05-10. Logs nothing for any other
-// asset or date. Remove after diagnosis is complete.
+// for NEAR bars dated 2026-05-05 through 2026-05-10.
 
 import { calculateEMA } from './ema.mjs';
 
 export const ALT_GATES = {
-  minPoleMagnitude: 0.12,
+  // Pole shape
+  minPoleMagnitude: 0.10,
   maxPoleMagnitude: 0.60,
-  maxPullbackFracOfPole: 0.382,
-  minBarsInFlag: 4,
-  maxBarsInFlag: 40,
-  recentHighLookback: 50,
-  minBars: 90,
-  poleSearchDepth: 40,
-  minPoleBars: 3,
-  maxPoleBars: 30,
-  minCumulativePoleVolumeRatio: 2.0,
-  maxFlagVolumeContraction: 0.8,
+  minPoleBars: 1,
+  maxPoleBars: 8,
+  poleSearchDepth: 20,
+
+  // Flag shape
+  minBarsInFlag: 2,
+  maxBarsInFlag: 20,
+  maxPullbackFracOfPole: 0.50,
+
+  // Volume confirmation (NEW design)
+  volumeBaseLookback: 20,
+  minPeakPoleVolumeRatio: 2.0,
+  maxFlagVolumeContraction: 1.0,
+
+  // Flag structure
+  maxFlagHighsSlope: 0.005,
+  minFlagLowsSlope: -0.020,
+
+  // Entry zone
   maxDistAbove20Ema: 0.05,
   maxDistBelow20Ema: 0.05,
-  maxFlagHighsSlope: 0.0,
-  minFlagLowsSlope: -0.010,
+
+  // Bookkeeping
+  recentHighLookback: 50,
+  minBars: 90,
 };
 
 export const MAJOR_GATES = {
   ...ALT_GATES,
   minPoleMagnitude: 0.07,
-  maxPoleMagnitude: 0.40,
-  maxPullbackFracOfPole: 0.50,
 };
 
 export const QUALIFICATION = ALT_GATES;
@@ -79,8 +96,6 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
   }
 
   // Per-asset trend filter: 50-EMA must be rising over the last 10 bars (~1.5 days).
-  // Rejects downtrend bounces and flat-mid-bear setups that pass the static "above ema50" check
-  // but lack actual upward momentum.
   const ema50TrendCheck = ema50[Math.max(0, today - 10)];
   if (ema50TrendCheck == null || ema50[today] <= ema50TrendCheck) {
     debugLog(`FAIL: ema50 not rising (now ${ema50[today].toFixed(4)}, 10 bars ago ${ema50TrendCheck?.toFixed(4) ?? 'null'})`);
@@ -110,14 +125,15 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
     return null;
   }
 
-  // ABSOLUTE pullback from pole top (sanity check — can't pull back past 100%)
+  // ABSOLUTE pullback from pole top (sanity check)
   const pullbackPctAbsolute = (recentHigh - todayBar.close) / recentHigh;
   if (pullbackPctAbsolute < 0) {
     debugLog(`FAIL: pullbackAbs ${pullbackPctAbsolute.toFixed(4)} < 0 (price above pole top)`);
     return null;
   }
 
-  // Walk backward to find pole start
+  // Walk backward to find pole start. We're looking for the lowest low in a tight
+  // window before the pole top — for fast spikes this will often be just 1-3 bars back.
   const searchStart = Math.max(0, recentHighIdx - gates.poleSearchDepth);
   let poleStartIdx = recentHighIdx;
   let poleStartLow = lows[recentHighIdx];
@@ -148,7 +164,7 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
     return null;
   }
 
-  // KEY GATE: max pullback as fraction of pole magnitude (Fibonacci convention)
+  // Pullback as fraction of pole magnitude
   const poleDollarMove = recentHigh - poleStartLow;
   const flagDollarRetrace = recentHigh - todayBar.close;
   const pullbackFracOfPole = poleDollarMove > 0 ? flagDollarRetrace / poleDollarMove : 0;
@@ -162,42 +178,41 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
     return null;
   }
 
-  // === POLE VOLUME: cumulative across pole bars vs rolling average ===
-  let totalPoleVolume = 0;
-  let poleBarCount = 0;
-  for (let i = poleStartIdx; i <= recentHighIdx; i++) {
-    totalPoleVolume += volumes[i];
-    poleBarCount++;
-  }
-  const avgPoleVolume = poleBarCount > 0 ? totalPoleVolume / poleBarCount : 0;
-
-  // Rolling average over the same window length, ending right before pole start
+  // === POLE VOLUME (NEW): peak pole-bar volume vs 20-bar base ===
+  // Old gate averaged across all pole bars and used a short base window, which
+  // diluted breakout candles and used incestuous comparison. New gate finds the
+  // single biggest volume bar in the pole and compares it to a longer-window base
+  // ending right before the pole started.
   const volBaseEnd = poleStartIdx;
-  const volBaseStart = Math.max(0, volBaseEnd - poleBarCount);
+  const volBaseStart = Math.max(0, volBaseEnd - gates.volumeBaseLookback);
   let baseVolSum = 0;
   let baseVolCount = 0;
   for (let i = volBaseStart; i < volBaseEnd; i++) {
     baseVolSum += volumes[i];
     baseVolCount++;
   }
-  const avgBaseVolume = baseVolCount > 0 ? baseVolSum / baseVolCount : avgPoleVolume;
+  const avgBaseVolume = baseVolCount > 0 ? baseVolSum / baseVolCount : 0;
 
-  const totalBaseVolume = avgBaseVolume * poleBarCount;
-  const cumulativeVolumeRatio = totalBaseVolume > 0 ? totalPoleVolume / totalBaseVolume : 0;
+  let maxPoleBarVolume = 0;
+  let totalPoleVolume = 0;
+  let poleBarCount = 0;
+  for (let i = poleStartIdx; i <= recentHighIdx; i++) {
+    if (volumes[i] > maxPoleBarVolume) maxPoleBarVolume = volumes[i];
+    totalPoleVolume += volumes[i];
+    poleBarCount++;
+  }
+  const avgPoleVolume = poleBarCount > 0 ? totalPoleVolume / poleBarCount : 0;
+  const peakVolumeRatio = avgBaseVolume > 0 ? maxPoleBarVolume / avgBaseVolume : 0;
 
-  if (cumulativeVolumeRatio < gates.minCumulativePoleVolumeRatio) {
-    debugLog(`FAIL: cumulVolRatio ${cumulativeVolumeRatio.toFixed(2)}x < min ${gates.minCumulativePoleVolumeRatio}x`);
+  if (peakVolumeRatio < gates.minPeakPoleVolumeRatio) {
+    debugLog(`FAIL: peakVolRatio ${peakVolumeRatio.toFixed(2)}x < min ${gates.minPeakPoleVolumeRatio}x (base avg ${avgBaseVolume.toFixed(0)} over ${baseVolCount} bars, max pole bar ${maxPoleBarVolume.toFixed(0)})`);
     return null;
   }
 
-  // Max single-bar volume ratio for display/scoring purposes
-  let maxPoleDayVolume = 0;
-  for (let i = poleStartIdx; i <= recentHighIdx; i++) {
-    if (volumes[i] > maxPoleDayVolume) maxPoleDayVolume = volumes[i];
-  }
-  const maxBarVolumeRatio = avgBaseVolume > 0 ? maxPoleDayVolume / avgBaseVolume : 0;
+  // Cumulative ratio kept for display/scoring purposes (not a gate anymore)
+  const cumulativeVolumeRatio = avgBaseVolume > 0 ? avgPoleVolume / avgBaseVolume : 0;
 
-  // === FLAG VOLUME: must be contracting vs pole avg ===
+  // === FLAG VOLUME: contraction vs pole avg ===
   let flagVolSum = 0;
   let flagBarCount = 0;
   let flagLow = lows[recentHighIdx];
@@ -253,7 +268,7 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
     return null;
   }
 
-  debugLog(`PASS: all gates passed, flag would fire`);
+  debugLog(`PASS: all gates passed, flag would fire (peakVolRatio ${peakVolumeRatio.toFixed(2)}x)`);
 
   // === DIRECTION ===
   let direction = 'flat';
@@ -281,7 +296,7 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
       magnitude: poleMagnitude,
       bars: poleBars,
       cumulativeVolumeRatio,
-      maxBarVolumeRatio,
+      maxBarVolumeRatio: peakVolumeRatio,
       avgVolume: avgPoleVolume,
     },
     flag: {
@@ -317,7 +332,6 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
 
 // Compute structural context for an asset when no flag fires.
 // Used by the persistent BTC/ETH cards so they always show meaningful info.
-// Returns null if there aren't enough bars to compute EMAs.
 export function computeAssetContext(bars) {
   if (!bars || bars.length < 60) return null;
 
@@ -338,12 +352,10 @@ export function computeAssetContext(bars) {
 
   const aboveEma50 = todayBar.close > ema50Now;
 
-  // Stack classification
   let stack = 'mixed';
   if (ema10Now > ema20Now && ema20Now > ema50Now) stack = 'bullish';
   else if (ema10Now < ema20Now && ema20Now < ema50Now) stack = 'bearish';
 
-  // 3-bar direction (same logic as flag detection)
   let direction = 'flat';
   if (n >= 4) {
     const threeBarsAgo = closes[n - 4];
@@ -352,14 +364,11 @@ export function computeAssetContext(bars) {
     else if (change > 0.015) direction = 'ascending';
   }
 
-  // 24h change = 6 bars of 4h
   const sixBarsAgo = Math.max(0, today - 6);
   const change24h = (todayBar.close - closes[sixBarsAgo]) / closes[sixBarsAgo];
 
-  // Distance from 20-EMA
   const distAbove20Ema = (todayBar.close - ema20Now) / ema20Now;
 
-  // 50-EMA rising over last 10 bars
   const ema50_10barsAgo = ema50[Math.max(0, today - 10)];
   const ema50Rising = ema50_10barsAgo != null && ema50Now > ema50_10barsAgo;
 
@@ -379,16 +388,17 @@ export function computeAssetContext(bars) {
   };
 }
 
-// Classify maturity by bar count (crypto 4h timeframe).
+// Classify maturity by bar count (crypto 4h timeframe). Reduced thresholds to
+// match the new tighter flag window.
 function classifyStage(barsInFlag) {
-  if (barsInFlag <= 16) return 'early';
-  if (barsInFlag <= 22) return 'forming';
-  if (barsInFlag <= 32) return 'prime';
+  if (barsInFlag <= 4) return 'early';
+  if (barsInFlag <= 8) return 'forming';
+  if (barsInFlag <= 14) return 'prime';
   return 'late';
 }
 
 function computeNormalizedSlope(values) {
-  if (!values || values.length < 3) return 0;
+  if (!values || values.length < 2) return 0;
   const first = values[0];
   if (first <= 0) return 0;
   const ys = values.map(v => v / first);
