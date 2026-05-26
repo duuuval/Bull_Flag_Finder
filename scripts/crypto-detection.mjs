@@ -29,14 +29,14 @@ export const ALT_GATES = {
   recentHighLookback: 50,
   minBars: 90,
   poleSearchDepth: 40,
-  minPoleBars: 6,
+  minPoleBars: 3,
   maxPoleBars: 30,
   minCumulativePoleVolumeRatio: 2.0,
   maxFlagVolumeContraction: 0.8,
   maxDistAbove20Ema: 0.05,
   maxDistBelow20Ema: 0.05,
   maxFlagHighsSlope: 0.0,
-  minFlagLowsSlope: -0.005,
+  minFlagLowsSlope: -0.010,
 };
 
 export const MAJOR_GATES = {
@@ -75,6 +75,15 @@ export function detectCryptoFlag(bars, gates = ALT_GATES, debugSymbol = null) {
   }
   if (todayBar.close < ema50[today]) {
     debugLog(`FAIL: price ${todayBar.close.toFixed(4)} < ema50 ${ema50[today].toFixed(4)} (trend filter)`);
+    return null;
+  }
+
+  // Per-asset trend filter: 50-EMA must be rising over the last 10 bars (~1.5 days).
+  // Rejects downtrend bounces and flat-mid-bear setups that pass the static "above ema50" check
+  // but lack actual upward momentum.
+  const ema50TrendCheck = ema50[Math.max(0, today - 10)];
+  if (ema50TrendCheck == null || ema50[today] <= ema50TrendCheck) {
+    debugLog(`FAIL: ema50 not rising (now ${ema50[today].toFixed(4)}, 10 bars ago ${ema50TrendCheck?.toFixed(4) ?? 'null'})`);
     return null;
   }
 
