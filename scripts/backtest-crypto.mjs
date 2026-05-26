@@ -1,7 +1,7 @@
 // scripts/backtest-crypto.mjs
 import { getCryptoUniverse } from './crypto-universe.mjs';
 import { processCryptoUniverse } from './binance.mjs';
-import { detectCryptoFlag } from './crypto-detection.mjs';
+import { detectCryptoFlag, ALT_GATES } from './crypto-detection.mjs';
 
 async function main() {
   console.log('╔════════════════════════════════════════════╗');
@@ -23,8 +23,9 @@ async function main() {
     // Time-travel loop: feed the detector growing slices of history
     for (let i = 100; i <= bars.length; i++) {
       const slice = bars.slice(0, i);
-      const pattern = detectCryptoFlag(slice);
-      
+      // Pass asset.symbol so the detector can emit diagnostic logs for NEAR
+      const pattern = detectCryptoFlag(slice, ALT_GATES, asset.symbol);
+
       if (pattern) {
         // Deduplicate by pole start date so we don't spam the log for the same flag
         const poleId = pattern.pole.startDate;
@@ -48,7 +49,7 @@ async function main() {
       totalHits += hits.length;
     }
 
-    return null; // We just want the console logs, no need to store results
+    return null;
   }, { delayMs: 200, progressEvery: 10 });
 
   console.log('\n╔════════════════════════════════════════════╗');
@@ -60,4 +61,3 @@ main().catch(err => {
   console.error('❌ Backtest failed:', err);
   process.exit(1);
 });
-
