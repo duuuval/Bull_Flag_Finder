@@ -27,7 +27,7 @@ export const ALT_GATES = {
   minPoleMagnitude: 0.12,
   maxPoleMagnitude: 0.60,
   maxPullbackFracOfPole: 0.382,
-  minBarsInFlag: 12,
+  minBarsInFlag: 4,
   maxBarsInFlag: 40,
   recentHighLookback: 50,
   minBars: 90,
