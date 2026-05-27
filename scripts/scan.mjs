@@ -122,64 +122,73 @@ async function main() {
   console.log(`🎯 Scoring ${flagRaw.length} candidates...`);
 
   const allCandidates = flagRaw.map(c => {
-    const rsPercentile = percentileRank(c.pattern.current.return60d, returns60d);
-    const score = scoreFlag(c.pattern, { rsPercentile, spyAbove50ma });
-    const levels = tradeLevel(c.pattern);
+    const p = c.pattern;
+    const rsPercentile = percentileRank(p.current.return60d, returns60d);
+    const score = scoreFlag(p, { rsPercentile, spyAbove50ma });
+    const levels = tradeLevel(p);
 
     const card = {
       ticker: c.ticker,
       name: c.name,
       exchange: c.exchange,
-      price: round2(c.pattern.current.price),
-      setupType: c.pattern.context.setupType,
+      price: round2(p.current.price),
+      setupType: p.context.setupType,
       score: score.total,
       subscores: buildSubscores(score),
       breakdown: buildBreakdown(score),
-      stage: c.pattern.stage,
-      daysInFlag: c.pattern.flag.daysInFlag,
+      stage: p.stage,
+      daysInFlag: p.flag.days,
       pattern: {
-        polePct: round4(c.pattern.pole.magnitude),
-        poleStartDate: c.pattern.pole.startDate,
-        poleStartPrice: round2(c.pattern.pole.startPrice),
-        recentHigh: round2(c.pattern.pole.endPrice),
-        recentHighDate: c.pattern.pole.endDate,
-        pullbackPct: round4(c.pattern.flag.pullbackPct),
-        flagLow: round2(c.pattern.flag.low),
-        flagHigh: round2(c.pattern.flag.high),
-        volumeRatio: round2(c.pattern.pole.maxVolumeRatio),
-        distFromEma: round4(c.pattern.current.distAbove20Ema),
-        direction: c.pattern.current.direction,
+        polePct: round4(p.pole.magnitude),
+        poleDays: p.pole.days,
+        poleStartDate: p.pole.startDate,
+        poleStartPrice: round2(p.pole.startPrice),
+        recentHigh: round2(p.pole.endPrice),
+        recentHighDate: p.pole.endDate,
+        pullbackPct: round4(p.flag.pullbackPct),
+        flagLow: round2(p.flag.low),
+        volumeContraction: round2(p.flag.volumeContractionRatio),
+        poleVolumeRatio: round2(p.pole.maxVolumeRatio),
+        distAbove20Ema: round4(p.current.distAbove20Ema),
+        direction: p.current.direction,
       },
       ema: {
-        ema10: c.pattern.current.ema10 != null ? round2(c.pattern.current.ema10) : null,
-        ema20: c.pattern.current.ema20 != null ? round2(c.pattern.current.ema20) : null,
-        ema50: c.pattern.current.ema50 != null ? round2(c.pattern.current.ema50) : null,
-        ema50Rising: c.pattern.current.ema50Rising,
+        ema10: p.current.ema10 != null ? round2(p.current.ema10) : null,
+        ema20: p.current.ema20 != null ? round2(p.current.ema20) : null,
+        ema50: p.current.ema50 != null ? round2(p.current.ema50) : null,
+        ema50Rising: p.current.ema50Rising,
+      },
+      levels: levels && {
+        entry: levels.entry,
+        stop: levels.stop,
+        target: levels.target,
+        riskPct: levels.riskPct,
+        rewardPct: levels.rewardPct,
+        rr: levels.rr,
       },
       rsPercentile: round4(rsPercentile),
-      return60d: round4(c.pattern.current.return60d),
-      trade: levels && {
-        entry: round2(levels.entry),
-        stop: round2(levels.stop),
-        target: round2(levels.target),
-        rr: round2(levels.rr),
-      },
-      chartUrl: `https://www.tradingview.com/symbols/${cleanExchange(c.exchange)}-${c.ticker}/`,
+      return60dPct: round4(p.current.return60d),
+      chartUrl: `https://www.tradingview.com/symbols/${c.exchange}-${c.ticker}/`,
     };
 
-    if (c.pattern.context.setupType === 'first-stage') {
-      card.baseMetrics = {
-        baseDays: c.pattern.base.baseDays,
-        baseRange: round4(c.pattern.base.baseRange),
-        poleBaseRatio: round2(c.pattern.base.poleBaseRatio),
-      };
-    }
+    // Attach base context to every candidate. CandidateCard reads c.base for
+    // expanded-detail rendering on both setup types; the first-stage-only
+    // visual treatment (badges, base subscore block) keys off c.setupType.
+    card.base = {
+      baseDays: p.context.baseDays,
+      baseRange: round4(p.context.baseRange),
+      prePoleSlope: round4(p.context.prePoleSlope),
+    };
 
     return card;
   });
 
-  const continuationCandidates = allCandidates.filter(c => c.setupType !== 'first-stage').sort((a, b) => b.score - a.score);
-  const firstStageCandidates = allCandidates.filter(c => c.setupType === 'first-stage').sort((a, b) => b.score - a.score);
+  const continuationCandidates = allCandidates
+    .filter(c => c.setupType !== 'first-stage')
+    .sort((a, b) => b.score - a.score);
+  const firstStageCandidates = allCandidates
+    .filter(c => c.setupType === 'first-stage')
+    .sort((a, b) => b.score - a.score);
 
   if (continuationCandidates.length > 0) {
     console.log('');
