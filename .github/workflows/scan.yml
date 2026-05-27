@@ -2,7 +2,7 @@ name: BFF Daily Scan
 
 on:
   schedule:
-    - cron: '30 22 * * 1-5'
+    - cron: '0 22 * * 1-5'
   workflow_dispatch:
 
 jobs:
