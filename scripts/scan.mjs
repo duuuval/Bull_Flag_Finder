@@ -190,6 +190,12 @@ async function main() {
     .filter(c => c.setupType === 'first-stage')
     .sort((a, b) => b.score - a.score);
 
+  // Compute rank-change vs. previous scan. Read previous latest.json before we
+  // overwrite it. If anything goes wrong (missing file, parse error, schema
+  // mismatch), treat every candidate as NEW — the badge degrades gracefully and
+  // we don't want a missing prior to break the scan.
+  attachRankChanges(continuationCandidates, firstStageCandidates);
+
   if (continuationCandidates.length > 0) {
     console.log('');
     console.log('   Top 5 continuation:');
@@ -213,6 +219,62 @@ async function main() {
     continuationCount: continuationCandidates.length,
     firstStageCount: firstStageCandidates.length,
   }, startedAt);
+}
+
+// Mutates each candidate to attach `rankChange`:
+//   null     → ticker was not present in the same section's previous list (NEW)
+//   integer  → previousRank - currentRank (positive = moved up, negative = moved down, 0 = unchanged)
+// Section switch counts as NEW: if a ticker was in continuation yesterday and
+// first-stage today, it'll be NEW within first-stage. Different rubric,
+// effectively a different setup classification.
+function attachRankChanges(continuation, firstStage) {
+  const prev = readPreviousScan();
+
+  const prevContinuation = buildRankMap(prev?.continuationCandidates);
+  const prevFirstStage = buildRankMap(prev?.firstStageCandidates);
+
+  applyRankChange(continuation, prevContinuation);
+  applyRankChange(firstStage, prevFirstStage);
+}
+
+function readPreviousScan() {
+  const latestPath = path.join(OUTPUT_DIR, 'latest.json');
+  try {
+    if (!fs.existsSync(latestPath)) {
+      console.log('   No previous scan found — all candidates flagged NEW');
+      return null;
+    }
+    const raw = fs.readFileSync(latestPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return null;
+    return parsed;
+  } catch (err) {
+    console.warn(`   Could not read previous scan (${err.message}) — all candidates will be flagged NEW`);
+    return null;
+  }
+}
+
+function buildRankMap(candidates) {
+  const map = new Map();
+  if (!Array.isArray(candidates)) return map;
+  candidates.forEach((c, idx) => {
+    if (c && typeof c.ticker === 'string') {
+      map.set(c.ticker, idx + 1); // 1-indexed to match display rank
+    }
+  });
+  return map;
+}
+
+function applyRankChange(currentList, prevMap) {
+  currentList.forEach((c, idx) => {
+    const currentRank = idx + 1;
+    const prevRank = prevMap.get(c.ticker);
+    if (prevRank == null) {
+      c.rankChange = null; // NEW
+    } else {
+      c.rankChange = prevRank - currentRank; // positive = moved up, negative = down
+    }
+  });
 }
 
 function buildSubscores(score) {
