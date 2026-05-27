@@ -51,6 +51,13 @@ type Candidate = {
   rsPercentile: number;
   return60dPct: number;
   chartUrl: string;
+  // rankChange semantics:
+  //   null      → ticker wasn't in the previous scan's same-section list → NEW
+  //   positive  → moved up N positions
+  //   negative  → moved down N positions
+  //   0         → unchanged
+  //   undefined → field absent (e.g. legacy JSON) — treated as unchanged
+  rankChange?: number | null;
 };
 
 const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: string }> = {
@@ -60,6 +67,39 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
 };
 
 const EXTENDED_THRESHOLD = 0.15;
+
+function RankChangeBadge({ rankChange }: { rankChange: number | null | undefined }) {
+  // NEW: wasn't in the previous scan
+  if (rankChange === null) {
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded-sm border border-terminal-green/50 bg-terminal-green/10 text-terminal-green text-[10px] font-bold tracking-wider uppercase">
+        NEW
+      </span>
+    );
+  }
+  // Unchanged (or legacy/missing field)
+  if (rankChange == null || rankChange === 0) {
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded-sm border border-terminal-gray-dim/30 bg-bg-elevated text-text-muted text-[10px] tracking-wider tabular-nums">
+        —
+      </span>
+    );
+  }
+  // Moved up
+  if (rankChange > 0) {
+    return (
+      <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-sm border border-terminal-green/30 bg-terminal-green/5 text-terminal-green text-[10px] tracking-wider tabular-nums">
+        ▲{rankChange}
+      </span>
+    );
+  }
+  // Moved down — de-emphasized per design
+  return (
+    <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-sm border border-terminal-red/20 bg-bg-elevated text-terminal-red/70 text-[10px] tracking-wider tabular-nums">
+      ▼{Math.abs(rankChange)}
+    </span>
+  );
+}
 
 export default function CandidateCard({ candidate, rank }: { candidate: Candidate; rank?: number }) {
   const [expanded, setExpanded] = useState(false);
@@ -101,6 +141,7 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
       </div>
 
       <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <RankChangeBadge rankChange={c.rankChange} />
         <StageBadge stage={c.stage} daysInFlag={c.daysInFlag} />
         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-gray-dim/40 bg-bg-elevated ${dir.color} text-[10px] tracking-wider uppercase`}>
           <span>{dir.icon}</span>
