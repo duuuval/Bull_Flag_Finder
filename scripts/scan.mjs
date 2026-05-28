@@ -23,7 +23,6 @@ async function main() {
   console.log('🌍 Computing market state...');
   const [vix, spyData] = await Promise.all([fetchVix(), fetchSPY()]);
 
-  // Constants for market state classification
   const EMA_SLOPE_LOOKBACK_DAYS = 10;
   const VIX_ELEVATED_THRESHOLD = 22;
 
@@ -43,7 +42,6 @@ async function main() {
     spy50maRising = spy50maPast != null ? spy50ma > spy50maPast : null;
     spy50maSlopePct = spy50maPast != null ? (spy50ma - spy50maPast) / spy50maPast : null;
   } else if (spyData?.bars && spyData.bars.length >= 50) {
-    // Have enough for EMA but not enough for slope — fall back to slope=null
     const spyCloses = spyData.bars.map(b => b.close);
     const ema = calculateEMA(spyCloses, 50);
     spy50ma = ema[ema.length - 1];
@@ -53,10 +51,6 @@ async function main() {
 
   const vixElevated = vix != null && vix > VIX_ELEVATED_THRESHOLD;
 
-  // Classify market state: STRONG / MIXED / WEAK
-  // STRONG: trend up AND 50-EMA rising AND VIX calm
-  // WEAK:   trend down AND 50-EMA falling (VIX doesn't independently create WEAK)
-  // MIXED:  anything else (including "trend up but VIX elevated" — chop with vol risk)
   let state = 'mixed';
   if (spyAbove50ma === true && spy50maRising === true && !vixElevated) {
     state = 'strong';
@@ -70,9 +64,9 @@ async function main() {
   console.log(`   Market state: ${state.toUpperCase()}`);
 
   const marketRegime = {
-    state, // 'strong' | 'mixed' | 'weak'
+    state,
     vix: vix ?? null,
-    vixHostile: vixElevated, // legacy field name preserved for back-compat
+    vixHostile: vixElevated,
     vixElevated,
     spyPrice: spyPrice ? round2(spyPrice) : null,
     spy50ma: spy50ma ? round2(spy50ma) : null,
@@ -115,7 +109,7 @@ async function main() {
   console.log(`   Flag candidates: ${flagRaw.length}`);
   console.log(`   52W breakouts: ${fiftyTwoWeekCandidates.length}`);
 
-  // RS rank computed across all candidates (continuation + first-stage)
+  // RS rank computed across all candidates regardless of setup type
   const returns60d = flagRaw.map(c => c.pattern.current.return60d);
 
   console.log('');
@@ -132,7 +126,7 @@ async function main() {
       name: c.name,
       exchange: c.exchange,
       price: round2(p.current.price),
-      setupType: p.context.setupType,
+      setupType: p.context.setupType,    // 'htf' | 'continuation' | 'first-stage'
       score: score.total,
       subscores: buildSubscores(score),
       breakdown: buildBreakdown(score),
@@ -147,10 +141,14 @@ async function main() {
         recentHighDate: p.pole.endDate,
         pullbackPct: round4(p.flag.pullbackPct),
         flagLow: round2(p.flag.low),
+        flagHigh: round2(p.flag.high),
         volumeContraction: round2(p.flag.volumeContractionRatio),
         poleVolumeRatio: round2(p.pole.maxVolumeRatio),
+        flagBackHalfRatio: p.flag.backHalfRatio != null ? round2(p.flag.backHalfRatio) : null,
         distAbove20Ema: round4(p.current.distAbove20Ema),
         direction: p.current.direction,
+        priorRunUp3: p.pole.priorRunUp3,
+        atr14: p.current.atr14 != null ? round2(p.current.atr14) : null,
       },
       ema: {
         ema10: p.current.ema10 != null ? round2(p.current.ema10) : null,
@@ -172,7 +170,7 @@ async function main() {
     };
 
     // Attach base context to every candidate. CandidateCard reads c.base for
-    // expanded-detail rendering on both setup types; the first-stage-only
+    // expanded-detail rendering on all setup types; the first-stage-only
     // visual treatment (badges, base subscore block) keys off c.setupType.
     card.base = {
       baseDays: p.context.baseDays,
@@ -183,8 +181,11 @@ async function main() {
     return card;
   });
 
+  const htfCandidates = allCandidates
+    .filter(c => c.setupType === 'htf')
+    .sort((a, b) => b.score - a.score);
   const continuationCandidates = allCandidates
-    .filter(c => c.setupType !== 'first-stage')
+    .filter(c => c.setupType === 'continuation')
     .sort((a, b) => b.score - a.score);
   const firstStageCandidates = allCandidates
     .filter(c => c.setupType === 'first-stage')
@@ -194,8 +195,15 @@ async function main() {
   // overwrite it. If anything goes wrong (missing file, parse error, schema
   // mismatch), treat every candidate as NEW — the badge degrades gracefully and
   // we don't want a missing prior to break the scan.
-  attachRankChanges(continuationCandidates, firstStageCandidates);
+  attachRankChanges(htfCandidates, continuationCandidates, firstStageCandidates);
 
+  if (htfCandidates.length > 0) {
+    console.log('');
+    console.log('   ⭐ HTF candidates:');
+    htfCandidates.slice(0, 5).forEach((c, i) => {
+      console.log(`   ${i + 1}. ${c.ticker.padEnd(6)} ${c.score.toString().padStart(3)} ${c.stage.padEnd(8)} ${c.pattern.direction.padEnd(10)} pole ${(c.pattern.polePct * 100).toFixed(1)}% pb ${(c.pattern.pullbackPct * 100).toFixed(1)}%`);
+    });
+  }
   if (continuationCandidates.length > 0) {
     console.log('');
     console.log('   Top 5 continuation:');
@@ -211,11 +219,12 @@ async function main() {
     });
   }
 
-  await writeOutputs(continuationCandidates, firstStageCandidates, fiftyTwoWeekCandidates, marketRegime, {
+  await writeOutputs(htfCandidates, continuationCandidates, firstStageCandidates, fiftyTwoWeekCandidates, marketRegime, {
     universeSize: universe.length,
     fetched: stats.fetched,
     failed: stats.failed,
     qualified: allCandidates.length,
+    htfCount: htfCandidates.length,
     continuationCount: continuationCandidates.length,
     firstStageCount: firstStageCandidates.length,
   }, startedAt);
@@ -225,14 +234,16 @@ async function main() {
 //   null     → ticker was not present in the same section's previous list (NEW)
 //   integer  → previousRank - currentRank (positive = moved up, negative = moved down, 0 = unchanged)
 // Section switch counts as NEW: if a ticker was in continuation yesterday and
-// first-stage today, it'll be NEW within first-stage. Different rubric,
-// effectively a different setup classification.
-function attachRankChanges(continuation, firstStage) {
+// htf today, it'll be NEW within htf. Different rubric, effectively a different
+// setup classification.
+function attachRankChanges(htf, continuation, firstStage) {
   const prev = readPreviousScan();
 
+  const prevHtf = buildRankMap(prev?.htfCandidates);
   const prevContinuation = buildRankMap(prev?.continuationCandidates);
   const prevFirstStage = buildRankMap(prev?.firstStageCandidates);
 
+  applyRankChange(htf, prevHtf);
   applyRankChange(continuation, prevContinuation);
   applyRankChange(firstStage, prevFirstStage);
 }
@@ -278,6 +289,13 @@ function applyRankChange(currentList, prevMap) {
 }
 
 function buildSubscores(score) {
+  if (score.setupType === 'htf') {
+    return {
+      pole: score.pole.total,
+      flag: score.flag.total,
+      context: score.context.total,
+    };
+  }
   if (score.setupType === 'first-stage') {
     return {
       pole: score.pole.total,
@@ -294,6 +312,19 @@ function buildSubscores(score) {
 }
 
 function buildBreakdown(score) {
+  if (score.setupType === 'htf') {
+    return {
+      poleMagnitude: score.pole.magnitude,
+      poleVelocity: score.pole.velocity,
+      poleVolume: score.pole.volume,
+      flagTightness: score.flag.tightness,
+      flagContraction: score.flag.contraction,
+      flagEntry: score.flag.entry,
+      ctxRs: score.context.rs,
+      ctxTrend: score.context.trend,
+      ctxMarket: score.context.market,
+    };
+  }
   if (score.setupType === 'first-stage') {
     return {
       poleMagnitude: score.pole.magnitude,
@@ -374,7 +405,7 @@ function cleanExchange(exchange) {
   return upper;
 }
 
-async function writeOutputs(continuation, firstStage, fiftyTwoWeek, marketRegime, stats, startedAt) {
+async function writeOutputs(htf, continuation, firstStage, fiftyTwoWeek, marketRegime, stats, startedAt) {
   const completedAt = new Date();
   const durationMs = completedAt - startedAt;
   const dateStr = completedAt.toISOString().split('T')[0];
@@ -382,16 +413,17 @@ async function writeOutputs(continuation, firstStage, fiftyTwoWeek, marketRegime
   fiftyTwoWeek.sort((a, b) => b.volRatio - a.volRatio);
 
   const payload = {
-    schemaVersion: 2,
+    schemaVersion: 3,                  // bumped — added htfCandidates
     scanDate: dateStr,
     timestamp: completedAt.toISOString(),
     durationSec: Math.round(durationMs / 1000),
     market: marketRegime,
     stats,
+    htfCandidates: htf,
     continuationCandidates: continuation,
     firstStageCandidates: firstStage,
     // legacy alias for compatibility — combined sorted by score
-    flagCandidates: [...continuation, ...firstStage].sort((a, b) => b.score - a.score),
+    flagCandidates: [...htf, ...continuation, ...firstStage].sort((a, b) => b.score - a.score),
     fiftyTwoWeekCandidates: fiftyTwoWeek,
   };
 
