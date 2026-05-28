@@ -9,7 +9,7 @@ type Candidate = {
   name: string;
   exchange: string;
   price: number;
-  setupType: 'continuation' | 'first-stage';
+  setupType: 'htf' | 'continuation' | 'first-stage';
   score: number;
   subscores: Record<string, number>;
   breakdown: Record<string, number>;
@@ -24,10 +24,14 @@ type Candidate = {
     recentHighDate: string;
     pullbackPct: number;
     flagLow: number;
+    flagHigh?: number;
     volumeContraction: number;
     poleVolumeRatio: number;
+    flagBackHalfRatio?: number | null;
     distAbove20Ema: number;
     direction: 'descending' | 'flat' | 'ascending';
+    priorRunUp3?: boolean;
+    atr14?: number | null;
   };
   base?: {
     baseDays: number;
@@ -66,8 +70,6 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
   ascending: { icon: '↗', label: 'ascending', color: 'text-terminal-amber' },
 };
 
-const EXTENDED_THRESHOLD = 0.15;
-
 function RankChangeBadge({ rankChange }: { rankChange: number | null | undefined }) {
   // NEW: wasn't in the previous scan
   if (rankChange === null) {
@@ -101,11 +103,14 @@ function RankChangeBadge({ rankChange }: { rankChange: number | null | undefined
   );
 }
 
+const EXTENDED_THRESHOLD = 0.15;
+
 export default function CandidateCard({ candidate, rank }: { candidate: Candidate; rank?: number }) {
   const [expanded, setExpanded] = useState(false);
   const [chartOpen, setChartOpen] = useState(false);
   const c = candidate;
   const isFirstStage = c.setupType === 'first-stage';
+  const isHtf = c.setupType === 'htf';
 
   const polePct = (c.pattern.polePct * 100).toFixed(1);
   const pullbackPct = (c.pattern.pullbackPct * 100).toFixed(1);
@@ -119,8 +124,13 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
 
   const rankStr = rank !== undefined ? `#${String(rank).padStart(2, '0')}` : null;
 
+  // HTF cards get a subtle border accent and a leading badge to call them out.
+  const cardBorderClass = isHtf
+    ? 'border border-terminal-amber/50 ring-1 ring-terminal-amber/20'
+    : 'border border-terminal-gray-dim/40';
+
   return (
-    <div className="card-interactive bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4 overflow-hidden">
+    <div className={`card-interactive bg-bg-card ${cardBorderClass} rounded-sm p-4 overflow-hidden`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2 mb-1 flex-wrap">
@@ -141,8 +151,13 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
       </div>
 
       <div className="flex items-center gap-2 mb-3 flex-wrap">
-        <RankChangeBadge rankChange={c.rankChange} />
+        {isHtf && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-amber/60 bg-terminal-amber/10 text-terminal-amber text-[10px] tracking-wider uppercase font-bold">
+            ⭐ HTF
+          </span>
+        )}
         <StageBadge stage={c.stage} daysInFlag={c.daysInFlag} />
+        <RankChangeBadge rankChange={c.rankChange} />
         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-gray-dim/40 bg-bg-elevated ${dir.color} text-[10px] tracking-wider uppercase`}>
           <span>{dir.icon}</span>
           <span>{dir.label}</span>
@@ -155,6 +170,11 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
         {isFirstStage && c.base && c.base.baseDays >= 40 && (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-blue/30 bg-terminal-blue/5 text-terminal-blue text-[10px] tracking-wider uppercase">
             base {c.base.baseDays}d
+          </span>
+        )}
+        {c.pattern.priorRunUp3 && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border border-terminal-green-dim/40 bg-terminal-green/5 text-terminal-green-dim text-[10px] tracking-wider uppercase">
+            ✓ run-up
           </span>
         )}
         {c.ema.ema50Rising && c.ema.ema20 && c.ema.ema50 && c.ema.ema20 > c.ema.ema50 && (
@@ -206,7 +226,7 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
         {c.levels.rr && (
           <div className="text-text-muted text-[10px] mt-1 font-mono">
             risk {(c.levels.riskPct * 100).toFixed(1)}% · reward {(c.levels.rewardPct * 100).toFixed(1)}% · R/R {c.levels.rr.toFixed(1)}
-            {isFirstStage && <span className="text-terminal-blue ml-2">· full-pole target</span>}
+            {(isFirstStage || isHtf) && <span className="text-terminal-blue ml-2">· full-pole target</span>}
           </div>
         )}
       </div>
@@ -242,9 +262,37 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
       {expanded && (
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
           <div className="text-[10px] text-terminal-gray font-mono uppercase tracking-widest mb-2">
-            score breakdown {isFirstStage ? '(first-stage)' : '(continuation)'}
+            score breakdown {isHtf ? '(htf)' : isFirstStage ? '(first-stage)' : '(continuation)'}
           </div>
-          {isFirstStage ? (
+
+          {isHtf ? (
+            <div className="grid grid-cols-3 gap-3 text-[11px] mb-3">
+              <div>
+                <div className="text-text-muted text-[9px] uppercase">Pole {c.subscores.pole}/40</div>
+                <div className="font-mono space-y-0.5 text-text-dim">
+                  <div>mag {c.breakdown.poleMagnitude}</div>
+                  <div>vel {c.breakdown.poleVelocity}</div>
+                  <div>vol {c.breakdown.poleVolume}</div>
+                </div>
+              </div>
+              <div>
+                <div className="text-text-muted text-[9px] uppercase">Flag {c.subscores.flag}/40</div>
+                <div className="font-mono space-y-0.5 text-text-dim">
+                  <div>tight {c.breakdown.flagTightness}</div>
+                  <div>vol {c.breakdown.flagContraction}</div>
+                  <div>entry {c.breakdown.flagEntry}</div>
+                </div>
+              </div>
+              <div>
+                <div className="text-text-muted text-[9px] uppercase">Ctx {c.subscores.context}/20</div>
+                <div className="font-mono space-y-0.5 text-text-dim">
+                  <div>RS {c.breakdown.ctxRs}</div>
+                  <div>trend {c.breakdown.ctxTrend}</div>
+                  <div>mkt {c.breakdown.ctxMarket}</div>
+                </div>
+              </div>
+            </div>
+          ) : isFirstStage ? (
             <div className="grid grid-cols-4 gap-3 text-[11px] mb-3">
               <div>
                 <div className="text-text-muted text-[9px] uppercase">Pole {c.subscores.pole}/30</div>
@@ -313,10 +361,17 @@ export default function CandidateCard({ candidate, rank }: { candidate: Candidat
             <div>flag low: <span className="text-text">${c.pattern.flagLow.toFixed(2)}</span></div>
             <div>vol contraction: <span className="text-text">{c.pattern.volumeContraction.toFixed(2)}x</span></div>
             <div>pole vol: <span className="text-text">{c.pattern.poleVolumeRatio.toFixed(2)}x</span></div>
+            {c.pattern.flagBackHalfRatio != null && (
+              <div>back-half vol: <span className="text-text">{c.pattern.flagBackHalfRatio.toFixed(2)}x</span></div>
+            )}
+            {c.pattern.atr14 != null && (
+              <div>atr(14): <span className="text-text">${c.pattern.atr14.toFixed(2)}</span></div>
+            )}
             <div>20-EMA: <span className="text-text">${c.ema.ema20?.toFixed(2) ?? '—'}</span></div>
             <div>50-EMA: <span className="text-text">${c.ema.ema50?.toFixed(2) ?? '—'} {c.ema.ema50Rising && '↗'}</span></div>
             <div>60d ret: <span className="text-text">{(c.return60dPct * 100).toFixed(1)}%</span></div>
             <div>direction: <span className={dir.color}>{dir.icon} {dir.label}</span></div>
+            <div>prior run-up: <span className="text-text">{c.pattern.priorRunUp3 ? 'yes' : 'no'}</span></div>
             {c.base && (
               <>
                 <div>base days: <span className="text-text">{c.base.baseDays}</span></div>
