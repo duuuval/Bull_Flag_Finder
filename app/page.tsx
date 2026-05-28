@@ -29,9 +29,11 @@ type ScanData = {
     fetched: number;
     failed: number;
     qualified: number;
+    htfCount?: number;
     continuationCount?: number;
     firstStageCount?: number;
   };
+  htfCandidates?: any[];
   continuationCandidates?: any[];
   firstStageCandidates?: any[];
   flagCandidates: any[];
@@ -71,10 +73,17 @@ export default function Home() {
     return <NoData />;
   }
 
-  // Support both new schema (split lists) and old schema (single list)
-  const continuation = data.continuationCandidates ?? data.flagCandidates.filter((c: any) => c.setupType !== 'first-stage');
-  const firstStage = data.firstStageCandidates ?? data.flagCandidates.filter((c: any) => c.setupType === 'first-stage');
-  const total = continuation.length + firstStage.length;
+  // Support new schema (split lists incl. htf) and old schema (single list)
+  const htf =
+    data.htfCandidates ??
+    data.flagCandidates.filter((c: any) => c.setupType === 'htf');
+  const continuation =
+    data.continuationCandidates ??
+    data.flagCandidates.filter((c: any) => c.setupType === 'continuation' || (c.setupType !== 'first-stage' && c.setupType !== 'htf'));
+  const firstStage =
+    data.firstStageCandidates ??
+    data.flagCandidates.filter((c: any) => c.setupType === 'first-stage');
+  const total = htf.length + continuation.length + firstStage.length;
 
   const isPlaceholder = data.scanDate === '1970-01-01';
   const lastScanLabel = isPlaceholder
@@ -112,7 +121,7 @@ export default function Home() {
           <MarketBanner data={data} />
         </section>
 
-        {/* Last scan + candidate count — relocated here so freshness is visible without the old header */}
+        {/* Last scan + candidate count */}
         <section className="mb-6">
           <div className="text-text-muted text-[10px] font-mono">{lastScanLabel}</div>
         </section>
@@ -120,7 +129,18 @@ export default function Home() {
         <Divider label="today" />
 
         <section className="mb-6">
-          <div className="grid grid-cols-2 gap-2">
+          {/* HTF count only renders when there's at least one — these are rare by design */}
+          <div className={`grid ${htf.length > 0 ? 'grid-cols-3' : 'grid-cols-2'} gap-2`}>
+            {htf.length > 0 && (
+              <SectionStat
+                emoji="⭐"
+                label="HTF"
+                sublabel="high-tight flags"
+                count={htf.length}
+                color="text-terminal-amber glow-sm"
+                highlight={true}
+              />
+            )}
             <SectionStat
               emoji="💪"
               label="Strength"
@@ -144,6 +164,7 @@ export default function Home() {
           <EmptyFlag />
         ) : (
           <TwoSectionScanner
+            htf={htf}
             continuation={continuation}
             firstStage={firstStage}
           />
@@ -211,8 +232,6 @@ function MarketBanner({ data }: { data: ScanData }) {
     );
   }
 
-  // Resolve state from new field if present, otherwise derive from legacy fields
-  // so the page renders during the deploy window before the next scan writes the new schema.
   const state: 'strong' | 'mixed' | 'weak' =
     market.state ??
     (market.spyAbove50ma && !market.vixHostile
@@ -250,9 +269,6 @@ function MarketBanner({ data }: { data: ScanData }) {
         ? 'falling'
         : null;
 
-  // Plain-English descriptions of current state. Present-tense, no forecasting,
-  // no claims about duration since we only measure now vs 10 days ago — not the path.
-  // VIX gets a callout only when it's actually elevated.
   const subline = {
     strong:
       'SPY is above its 50-day average, and that average is rising. volatility is calm.',
