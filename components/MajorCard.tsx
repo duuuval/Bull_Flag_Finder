@@ -37,6 +37,17 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
   ascending: { icon: '↗', label: 'ascending', color: 'text-terminal-amber' },
 };
 
+// Build the TradingView symbol / URL from the clean display ticker.
+// TradingView normalizes Kraken's odd codes to the standard ticker
+// (XBT -> BTC, XDG -> DOGE), so we use the display symbol, NOT the Kraken
+// altname. All Kraken USD pairs resolve as KRAKEN:<TICKER>USD.
+function krakenTvSymbol(displayTicker: string): string {
+  return `KRAKEN:${displayTicker.toUpperCase()}USD`;
+}
+function krakenChartUrl(displayTicker: string): string {
+  return `https://www.tradingview.com/symbols/${displayTicker.toUpperCase()}USD/?exchange=KRAKEN`;
+}
+
 function formatPrice(n: number): string {
   if (n >= 1000) return `$${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
   if (n >= 100) return `$${n.toFixed(2)}`;
@@ -78,6 +89,9 @@ export default function MajorCard({ major }: { major: MajorAsset }) {
   const dist50Pct = (dist50 * 100).toFixed(1);
 
   const hasFlag = major.flag != null;
+
+  const tvSymbol = krakenTvSymbol(major.symbol);
+  const chartHref = krakenChartUrl(major.symbol);
 
   return (
     <div className="card-interactive-crypto bg-bg-card border border-crypto-orange/30 rounded-sm p-4 overflow-hidden">
@@ -198,12 +212,9 @@ export default function MajorCard({ major }: { major: MajorAsset }) {
 
       {chartOpen && (
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
-          <TradingViewChart
-            key={`${major.binanceSymbol}-chart`}
-            binanceSymbol={major.binanceSymbol}
-          />
+          <TradingViewChart key={`${tvSymbol}-chart`} tvSymbol={tvSymbol} />
           <a
-            href={major.chartUrl}
+            href={chartHref}
             target="_blank"
             rel="noopener noreferrer"
             className="block text-center mt-2 px-3 py-1.5 bg-bg-elevated border border-terminal-gray-dim text-text-dim text-[10px] font-mono uppercase tracking-wider hover:border-terminal-gray hover:text-text transition"
@@ -286,7 +297,7 @@ function FlagBlock({
   );
 }
 
-function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
+function TradingViewChart({ tvSymbol }: { tvSymbol: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -301,8 +312,6 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
     widgetDiv.style.width = '100%';
     container.appendChild(widgetDiv);
 
-    const symbol = `BINANCE:${binanceSymbol}`;
-
     const script = document.createElement('script');
     script.src =
       'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
@@ -311,15 +320,15 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
     script.innerHTML = JSON.stringify({
       width: '100%',
       height: 600,
-      symbol: symbol,
-      interval: '240',
+      symbol: tvSymbol,
+      interval: '60', // 1h default
       timezone: 'Etc/UTC',
       theme: 'dark',
       style: '1',
       locale: 'en',
-      range: '3M',
+      range: '1M', // 1M of 1h bars frames the pole+flag without zooming out too far
       hide_side_toolbar: true,
-      hide_top_toolbar: false,
+      hide_top_toolbar: false, // leave the toolbar so the interval can be changed live
       allow_symbol_change: false,
       studies: [
         { id: 'MAExp@tv-basicstudies', inputs: { length: 10 } },
@@ -339,7 +348,7 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
         container.innerHTML = '';
       }
     };
-  }, [binanceSymbol]);
+  }, [tvSymbol]);
 
   return (
     <div

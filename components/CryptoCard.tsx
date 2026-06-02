@@ -53,6 +53,17 @@ const DIRECTION_DISPLAY: Record<string, { icon: string; label: string; color: st
   ascending: { icon: '↗', label: 'ascending', color: 'text-terminal-amber' },
 };
 
+// Build the TradingView symbol / URL from the clean display ticker.
+// TradingView normalizes Kraken's odd codes to the standard ticker
+// (XBT -> BTC, XDG -> DOGE), so we use the display symbol, NOT the Kraken
+// altname. All Kraken USD pairs resolve as KRAKEN:<TICKER>USD.
+function krakenTvSymbol(displayTicker: string): string {
+  return `KRAKEN:${displayTicker.toUpperCase()}USD`;
+}
+function krakenChartUrl(displayTicker: string): string {
+  return `https://www.tradingview.com/symbols/${displayTicker.toUpperCase()}USD/?exchange=KRAKEN`;
+}
+
 // Format price with adaptive precision for crypto's huge range
 function formatPrice(n: number): string {
   if (n >= 1000) return `$${n.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
@@ -92,6 +103,9 @@ export default function CryptoCard({
   const dist50Pct = dist50 !== null ? (dist50 * 100).toFixed(1) : null;
 
   const rankStr = rank !== undefined ? `#${String(rank).padStart(2, '0')}` : null;
+
+  const tvSymbol = krakenTvSymbol(c.symbol);
+  const chartHref = krakenChartUrl(c.symbol);
 
   return (
     <div className="card-interactive-crypto bg-bg-card border border-terminal-gray-dim/40 rounded-sm p-4 overflow-hidden">
@@ -167,7 +181,10 @@ export default function CryptoCard({
         </div>
       </div>
 
-      {/* Structural levels box — NO suggested trade levels for crypto */}
+      {/* Structural levels box — NO suggested trade levels for crypto.
+          NOTE: these EMAs are computed on 4h bars (the scan timeframe). If you
+          switch the embed below to 1h, the chart's own EMA lines won't sit at
+          these prices — reference these values, not the 1h lines. */}
       <div className="bg-bg-elevated border border-terminal-gray-dim/30 rounded-sm p-2 mb-3">
         <div className="text-text-muted text-[9px] tracking-widest uppercase mb-1.5">
           structural levels
@@ -218,12 +235,9 @@ export default function CryptoCard({
 
       {chartOpen && (
         <div className="mt-3 pt-3 border-t border-terminal-gray-dim/30">
-          <TradingViewChart
-            key={`${c.binanceSymbol}-chart`}
-            binanceSymbol={c.binanceSymbol}
-          />
+          <TradingViewChart key={`${tvSymbol}-chart`} tvSymbol={tvSymbol} />
           <a
-            href={c.chartUrl}
+            href={chartHref}
             target="_blank"
             rel="noopener noreferrer"
             className="block text-center mt-2 px-3 py-1.5 bg-bg-elevated border border-terminal-gray-dim text-text-dim text-[10px] font-mono uppercase tracking-wider hover:border-terminal-gray hover:text-text transition"
@@ -340,7 +354,7 @@ export default function CryptoCard({
   );
 }
 
-function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
+function TradingViewChart({ tvSymbol }: { tvSymbol: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -355,8 +369,6 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
     widgetDiv.style.width = '100%';
     container.appendChild(widgetDiv);
 
-    const symbol = `BINANCE:${binanceSymbol}`;
-
     const script = document.createElement('script');
     script.src =
       'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
@@ -365,15 +377,15 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
     script.innerHTML = JSON.stringify({
       width: '100%',
       height: 600,
-      symbol: symbol,
-      interval: '240', // 4h
+      symbol: tvSymbol,
+      interval: '60', // 1h default
       timezone: 'Etc/UTC',
       theme: 'dark',
       style: '1',
       locale: 'en',
-      range: '3M',
+      range: '1M', // 1M of 1h bars frames the pole+flag without zooming out too far
       hide_side_toolbar: true,
-      hide_top_toolbar: false,
+      hide_top_toolbar: false, // leave the toolbar so the interval can be changed live
       allow_symbol_change: false,
       studies: [
         { id: 'MAExp@tv-basicstudies', inputs: { length: 10 } },
@@ -393,7 +405,7 @@ function TradingViewChart({ binanceSymbol }: { binanceSymbol: string }) {
         container.innerHTML = '';
       }
     };
-  }, [binanceSymbol]);
+  }, [tvSymbol]);
 
   return (
     <div
