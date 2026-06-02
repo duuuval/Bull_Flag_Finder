@@ -3,7 +3,7 @@
 // Pole quality (40):
 //   - magnitude       15  (depth of move within valid range)
 //   - velocity        10  (faster = stronger)
-//   - cumulative vol  15  (sustained volume signature, the big tell)
+//   - peak bar vol     15  (breakout-candle volume — the tell)
 //
 // Flag quality (40):
 //   - pullback quality 15 (closer to 20-EMA on a meaningful retrace)
@@ -52,14 +52,21 @@ function scorePole(pole) {
   else if (pole.bars <= 30) velocity = 4;
   else velocity = 1;
 
-  // Cumulative volume ratio: sustained interest is the key tell.
-  // We've already gated to >= 2.0x.
+  // Peak single-bar volume ratio: the breakout candle is the tell. The detector
+  // gates on PEAK (maxBarVolumeRatio >= 2.0, see crypto-detection.mjs), so we
+  // score the same metric — otherwise the rubric penalizes exactly the vertical
+  // breakouts the detector was rebuilt to catch. Cumulative pole volume is NOT
+  // scored: averaging across the pole dilutes the breakout candle, which is why
+  // the rebuild abandoned it. (cumulativeVolumeRatio is still shown on the card
+  // for context.)
   let volume;
-  const cvr = pole.cumulativeVolumeRatio;
-  if (cvr >= 4.0) volume = 15;
-  else if (cvr >= 3.0) volume = 12;
-  else if (cvr >= 2.5) volume = 9;
-  else if (cvr >= 2.0) volume = 6;
+  const peak = pole.maxBarVolumeRatio;
+  if (peak >= 8.0) volume = 15;
+  else if (peak >= 5.0) volume = 13;
+  else if (peak >= 4.0) volume = 11;
+  else if (peak >= 3.0) volume = 9;
+  else if (peak >= 2.5) volume = 7;
+  else if (peak >= 2.0) volume = 5;
   else volume = 0;
 
   return {
