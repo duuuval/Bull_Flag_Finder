@@ -1,75 +1,141 @@
-// Fetches top crypto by market cap from CoinGecko, applies exclusion list,
-// and maps to Binance trading pair symbols.
+// Builds the crypto scan universe from Kraken's tradeable USD spot pairs,
+// then enriches names / images / market caps from CoinGecko (best-effort).
 //
-// Falls back to cached list if CoinGecko request fails.
+// Kraken is the price source (see kraken.mjs): US-accessible, no API key,
+// native 4h candles, several hundred USD spot pairs — a far wider universe than
+// Binance.US's ~190 coins. The universe is "every ONLINE USD pair that isn't a
+// stablecoin / wrapped / staked / fiat / exchange token." There is no liquidity
+// pre-screen by design — the detector's own gates decide what's actually moving.
 //
-// CoinGecko free tier: no API key required, ~10-30 calls/min.
-// We make 1 call per scan run (6 scans/day = 6 calls/day).
+// Enrichment is best-effort: if CoinGecko fails, assets still scan with their
+// bare Kraken ticker as the name and no icon. That removes CoinGecko as a hard
+// dependency (it used to be the source of the universe itself).
+//
+// NOTE on `binanceSymbol`: kept as the field name for backward compatibility
+// with the rest of the pipeline and the frontend cards, but it now holds the
+// Kraken pair altname (e.g. "SOLUSD", "XBTUSD") used for OHLC fetches and chart
+// URLs. Renaming it would ripple into the UI components, so it stays.
 
 import fs from 'fs';
 import path from 'path';
 
-const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false';
+const KRAKEN_ASSETPAIRS_URL = 'https://api.kraken.com/0/public/AssetPairs';
+const COINGECKO_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false';
 
 const FALLBACK_PATH = path.join(process.cwd(), 'public', 'crypto-universe-fallback.json');
+const USER_AGENT = 'Mozilla/5.0 (compatible; BFF-Crypto/1.0)';
 
-// Coins to exclude regardless of market cap rank.
-const EXCLUDED_IDS = new Set([
-  // Stablecoins
-  'tether', 'usd-coin', 'dai', 'ethena-usde', 'first-digital-usd',
-  'paypal-usd', 'true-usd', 'usds', 'frax', 'paxos-standard',
-  'gemini-dollar', 'liquity-usd', 'fei-usd', 'usdd', 'binance-usd',
-  'usd1-wlfi',
-  // Yield-bearing / RWA stablecoins
-  'usyc', 'circle-usyc', 'global-dollar', 'usdg',
-  'ondo-us-dollar-yield', 'usdy', 'falcon-usd', 'usdf',
-  'blackrock-usd-institutional-digital-liquidity-fund', 'buidl',
+// Display-symbol exclusions, applied AFTER mapping Kraken codes to clean
+// tickers. Easy to extend — just add an uppercase ticker.
+const EXCLUDED_SYMBOLS = new Set([
+  // Fiat
+  'USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF',
+  // USD stablecoins
+  'USDT', 'USDC', 'DAI', 'USDE', 'FDUSD', 'PYUSD', 'TUSD', 'USDS', 'FRAX',
+  'USDP', 'GUSD', 'LUSD', 'USDD', 'BUSD', 'USD1', 'RLUSD', 'USDG', 'USDR',
+  'USDQ', 'USTC', 'PUSD',
+  // EUR stablecoins
+  'EURT', 'EURQ', 'EURR', 'STEUR',
+  // Wrapped / staked
+  'WBTC', 'TBTC', 'WETH', 'WSTETH', 'STETH', 'RETH', 'CBETH', 'WEETH', 'METH',
+  'LSETH', 'WBETH', 'SFRXETH', 'FRXETH', 'MSOL', 'JITOSOL', 'BSOL',
   // Tokenized commodities
-  'tether-gold', 'xaut', 'pax-gold', 'paxg',
-  // Wrapped BTC
-  'wrapped-bitcoin', 'binance-bitcoin', 'wbtc',
-  // Wrapped / staked ETH
-  'wrapped-eeth', 'wrapped-steth', 'staked-ether', 'lido-staked-ether',
-  'rocket-pool-eth', 'coinbase-wrapped-staked-eth', 'mantle-staked-ether',
-  'binance-staked-ether', 'wrapped-beacon-eth', 'frax-ether', 'staked-frax-ether',
-  // Wrapped / staked SOL
-  'jito-staked-sol', 'binance-staked-sol', 'marinade-staked-sol', 'blazestake-staked-sol',
-  // Bridged / wrapped variants
-  'wrapped-eth', 'weth', 'wrapped-bnb',
-  // Exchange utility tokens (trade narrow, don't form flags)
-  'leo-token', 'whitebit', 'cronos', 'htx-dao', 'huobi-token',
-  // Known-not-on-binance-us large caps (skip cleanly rather than fail-log them)
-  'monero', 'the-open-network', 'bittensor', 'mantle',
-  // Speculative oddities that snuck into top 50
-  'figure-heloc', 'memecore', 'rain', 'canton-network', 'canton',
+  'PAXG', 'XAUT',
+  // Exchange utility tokens (trade narrow, don't form clean flags)
+  'LEO', 'CRO', 'HT', 'BNB', 'WBT', 'OKB', 'KCS', 'GT', 'BGB',
 ]);
 
-// Map CoinGecko symbol -> Binance USDT trading pair.
-const BINANCE_SYMBOL_OVERRIDES = {
-  // Add overrides here if a token's CoinGecko symbol differs from its Binance symbol
+// Kraken's legacy / WS base codes -> clean display ticker.
+const KRAKEN_SYMBOL_MAP = {
+  XBT: 'BTC',
+  XDG: 'DOGE',
 };
 
-function toBinanceSymbol(cgSymbol) {
-  const override = BINANCE_SYMBOL_OVERRIDES[cgSymbol];
-  if (override) return override;
-  return `${cgSymbol.toUpperCase()}USDT`;
+// Derive a clean display ticker from a Kraken AssetPairs entry. Prefer wsname
+// ("XBT/USD"); fall back to stripping the quote off altname ("XBTUSD").
+function cleanSymbol(pair) {
+  let base = null;
+  if (pair.wsname && pair.wsname.includes('/')) {
+    base = pair.wsname.split('/')[0];
+  } else if (pair.altname) {
+    base = pair.altname.replace(/(USD|ZUSD)$/i, '');
+  }
+  if (!base) return null;
+  base = base.toUpperCase();
+  return KRAKEN_SYMBOL_MAP[base] || base;
 }
 
-async function fetchFromCoinGecko() {
-  const res = await fetch(COINGECKO_URL, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; BFF-Crypto/1.0)' },
-  });
+async function fetchKrakenUsdPairs() {
+  const res = await fetch(KRAKEN_ASSETPAIRS_URL, { headers: { 'User-Agent': USER_AGENT } });
+  if (!res.ok) throw new Error(`Kraken AssetPairs HTTP ${res.status}`);
 
-  if (!res.ok) {
-    throw new Error(`CoinGecko returned HTTP ${res.status}`);
+  const json = await res.json();
+  if (json.error && json.error.length > 0) {
+    throw new Error(`Kraken AssetPairs error: ${json.error.join('; ')}`);
   }
 
-  const data = await res.json();
-  if (!Array.isArray(data)) {
-    throw new Error('CoinGecko response was not an array');
+  const result = json.result || {};
+  const pairs = [];
+
+  for (const key of Object.keys(result)) {
+    const p = result[key];
+    if (!p || p.status !== 'online') continue;
+
+    const quote = (p.quote || '').toUpperCase();
+    if (quote !== 'ZUSD' && quote !== 'USD') continue;   // USD fiat pairs only
+    if (p.altname && p.altname.includes('.')) continue;  // skip dark-pool / variants
+
+    const symbol = cleanSymbol(p);
+    if (!symbol) continue;
+    if (EXCLUDED_SYMBOLS.has(symbol)) continue;
+
+    pairs.push({
+      altname: p.altname, // OHLC fetch id + chart symbol
+      symbol,             // clean display ticker
+    });
   }
 
-  return data;
+  // De-dup by display symbol (Kraken can list more than one USD pair per asset).
+  const seen = new Set();
+  const deduped = [];
+  for (const p of pairs) {
+    if (seen.has(p.symbol)) continue;
+    seen.add(p.symbol);
+    deduped.push(p);
+  }
+
+  return deduped;
+}
+
+async function fetchCoinGeckoMap() {
+  try {
+    const res = await fetch(COINGECKO_URL, { headers: { 'User-Agent': USER_AGENT } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('response was not an array');
+
+    const map = new Map();
+    for (const c of data) {
+      if (!c.symbol) continue;
+      const sym = c.symbol.toUpperCase();
+      // First occurrence wins. CoinGecko is market-cap ordered, so the largest
+      // asset for a ticker is kept — avoids a meme coin shadowing a major.
+      if (!map.has(sym)) {
+        map.set(sym, {
+          id: c.id,
+          name: c.name,
+          image: c.image || null,
+          marketCap: c.market_cap || 0,
+          rank: c.market_cap_rank || null,
+        });
+      }
+    }
+    return map;
+  } catch (e) {
+    console.warn(`⚠️ CoinGecko enrichment failed (${e.message}) — using bare Kraken tickers`);
+    return new Map();
+  }
 }
 
 function loadFallback() {
@@ -77,7 +143,7 @@ function loadFallback() {
     const data = JSON.parse(fs.readFileSync(FALLBACK_PATH, 'utf8'));
     if (Array.isArray(data) && data.length > 10) {
       const mtime = fs.statSync(FALLBACK_PATH).mtime.toISOString().split('T')[0];
-      console.log(`📦 Loaded fallback crypto universe: ${data.length} assets (cached from ${mtime})`);
+      console.log(`📦 Loaded fallback crypto universe: ${data.length} assets (cached ${mtime})`);
       return data;
     }
     return null;
@@ -94,36 +160,46 @@ function saveFallback(assets) {
   }
 }
 
-// Returns an array of { id, symbol, name, binanceSymbol, marketCap, rank, image }
+// Returns array of { id, symbol, name, binanceSymbol, marketCap, rank, image }.
+// (binanceSymbol holds the Kraken pair altname — see header note.)
 export async function getCryptoUniverse() {
   try {
-    console.log('📡 Fetching top crypto from CoinGecko...');
-    const raw = await fetchFromCoinGecko();
-    console.log(`   Received ${raw.length} entries from CoinGecko`);
+    console.log('📡 Fetching Kraken USD spot pairs...');
+    const [krakenPairs, cgMap] = await Promise.all([
+      fetchKrakenUsdPairs(),
+      fetchCoinGeckoMap(),
+    ]);
 
-    const filtered = raw
-      .filter(c => !EXCLUDED_IDS.has(c.id))
-      .filter(c => c.symbol && c.id && c.name)
-      .map(c => ({
-        id: c.id,
-        symbol: c.symbol.toLowerCase(),
-        name: c.name,
-        binanceSymbol: toBinanceSymbol(c.symbol),
-        marketCap: c.market_cap || 0,
-        rank: c.market_cap_rank || null,
-        image: c.image || null,
-      }));
+    console.log(`   Kraken: ${krakenPairs.length} eligible USD pairs after exclusions`);
+    console.log(`   CoinGecko: ${cgMap.size} assets available for name/image enrichment`);
 
-    console.log(`   Filtered to ${filtered.length} tradeable assets (excluded ${raw.length - filtered.length})`);
+    const assets = krakenPairs.map((p) => {
+      const cg = cgMap.get(p.symbol) || null;
+      return {
+        id: cg?.id || p.altname.toLowerCase(),
+        symbol: p.symbol.toLowerCase(),
+        name: cg?.name || p.symbol,
+        binanceSymbol: p.altname,
+        marketCap: cg?.marketCap || 0,
+        rank: cg?.rank || null,
+        image: cg?.image || null,
+      };
+    });
 
-    if (filtered.length >= 20) {
-      saveFallback(filtered);
-      return filtered;
+    // Scan biggest first so progress logs surface familiar names early. (Output
+    // candidates are still sorted by score downstream — this is just scan order.)
+    assets.sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0));
+
+    console.log(`   Universe: ${assets.length} assets`);
+
+    if (assets.length >= 20) {
+      saveFallback(assets);
+      return assets;
     }
 
-    console.warn(`⚠️ Only ${filtered.length} assets after filtering — falling back to cache`);
+    console.warn(`⚠️ Only ${assets.length} assets after build — falling back to cache`);
   } catch (e) {
-    console.error(`❌ CoinGecko fetch failed: ${e.message}`);
+    console.error(`❌ Kraken universe fetch failed: ${e.message}`);
   }
 
   const fallback = loadFallback();

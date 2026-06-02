@@ -3,6 +3,11 @@
 // Runs every 4 hours via GitHub Actions cron.
 // Writes public/latest-crypto.json (current) and public/scans-crypto/YYYY-MM-DD-HH.json (archive).
 //
+// Price source is Kraken (see kraken.mjs): US-accessible, no API key, native 4h
+// candles, several hundred USD spot pairs. (Previously Binance.US, ~190 coins,
+// chosen only because Binance.com 451-blocks US runners — a constraint Kraken
+// doesn't have.) The detector/scoring layers are unchanged; they consume bars.
+//
 // BTC and ETH get persistent treatment: scanned with MAJOR_GATES (looser, see
 // crypto-detection.mjs), and always emitted to output with at least a price/EMA
 // context block even when no flag fires. The UI uses this for two always-on
@@ -28,7 +33,7 @@
 import fs from 'fs';
 import path from 'path';
 import { getCryptoUniverse } from './crypto-universe.mjs';
-import { fetch4hBars, fetchDailyBars, processCryptoUniverse } from './binance.mjs';
+import { fetch4hBars, fetchDailyBars, processCryptoUniverse } from './kraken.mjs';
 import { fetchTotal3Status } from './coingecko-total3.mjs';
 import { detectCryptoFlag, computeAssetContext, ALT_GATES, MAJOR_GATES } from './crypto-detection.mjs';
 import { scoreCryptoFlag } from './crypto-scoring.mjs';
@@ -39,9 +44,10 @@ const ARCHIVE_DIR = path.join(OUTPUT_DIR, 'scans-crypto');
 
 // BTC and ETH are always-on reference assets, scanned with MAJOR_GATES,
 // emitted to output regardless of whether a flag fires.
+// binanceSymbol holds the Kraken pair altname (Kraken calls bitcoin XBT).
 const MAJOR_ASSETS = [
-  { symbol: 'BTC', name: 'Bitcoin', binanceSymbol: 'BTCUSDT', rank: 1 },
-  { symbol: 'ETH', name: 'Ethereum', binanceSymbol: 'ETHUSDT', rank: 2 },
+  { symbol: 'BTC', name: 'Bitcoin', binanceSymbol: 'XBTUSD', rank: 1 },
+  { symbol: 'ETH', name: 'Ethereum', binanceSymbol: 'ETHUSD', rank: 2 },
 ];
 
 // How many DAILY bars back to measure the 50-EMA slope.
@@ -60,7 +66,7 @@ async function main() {
   // === MARKET STATE (formerly regime) ===
   console.log('🌍 Computing market state...');
   const [btcDailyData, total3Snapshot] = await Promise.all([
-    fetchDailyBars('BTCUSDT'),
+    fetchDailyBars('XBTUSD'),
     fetchTotal3Status(),
   ]);
 
@@ -172,7 +178,7 @@ async function main() {
     const pattern = detectCryptoFlag(bars, ALT_GATES);
     if (!pattern) return null;
     return { asset, pattern };
-  }, { delayMs: 200, progressEvery: 10 });
+  }, { delayMs: 500, progressEvery: 25 });
 
   console.log('');
   console.log('📈 Alt scan stats:');
@@ -226,6 +232,7 @@ function buildMajorCard(asset, pattern, context, scanContext) {
     binanceSymbol: asset.binanceSymbol,
     rank: asset.rank,
     chartUrl: buildTradingViewUrl(asset.binanceSymbol),
+    tvSymbol: buildTvSymbol(asset.binanceSymbol),
     tier: 'major',
   };
 
@@ -318,11 +325,21 @@ function buildCard(asset, pattern, score) {
     },
     return60bars: round4(pattern.current.return60bars),
     chartUrl: buildTradingViewUrl(asset.binanceSymbol),
+    tvSymbol: buildTvSymbol(asset.binanceSymbol),
   };
 }
 
-function buildTradingViewUrl(binanceSymbol) {
-  return `https://www.tradingview.com/symbols/${binanceSymbol}/?exchange=BINANCE`;
+// Out-link to a TradingView chart. krakenPair is the Kraken altname
+// (e.g. "SOLUSD", "XBTUSD"); TradingView resolves it under the KRAKEN exchange.
+function buildTradingViewUrl(krakenPair) {
+  return `https://www.tradingview.com/symbols/${krakenPair}/?exchange=KRAKEN`;
+}
+
+// Fully-qualified TradingView symbol for inline chart embeds, e.g.
+// "KRAKEN:SOLUSD". Use this in the card's TradingView widget instead of the
+// old "BINANCE:<symbol>" construction.
+function buildTvSymbol(krakenPair) {
+  return `KRAKEN:${krakenPair}`;
 }
 
 async function writeOutputs(majors, candidates, regime, universe, stats, startedAt) {
