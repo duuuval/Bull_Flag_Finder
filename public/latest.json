@@ -1,55 +1,121 @@
 {
   "schemaVersion": 3,
-  "scanDate": "2026-10-16",
-  "timestamp": "2026-10-16T00:18:51.708Z",
-  "durationSec": 473,
+  "scanDate": "2026-10-17",
+  "timestamp": "2026-10-17T00:19:49.715Z",
+  "durationSec": 411,
   "market": {
     "state": "strong",
-    "vix": 16.46,
+    "vix": 19.99,
     "vixHostile": false,
     "vixElevated": false,
-    "spyPrice": 769.6,
-    "spy50ma": 765.57,
+    "spyPrice": 771.79,
+    "spy50ma": 765.81,
     "spyAbove50ma": true,
     "spy50maRising": true,
-    "spy50maSlopePct": 0.0058
+    "spy50maSlopePct": 0.006
   },
   "stats": {
     "universeSize": 1503,
     "fetched": 1496,
     "failed": 7,
-    "qualified": 28,
+    "qualified": 23,
     "htfCount": 0,
-    "continuationCount": 18,
-    "firstStageCount": 10
+    "continuationCount": 15,
+    "firstStageCount": 8
   },
   "htfCandidates": [],
   "continuationCandidates": [
     {
+      "ticker": "FIVN",
+      "name": "Five9, Inc.",
+      "exchange": "NASDAQ",
+      "price": 35.1,
+      "setupType": "continuation",
+      "score": 89,
+      "subscores": {
+        "pole": 26.9,
+        "flag": 32,
+        "context": 30
+      },
+      "breakdown": {
+        "poleMagnitude": 9.9,
+        "poleVelocity": 10,
+        "poleVolume": 7,
+        "flagPullback": 20,
+        "flagContraction": 7,
+        "flagEntry": 5,
+        "ctxRs": 15,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 16,
+      "pattern": {
+        "polePct": 0.3289,
+        "poleDays": 9,
+        "poleStartDate": "2026-09-10",
+        "poleStartPrice": 30.1,
+        "recentHigh": 40,
+        "recentHighDate": "2026-09-23",
+        "pullbackPct": 0.1225,
+        "flagLow": 32.17,
+        "flagHigh": null,
+        "volumeContraction": 0.66,
+        "poleVolumeRatio": 2.02,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0146,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 34.79,
+        "ema20": 34.6,
+        "ema50": 32.82,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 34.6,
+        "stop": 32.82,
+        "target": 40.29,
+        "riskPct": 0.0512,
+        "rewardPct": 0.1645,
+        "rr": 3.2
+      },
+      "rsPercentile": 0.913,
+      "return60dPct": 0.5294,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FIVN/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.9383,
+        "prePoleSlope": 0.4231
+      },
+      "rankChange": 11
+    },
+    {
       "ticker": "ILMN",
       "name": "Illumina, Inc.",
       "exchange": "NASDAQ",
-      "price": 271.76,
+      "price": 267.93,
       "setupType": "continuation",
-      "score": 90,
+      "score": 89,
       "subscores": {
         "pole": 32,
-        "flag": 28,
-        "context": 30
+        "flag": 32,
+        "context": 25
       },
       "breakdown": {
         "poleMagnitude": 15,
         "poleVelocity": 7,
         "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 10,
-        "flagEntry": 4,
-        "ctxRs": 15,
+        "flagPullback": 20,
+        "flagContraction": 7,
+        "flagEntry": 5,
+        "ctxRs": 10,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.5467,
         "poleDays": 17,
@@ -57,45 +123,45 @@
         "poleStartPrice": 200.01,
         "recentHigh": 309.35,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1215,
+        "pullbackPct": 0.1339,
         "flagLow": 254,
         "flagHigh": null,
-        "volumeContraction": 0.48,
+        "volumeContraction": 0.5,
         "poleVolumeRatio": 17.23,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0351,
+        "distAbove20Ema": 0.0185,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 271.24,
-        "ema20": 262.55,
-        "ema50": 237.95,
+        "ema10": 270.64,
+        "ema20": 263.06,
+        "ema50": 239.13,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 262.55,
+        "entry": 263.06,
         "stop": 251.46,
-        "target": 334.31,
-        "riskPct": 0.0422,
+        "target": 334.96,
+        "riskPct": 0.0441,
         "rewardPct": 0.2733,
-        "rr": 6.5
+        "rr": 6.2
       },
-      "rsPercentile": 0.9286,
-      "return60dPct": 0.4115,
+      "rsPercentile": 0.7826,
+      "return60dPct": 0.4037,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-ILMN/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.7303,
-        "prePoleSlope": 0.3462
+        "prePoleSlope": 0.3461
       },
-      "rankChange": 0
+      "rankChange": -1
     },
     {
       "ticker": "TWLO",
       "name": "Twilio Inc.",
       "exchange": "NYSE",
-      "price": 271.12,
+      "price": 273.4,
       "setupType": "continuation",
       "score": 79,
       "subscores": {
@@ -114,8 +180,8 @@
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.407,
         "poleDays": 30,
@@ -123,45 +189,45 @@
         "poleStartPrice": 219.19,
         "recentHigh": 308.4,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1209,
-        "flagLow": 269.66,
+        "pullbackPct": 0.1135,
+        "flagLow": 260.66,
         "flagHigh": null,
         "volumeContraction": 0.65,
         "poleVolumeRatio": 15.76,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0165,
+        "distAbove20Ema": -0.0074,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 280.89,
-        "ema20": 275.66,
-        "ema50": 254.6,
+        "ema10": 279.53,
+        "ema20": 275.44,
+        "ema50": 255.34,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 275.66,
-        "stop": 266.96,
-        "target": 331.75,
-        "riskPct": 0.0315,
+        "entry": 275.44,
+        "stop": 258.05,
+        "target": 331.49,
+        "riskPct": 0.0631,
         "rewardPct": 0.2035,
-        "rr": 6.5
+        "rr": 3.2
       },
-      "rsPercentile": 0.8571,
-      "return60dPct": 0.3817,
+      "rsPercentile": 0.8261,
+      "return60dPct": 0.4909,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-TWLO/",
       "base": {
         "baseDays": 90,
         "baseRange": 1.0601,
         "prePoleSlope": 0.2844
       },
-      "rankChange": 0
+      "rankChange": -1
     },
     {
       "ticker": "HZO",
       "name": "MarineMax, Inc.",
       "exchange": "NYSE",
-      "price": 52.34,
+      "price": 52.35,
       "setupType": "continuation",
       "score": 78,
       "subscores": {
@@ -181,7 +247,7 @@
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 18,
+      "daysInFlag": 19,
       "pattern": {
         "polePct": 0.6379,
         "poleDays": 30,
@@ -189,191 +255,125 @@
         "poleStartPrice": 32.09,
         "recentHigh": 52.56,
         "recentHighDate": "2026-09-18",
-        "pullbackPct": 0.0042,
+        "pullbackPct": 0.004,
         "flagLow": 52.24,
         "flagHigh": null,
-        "volumeContraction": 0.72,
+        "volumeContraction": 0.71,
         "poleVolumeRatio": 25.56,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0027,
+        "distAbove20Ema": 0.0026,
         "direction": "flat",
         "atr14": null
       },
       "ema": {
-        "ema10": 52.37,
-        "ema20": 52.2,
-        "ema50": 49.58,
+        "ema10": 52.36,
+        "ema20": 52.21,
+        "ema50": 49.69,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 52.2,
-        "stop": 48.54,
-        "target": 68.85,
+        "entry": 52.21,
+        "stop": 48.56,
+        "target": 68.87,
         "riskPct": 0.07,
         "rewardPct": 0.3189,
         "rr": 4.6
       },
-      "rsPercentile": 0.9643,
-      "return60dPct": 0.5751,
+      "rsPercentile": 0.9565,
+      "return60dPct": 0.5902,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-HZO/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5016,
-        "prePoleSlope": 0.1869
-      },
-      "rankChange": 1
-    },
-    {
-      "ticker": "RVTY",
-      "name": "Revvity, Inc.",
-      "exchange": "NYSE",
-      "price": 152.12,
-      "setupType": "continuation",
-      "score": 78,
-      "subscores": {
-        "pole": 28.3,
-        "flag": 25,
-        "context": 25
-      },
-      "breakdown": {
-        "poleMagnitude": 11.3,
-        "poleVelocity": 7,
-        "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 7,
-        "flagEntry": 4,
-        "ctxRs": 10,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3751,
-        "poleDays": 18,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 120.9,
-        "recentHigh": 166.25,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.085,
-        "flagLow": 146.7,
-        "flagHigh": null,
-        "volumeContraction": 0.67,
-        "poleVolumeRatio": 2.95,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0211,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 152.82,
-        "ema20": 148.98,
-        "ema50": 137.39,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 148.98,
-        "stop": 145.23,
-        "target": 176.92,
-        "riskPct": 0.0251,
-        "rewardPct": 0.1876,
-        "rr": 7.5
-      },
-      "rsPercentile": 0.7857,
-      "return60dPct": 0.3764,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-RVTY/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.5645,
-        "prePoleSlope": 0.2179
+        "prePoleSlope": 0.187
       },
       "rankChange": -1
     },
     {
-      "ticker": "AZTA",
-      "name": "Azenta, Inc.",
+      "ticker": "OKTA",
+      "name": "Okta, Inc.",
       "exchange": "NASDAQ",
-      "price": 37.18,
+      "price": 208.52,
       "setupType": "continuation",
-      "score": 71,
+      "score": 76,
       "subscores": {
-        "pole": 32,
-        "flag": 14,
+        "pole": 25.7,
+        "flag": 25,
         "context": 25
       },
       "breakdown": {
-        "poleMagnitude": 15,
-        "poleVelocity": 7,
-        "poleVolume": 10,
-        "flagPullback": 6,
+        "poleMagnitude": 14.7,
+        "poleVelocity": 4,
+        "poleVolume": 7,
+        "flagPullback": 20,
         "flagContraction": 4,
-        "flagEntry": 4,
+        "flagEntry": 1,
         "ctxRs": 10,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "early",
+      "daysInFlag": 3,
       "pattern": {
-        "polePct": 0.5658,
-        "poleDays": 18,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 29.64,
-        "recentHigh": 46.41,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1989,
-        "flagLow": 34.93,
+        "polePct": 0.4899,
+        "poleDays": 27,
+        "poleStartDate": "2026-09-02",
+        "poleStartPrice": 157.73,
+        "recentHigh": 235,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.1127,
+        "flagLow": 202.97,
         "flagHigh": null,
-        "volumeContraction": 0.99,
-        "poleVolumeRatio": 4.81,
+        "volumeContraction": 0.97,
+        "poleVolumeRatio": 2.03,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0296,
+        "distAbove20Ema": 0,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 37.14,
-        "ema20": 36.11,
-        "ema50": 33.67,
+        "ema10": 216.16,
+        "ema20": 208.53,
+        "ema50": 185.59,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 36.11,
-        "stop": 34.58,
-        "target": 46.33,
-        "riskPct": 0.0424,
-        "rewardPct": 0.2829,
+        "entry": 208.53,
+        "stop": 200.94,
+        "target": 259.6,
+        "riskPct": 0.0364,
+        "rewardPct": 0.2449,
         "rr": 6.7
       },
-      "rsPercentile": 0.8929,
-      "return60dPct": 0.3983,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AZTA/",
+      "rsPercentile": 0.8696,
+      "return60dPct": 0.5255,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-OKTA/",
       "base": {
         "baseDays": 90,
-        "baseRange": 1.3534,
-        "prePoleSlope": 0.3458
+        "baseRange": 1.3955,
+        "prePoleSlope": 0.5269
       },
       "rankChange": null
     },
     {
-      "ticker": "HPE",
-      "name": "Hewlett Packard Enterprise Company",
-      "exchange": "NYSE",
-      "price": 63.11,
+      "ticker": "QLYS",
+      "name": "Qualys, Inc.",
+      "exchange": "NASDAQ",
+      "price": 192.65,
       "setupType": "continuation",
-      "score": 68,
+      "score": 73,
       "subscores": {
-        "pole": 29,
-        "flag": 19,
+        "pole": 24.4,
+        "flag": 29,
         "context": 20
       },
       "breakdown": {
-        "poleMagnitude": 15,
-        "poleVelocity": 4,
-        "poleVolume": 10,
-        "flagPullback": 14,
+        "poleMagnitude": 10.4,
+        "poleVelocity": 7,
+        "poleVolume": 7,
+        "flagPullback": 20,
         "flagContraction": 4,
-        "flagEntry": 1,
+        "flagEntry": 5,
         "ctxRs": 5,
         "ctxTrend": 10,
         "ctxMarket": 5
@@ -381,57 +381,189 @@
       "stage": "early",
       "daysInFlag": 3,
       "pattern": {
-        "polePct": 0.6096,
-        "poleDays": 25,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 45.7,
-        "recentHigh": 73.56,
-        "recentHighDate": "2026-10-09",
-        "pullbackPct": 0.1421,
-        "flagLow": 62.62,
+        "polePct": 0.3451,
+        "poleDays": 20,
+        "poleStartDate": "2026-09-14",
+        "poleStartPrice": 153.34,
+        "recentHigh": 206.25,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0659,
+        "flagLow": 184.8,
         "flagHigh": null,
-        "volumeContraction": 0.95,
-        "poleVolumeRatio": 3.92,
+        "volumeContraction": 0.84,
+        "poleVolumeRatio": 2.08,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.038,
+        "distAbove20Ema": 0.0172,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 67.82,
-        "ema20": 65.6,
-        "ema50": 59.85,
+        "ema10": 193.23,
+        "ema20": 189.4,
+        "ema50": 178.57,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 65.6,
-        "stop": 61.99,
-        "target": 85.6,
-        "riskPct": 0.055,
-        "rewardPct": 0.3048,
-        "rr": 5.5
+        "entry": 189.4,
+        "stop": 182.95,
+        "target": 222.07,
+        "riskPct": 0.034,
+        "rewardPct": 0.1725,
+        "rr": 5.1
       },
-      "rsPercentile": 0.7143,
-      "return60dPct": 0.3508,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-HPE/",
+      "rsPercentile": 0.6087,
+      "return60dPct": 0.3738,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-QLYS/",
       "base": {
         "baseDays": 90,
-        "baseRange": 1.3496,
-        "prePoleSlope": 0.4241
+        "baseRange": 1.3905,
+        "prePoleSlope": 0.5956
       },
       "rankChange": null
+    },
+    {
+      "ticker": "AMRX",
+      "name": "Amneal Pharmaceuticals, Inc.",
+      "exchange": "NASDAQ",
+      "price": 19.25,
+      "setupType": "continuation",
+      "score": 71,
+      "subscores": {
+        "pole": 28.4,
+        "flag": 28,
+        "context": 15
+      },
+      "breakdown": {
+        "poleMagnitude": 8.4,
+        "poleVelocity": 10,
+        "poleVolume": 10,
+        "flagPullback": 20,
+        "flagContraction": 7,
+        "flagEntry": 1,
+        "ctxRs": 0,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 18,
+      "pattern": {
+        "polePct": 0.2787,
+        "poleDays": 3,
+        "poleStartDate": "2026-09-16",
+        "poleStartPrice": 16.56,
+        "recentHigh": 21.17,
+        "recentHighDate": "2026-09-21",
+        "pullbackPct": 0.0909,
+        "flagLow": 18.74,
+        "flagHigh": null,
+        "volumeContraction": 0.68,
+        "poleVolumeRatio": 3.74,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": -0.0103,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 19.59,
+        "ema20": 19.45,
+        "ema50": 18.69,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 19.45,
+        "stop": 18.69,
+        "target": 22.16,
+        "riskPct": 0.0389,
+        "rewardPct": 0.1393,
+        "rr": 3.6
+      },
+      "rsPercentile": 0.087,
+      "return60dPct": 0.0845,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMRX/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.6378,
+        "prePoleSlope": 0.2529
+      },
+      "rankChange": 2
+    },
+    {
+      "ticker": "RVTY",
+      "name": "Revvity, Inc.",
+      "exchange": "NYSE",
+      "price": 154.71,
+      "setupType": "continuation",
+      "score": 70,
+      "subscores": {
+        "pole": 28.3,
+        "flag": 22,
+        "context": 20
+      },
+      "breakdown": {
+        "poleMagnitude": 11.3,
+        "poleVelocity": 7,
+        "poleVolume": 10,
+        "flagPullback": 14,
+        "flagContraction": 4,
+        "flagEntry": 4,
+        "ctxRs": 5,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "prime",
+      "daysInFlag": 7,
+      "pattern": {
+        "polePct": 0.3751,
+        "poleDays": 18,
+        "poleStartDate": "2026-09-10",
+        "poleStartPrice": 120.9,
+        "recentHigh": 166.25,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.0694,
+        "flagLow": 146.7,
+        "flagHigh": null,
+        "volumeContraction": 0.72,
+        "poleVolumeRatio": 2.95,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0347,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 153.17,
+        "ema20": 149.52,
+        "ema50": 138.07,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 149.52,
+        "stop": 145.23,
+        "target": 177.57,
+        "riskPct": 0.0287,
+        "rewardPct": 0.1876,
+        "rr": 6.5
+      },
+      "rsPercentile": 0.6957,
+      "return60dPct": 0.3996,
+      "chartUrl": "https://www.tradingview.com/symbols/NYSE-RVTY/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.5645,
+        "prePoleSlope": 0.2179
+      },
+      "rankChange": -4
     },
     {
       "ticker": "CRL",
       "name": "Charles River Laboratories International, Inc.",
       "exchange": "NYSE",
-      "price": 302,
+      "price": 306.24,
       "setupType": "continuation",
-      "score": 67,
+      "score": 62,
       "subscores": {
         "pole": 21.4,
         "flag": 21,
-        "context": 25
+        "context": 20
       },
       "breakdown": {
         "poleMagnitude": 7.4,
@@ -440,12 +572,12 @@
         "flagPullback": 14,
         "flagContraction": 4,
         "flagEntry": 3,
-        "ctxRs": 10,
+        "ctxRs": 5,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.2471,
         "poleDays": 16,
@@ -453,51 +585,51 @@
         "poleStartPrice": 267.27,
         "recentHigh": 333.3,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.0939,
+        "pullbackPct": 0.0812,
         "flagLow": 288.43,
         "flagHigh": null,
-        "volumeContraction": 0.81,
+        "volumeContraction": 0.82,
         "poleVolumeRatio": 2.19,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0246,
+        "distAbove20Ema": 0.0351,
         "direction": "flat",
         "atr14": null
       },
       "ema": {
-        "ema10": 299.02,
-        "ema20": 294.76,
-        "ema50": 280.12,
+        "ema10": 300.33,
+        "ema20": 295.85,
+        "ema50": 281.14,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 294.76,
+        "entry": 295.85,
         "stop": 285.55,
-        "target": 331.17,
-        "riskPct": 0.0313,
+        "target": 332.4,
+        "riskPct": 0.0348,
         "rewardPct": 0.1235,
-        "rr": 4
+        "rr": 3.5
       },
-      "rsPercentile": 0.8214,
-      "return60dPct": 0.3765,
+      "rsPercentile": 0.7391,
+      "return60dPct": 0.4003,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-CRL/",
       "base": {
         "baseDays": 90,
         "baseRange": 1.0746,
         "prePoleSlope": 0.4837
       },
-      "rankChange": 1
+      "rankChange": -2
     },
     {
       "ticker": "CRWD",
       "name": "CrowdStrike Holdings, Inc.",
       "exchange": "NASDAQ",
-      "price": 249.29,
+      "price": 244.57,
       "setupType": "continuation",
-      "score": 66,
+      "score": 61,
       "subscores": {
         "pole": 26.9,
         "flag": 19,
-        "context": 20
+        "context": 15
       },
       "breakdown": {
         "poleMagnitude": 12.9,
@@ -506,12 +638,12 @@
         "flagPullback": 14,
         "flagContraction": 4,
         "flagEntry": 1,
-        "ctxRs": 5,
+        "ctxRs": 0,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.4307,
         "poleDays": 23,
@@ -519,309 +651,45 @@
         "poleStartPrice": 200.6,
         "recentHigh": 286.99,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1314,
-        "flagLow": 248.03,
+        "pullbackPct": 0.1478,
+        "flagLow": 239.82,
         "flagHigh": null,
-        "volumeContraction": 0.77,
+        "volumeContraction": 0.81,
         "poleVolumeRatio": 2.65,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0278,
+        "distAbove20Ema": -0.0419,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 261.95,
-        "ema20": 256.41,
-        "ema50": 235.65,
+        "ema10": 258.79,
+        "ema20": 255.28,
+        "ema50": 236,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 256.41,
-        "stop": 245.55,
-        "target": 311.62,
-        "riskPct": 0.0423,
+        "entry": 255.28,
+        "stop": 237.42,
+        "target": 310.25,
+        "riskPct": 0.0699,
         "rewardPct": 0.2153,
-        "rr": 5.1
+        "rr": 3.1
       },
-      "rsPercentile": 0.5714,
-      "return60dPct": 0.3042,
+      "rsPercentile": 0.4783,
+      "return60dPct": 0.298,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-CRWD/",
       "base": {
         "baseDays": 90,
         "baseRange": 1.1628,
         "prePoleSlope": 0.3916
       },
-      "rankChange": -3
-    },
-    {
-      "ticker": "AMRX",
-      "name": "Amneal Pharmaceuticals, Inc.",
-      "exchange": "NASDAQ",
-      "price": 18.9,
-      "setupType": "continuation",
-      "score": 65,
-      "subscores": {
-        "pole": 28.4,
-        "flag": 22,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 8.4,
-        "poleVelocity": 10,
-        "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 7,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 17,
-      "pattern": {
-        "polePct": 0.2787,
-        "poleDays": 3,
-        "poleStartDate": "2026-09-16",
-        "poleStartPrice": 16.56,
-        "recentHigh": 21.17,
-        "recentHighDate": "2026-09-21",
-        "pullbackPct": 0.1074,
-        "flagLow": 18.74,
-        "flagHigh": null,
-        "volumeContraction": 0.67,
-        "poleVolumeRatio": 3.74,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0294,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 19.66,
-        "ema20": 19.47,
-        "ema50": 18.67,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 19.47,
-        "stop": 18.67,
-        "target": 22.18,
-        "riskPct": 0.0411,
-        "rewardPct": 0.1393,
-        "rr": 3.4
-      },
-      "rsPercentile": 0.1071,
-      "return60dPct": 0.0442,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMRX/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.6378,
-        "prePoleSlope": 0.2529
-      },
       "rankChange": -2
-    },
-    {
-      "ticker": "CERT",
-      "name": "Certara, Inc.",
-      "exchange": "NASDAQ",
-      "price": 9.36,
-      "setupType": "continuation",
-      "score": 64,
-      "subscores": {
-        "pole": 24.3,
-        "flag": 15,
-        "context": 25
-      },
-      "breakdown": {
-        "poleMagnitude": 10.3,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 14,
-        "flagContraction": 0,
-        "flagEntry": 1,
-        "ctxRs": 10,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3443,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 7.58,
-        "recentHigh": 10.19,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.0815,
-        "flagLow": 8.58,
-        "flagHigh": null,
-        "volumeContraction": 1.04,
-        "poleVolumeRatio": 2.09,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0364,
-        "direction": "ascending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 9.23,
-        "ema20": 9.03,
-        "ema50": 8.47,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 9.03,
-        "stop": 8.49,
-        "target": 10.59,
-        "riskPct": 0.0594,
-        "rewardPct": 0.1722,
-        "rr": 2.9
-      },
-      "rsPercentile": 0.75,
-      "return60dPct": 0.3664,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-CERT/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.9966,
-        "prePoleSlope": 0.3343
-      },
-      "rankChange": null
-    },
-    {
-      "ticker": "BBY",
-      "name": "Best Buy Co., Inc.",
-      "exchange": "NYSE",
-      "price": 89.1,
-      "setupType": "continuation",
-      "score": 63,
-      "subscores": {
-        "pole": 20.6,
-        "flag": 27,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 6.6,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 20,
-        "flagContraction": 4,
-        "flagEntry": 3,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 15,
-      "pattern": {
-        "polePct": 0.2216,
-        "poleDays": 15,
-        "poleStartDate": "2026-09-01",
-        "poleStartPrice": 79.02,
-        "recentHigh": 96.53,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.077,
-        "flagLow": 83.65,
-        "flagHigh": null,
-        "volumeContraction": 0.72,
-        "poleVolumeRatio": 2.01,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.009,
-        "direction": "ascending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 87.89,
-        "ema20": 88.3,
-        "ema50": 87.04,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 88.3,
-        "stop": 82.12,
-        "target": 98.09,
-        "riskPct": 0.07,
-        "rewardPct": 0.1108,
-        "rr": 1.6
-      },
-      "rsPercentile": 0.1429,
-      "return60dPct": 0.0455,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-BBY/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.6564,
-        "prePoleSlope": 0.2741
-      },
-      "rankChange": 3
-    },
-    {
-      "ticker": "FIVN",
-      "name": "Five9, Inc.",
-      "exchange": "NASDAQ",
-      "price": 33.08,
-      "setupType": "continuation",
-      "score": 61,
-      "subscores": {
-        "pole": 26.9,
-        "flag": 14,
-        "context": 20
-      },
-      "breakdown": {
-        "poleMagnitude": 9.9,
-        "poleVelocity": 10,
-        "poleVolume": 7,
-        "flagPullback": 6,
-        "flagContraction": 7,
-        "flagEntry": 1,
-        "ctxRs": 5,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 15,
-      "pattern": {
-        "polePct": 0.3289,
-        "poleDays": 9,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 30.1,
-        "recentHigh": 40,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.173,
-        "flagLow": 32.65,
-        "flagHigh": null,
-        "volumeContraction": 0.66,
-        "poleVolumeRatio": 2.02,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0423,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 34.72,
-        "ema20": 34.54,
-        "ema50": 32.73,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 34.54,
-        "stop": 32.73,
-        "target": 40.22,
-        "riskPct": 0.0525,
-        "rewardPct": 0.1645,
-        "rr": 3.1
-      },
-      "rsPercentile": 0.6429,
-      "return60dPct": 0.3111,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FIVN/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.9383,
-        "prePoleSlope": 0.4231
-      },
-      "rankChange": -6
     },
     {
       "ticker": "PRLB",
       "name": "Proto Labs, Inc.",
       "exchange": "NYSE",
-      "price": 88.97,
+      "price": 87.41,
       "setupType": "continuation",
       "score": 59,
       "subscores": {
@@ -840,8 +708,8 @@
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.2508,
         "poleDays": 14,
@@ -849,131 +717,131 @@
         "poleStartPrice": 79.92,
         "recentHigh": 99.96,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1099,
-        "flagLow": 87.91,
+        "pullbackPct": 0.1256,
+        "flagLow": 84,
         "flagHigh": null,
-        "volumeContraction": 0.54,
+        "volumeContraction": 0.6,
         "poleVolumeRatio": 2.49,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0274,
+        "distAbove20Ema": -0.0404,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 92.51,
-        "ema20": 91.48,
+        "ema10": 91.58,
+        "ema20": 91.09,
         "ema50": 87.28,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 91.48,
+        "entry": 91.09,
         "stop": 87.28,
-        "target": 102.94,
-        "riskPct": 0.0459,
+        "target": 102.51,
+        "riskPct": 0.0418,
         "rewardPct": 0.1254,
-        "rr": 2.7
+        "rr": 3
       },
-      "rsPercentile": 0.3571,
-      "return60dPct": 0.1004,
+      "rsPercentile": 0.1304,
+      "return60dPct": 0.0963,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-PRLB/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3868,
         "prePoleSlope": 0.1216
       },
-      "rankChange": -1
+      "rankChange": 2
     },
     {
-      "ticker": "SNX",
-      "name": "TD SYNNEX Corporation",
-      "exchange": "NYSE",
-      "price": 263.76,
+      "ticker": "FFIV",
+      "name": "F5, Inc.",
+      "exchange": "NASDAQ",
+      "price": 456.58,
       "setupType": "continuation",
-      "score": 59,
+      "score": 58,
       "subscores": {
-        "pole": 23.3,
-        "flag": 21,
+        "pole": 18.2,
+        "flag": 25,
         "context": 15
       },
       "breakdown": {
-        "poleMagnitude": 6.3,
-        "poleVelocity": 7,
-        "poleVolume": 10,
+        "poleMagnitude": 7.2,
+        "poleVelocity": 4,
+        "poleVolume": 7,
         "flagPullback": 20,
         "flagContraction": 0,
-        "flagEntry": 1,
+        "flagEntry": 5,
         "ctxRs": 0,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "late",
-      "daysInFlag": 15,
+      "stage": "early",
+      "daysInFlag": 3,
       "pattern": {
-        "polePct": 0.2088,
-        "poleDays": 13,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 247.17,
-        "recentHigh": 298.77,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.1172,
-        "flagLow": 243.03,
+        "polePct": 0.241,
+        "poleDays": 23,
+        "poleStartDate": "2026-09-09",
+        "poleStartPrice": 389.44,
+        "recentHigh": 483.3,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0553,
+        "flagLow": 443.7,
         "flagHigh": null,
-        "volumeContraction": 1.09,
-        "poleVolumeRatio": 3.6,
+        "volumeContraction": 1.1,
+        "poleVolumeRatio": 2.05,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0193,
+        "distAbove20Ema": 0.0086,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 270.62,
-        "ema20": 268.96,
-        "ema50": 263.51,
+        "ema10": 461.84,
+        "ema20": 452.68,
+        "ema50": 431.71,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 268.96,
-        "stop": 263.51,
-        "target": 297.03,
-        "riskPct": 0.0203,
-        "rewardPct": 0.1044,
-        "rr": 5.2
+        "entry": 452.68,
+        "stop": 439.26,
+        "target": 507.23,
+        "riskPct": 0.0296,
+        "rewardPct": 0.1205,
+        "rr": 4.1
       },
-      "rsPercentile": 0.2143,
-      "return60dPct": 0.058,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-SNX/",
+      "rsPercentile": 0.1739,
+      "return60dPct": 0.1397,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FFIV/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.3508,
-        "prePoleSlope": 0.1004
+        "baseRange": 0.3639,
+        "prePoleSlope": 0.1098
       },
-      "rankChange": 8
+      "rankChange": null
     },
     {
       "ticker": "TGTX",
       "name": "TG Therapeutics, Inc.",
       "exchange": "NCM",
-      "price": 54.37,
+      "price": 56,
       "setupType": "continuation",
-      "score": 57,
+      "score": 53,
       "subscores": {
         "pole": 17.1,
-        "flag": 25,
+        "flag": 21,
         "context": 15
       },
       "breakdown": {
         "poleMagnitude": 6.1,
         "poleVelocity": 4,
         "poleVolume": 7,
-        "flagPullback": 20,
+        "flagPullback": 14,
         "flagContraction": 4,
-        "flagEntry": 1,
+        "flagEntry": 3,
         "ctxRs": 0,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 17,
+      "daysInFlag": 18,
       "pattern": {
         "polePct": 0.2029,
         "poleDays": 23,
@@ -981,177 +849,45 @@
         "poleStartPrice": 48.98,
         "recentHigh": 58.92,
         "recentHighDate": "2026-09-21",
-        "pullbackPct": 0.0772,
+        "pullbackPct": 0.0496,
         "flagLow": 51.34,
         "flagHigh": null,
         "volumeContraction": 0.81,
         "poleVolumeRatio": 2.18,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0064,
-        "direction": "descending",
+        "distAbove20Ema": 0.0211,
+        "direction": "flat",
         "atr14": null
       },
       "ema": {
-        "ema10": 54.49,
-        "ema20": 54.72,
-        "ema50": 53.99,
+        "ema10": 54.77,
+        "ema20": 54.84,
+        "ema50": 54.07,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 54.72,
-        "stop": 50.89,
-        "target": 60.27,
+        "entry": 54.84,
+        "stop": 51,
+        "target": 60.41,
         "riskPct": 0.07,
         "rewardPct": 0.1015,
         "rr": 1.4
       },
-      "rsPercentile": 0,
-      "return60dPct": 0.0078,
+      "rsPercentile": 0.0435,
+      "return60dPct": 0.063,
       "chartUrl": "https://www.tradingview.com/symbols/NCM-TGTX/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.7845,
         "prePoleSlope": 0.3795
       },
-      "rankChange": 3
-    },
-    {
-      "ticker": "AMD",
-      "name": "Advanced Micro Devices, Inc.",
-      "exchange": "NASDAQ",
-      "price": 570.82,
-      "setupType": "continuation",
-      "score": 56,
-      "subscores": {
-        "pole": 22.1,
-        "flag": 19,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 11.1,
-        "poleVelocity": 7,
-        "poleVolume": 4,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.371,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 480.33,
-        "recentHigh": 658.52,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1332,
-        "flagLow": 567,
-        "flagHigh": null,
-        "volumeContraction": 0.82,
-        "poleVolumeRatio": 1.86,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.041,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 605.62,
-        "ema20": 595.25,
-        "ema50": 555.61,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 595.25,
-        "stop": 561.33,
-        "target": 705.66,
-        "riskPct": 0.057,
-        "rewardPct": 0.1855,
-        "rr": 3.3
-      },
-      "rsPercentile": 0.1786,
-      "return60dPct": 0.0485,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMD/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.6955,
-        "prePoleSlope": 0.1577
-      },
-      "rankChange": -6
-    },
-    {
-      "ticker": "PANW",
-      "name": "Palo Alto Networks, Inc.",
-      "exchange": "NASDAQ",
-      "price": 375.04,
-      "setupType": "continuation",
-      "score": 56,
-      "subscores": {
-        "pole": 22.1,
-        "flag": 19,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 8.1,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.2706,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 340.25,
-        "recentHigh": 432.33,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1325,
-        "flagLow": 370.5,
-        "flagHigh": null,
-        "volumeContraction": 0.71,
-        "poleVolumeRatio": 2.2,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0404,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 396.65,
-        "ema20": 390.83,
-        "ema50": 370.99,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 390.83,
-        "stop": 370.99,
-        "target": 443.71,
-        "riskPct": 0.0508,
-        "rewardPct": 0.1353,
-        "rr": 2.7
-      },
-      "rsPercentile": 0.3214,
-      "return60dPct": 0.0961,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-PANW/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.226,
-        "prePoleSlope": 0.4451
-      },
-      "rankChange": -6
+      "rankChange": 2
     },
     {
       "ticker": "A",
       "name": "Agilent Technologies, Inc.",
       "exchange": "NYSE",
-      "price": 174,
+      "price": 175.55,
       "setupType": "continuation",
       "score": 52,
       "subscores": {
@@ -1171,7 +907,7 @@
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 11,
+      "daysInFlag": 12,
       "pattern": {
         "polePct": 0.2366,
         "poleDays": 12,
@@ -1179,39 +915,105 @@
         "poleStartPrice": 143.18,
         "recentHigh": 177.05,
         "recentHighDate": "2026-09-29",
-        "pullbackPct": 0.0172,
+        "pullbackPct": 0.0085,
         "flagLow": 163.32,
         "flagHigh": null,
-        "volumeContraction": 0.8,
+        "volumeContraction": 0.79,
         "poleVolumeRatio": 2.26,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0399,
+        "distAbove20Ema": 0.0443,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 170.52,
-        "ema20": 167.32,
-        "ema50": 158.32,
+        "ema10": 171.43,
+        "ema20": 168.1,
+        "ema50": 159,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 167.32,
+        "entry": 168.1,
         "stop": 161.69,
-        "target": 187.11,
-        "riskPct": 0.0337,
+        "target": 187.99,
+        "riskPct": 0.0382,
         "rewardPct": 0.1183,
-        "rr": 3.5
+        "rr": 3.1
       },
-      "rsPercentile": 0.6071,
-      "return60dPct": 0.3096,
+      "rsPercentile": 0.5217,
+      "return60dPct": 0.3154,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-A/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5113,
         "prePoleSlope": 0.1644
       },
-      "rankChange": 1
+      "rankChange": 4
+    },
+    {
+      "ticker": "NEO",
+      "name": "NeoGenomics, Inc.",
+      "exchange": "NCM",
+      "price": 17.25,
+      "setupType": "continuation",
+      "score": 50,
+      "subscores": {
+        "pole": 15.1,
+        "flag": 25,
+        "context": 10
+      },
+      "breakdown": {
+        "poleMagnitude": 7.1,
+        "poleVelocity": 4,
+        "poleVolume": 4,
+        "flagPullback": 20,
+        "flagContraction": 4,
+        "flagEntry": 1,
+        "ctxRs": 0,
+        "ctxTrend": 5,
+        "ctxMarket": 5
+      },
+      "stage": "prime",
+      "daysInFlag": 7,
+      "pattern": {
+        "polePct": 0.2377,
+        "poleDays": 30,
+        "poleStartDate": "2026-08-24",
+        "poleStartPrice": 16.28,
+        "recentHigh": 20.15,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.1439,
+        "flagLow": 15.41,
+        "flagHigh": null,
+        "volumeContraction": 0.96,
+        "poleVolumeRatio": 1.64,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": -0.0106,
+        "direction": "ascending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 17.06,
+        "ema20": 17.43,
+        "ema50": 17.05,
+        "ema50Rising": false
+      },
+      "levels": {
+        "entry": 17.43,
+        "stop": 17.05,
+        "target": 19.51,
+        "riskPct": 0.0221,
+        "rewardPct": 0.1189,
+        "rr": 5.4
+      },
+      "rsPercentile": 0.3043,
+      "return60dPct": 0.2313,
+      "chartUrl": "https://www.tradingview.com/symbols/NCM-NEO/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 1.2211,
+        "prePoleSlope": 0.6318
+      },
+      "rankChange": null
     }
   ],
   "firstStageCandidates": [
@@ -1219,12 +1021,12 @@
       "ticker": "META",
       "name": "Meta Platforms, Inc.",
       "exchange": "NASDAQ",
-      "price": 737.54,
+      "price": 736.72,
       "setupType": "first-stage",
-      "score": 63,
+      "score": 69,
       "subscores": {
         "pole": 22.5,
-        "flag": 12,
+        "flag": 18,
         "base": 23,
         "context": 5
       },
@@ -1233,15 +1035,15 @@
         "poleVelocity": 7,
         "poleVolume": 5,
         "flagContraction": 5,
-        "flagEntry": 2,
+        "flagEntry": 8,
         "flagPullback": 5,
         "baseLength": 15,
         "baseTightness": 6,
         "basePoleRatio": 2,
         "ctxMarket": 5
       },
-      "stage": "prime",
-      "daysInFlag": 14,
+      "stage": "late",
+      "daysInFlag": 15,
       "pattern": {
         "polePct": 0.3515,
         "poleDays": 15,
@@ -1249,56 +1051,56 @@
         "poleStartPrice": 577,
         "recentHigh": 779.82,
         "recentHighDate": "2026-09-24",
-        "pullbackPct": 0.0542,
+        "pullbackPct": 0.0553,
         "flagLow": 711.68,
         "flagHigh": null,
         "volumeContraction": 0.75,
         "poleVolumeRatio": 2.73,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.026,
-        "direction": "ascending",
+        "distAbove20Ema": 0.0224,
+        "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 734.93,
-        "ema20": 718.88,
-        "ema50": 675.39,
+        "ema10": 735.25,
+        "ema20": 720.58,
+        "ema50": 677.79,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 718.88,
-        "stop": 668.56,
-        "target": 971.58,
-        "riskPct": 0.07,
+        "entry": 720.58,
+        "stop": 704.56,
+        "target": 973.87,
+        "riskPct": 0.0222,
         "rewardPct": 0.3515,
-        "rr": 5
+        "rr": 15.8
       },
-      "rsPercentile": 0.3929,
-      "return60dPct": 0.1456,
+      "rsPercentile": 0.2174,
+      "return60dPct": 0.1747,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-META/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3081,
         "prePoleSlope": -0.0536
       },
-      "rankChange": null
+      "rankChange": 0
     },
     {
-      "ticker": "SNPS",
-      "name": "Synopsys, Inc.",
+      "ticker": "TLN",
+      "name": "Talen Energy Corporation",
       "exchange": "NASDAQ",
-      "price": 479.93,
+      "price": 353.6,
       "setupType": "first-stage",
-      "score": 61,
+      "score": 64,
       "subscores": {
-        "pole": 20.2,
+        "pole": 22.7,
         "flag": 18,
         "base": 18,
         "context": 5
       },
       "breakdown": {
-        "poleMagnitude": 8.2,
-        "poleVelocity": 7,
+        "poleMagnitude": 7.7,
+        "poleVelocity": 10,
         "poleVolume": 5,
         "flagContraction": 5,
         "flagEntry": 8,
@@ -1311,124 +1113,328 @@
       "stage": "early",
       "daysInFlag": 3,
       "pattern": {
+        "polePct": 0.2566,
+        "poleDays": 7,
+        "poleStartDate": "2026-10-01",
+        "poleStartPrice": 310.79,
+        "recentHigh": 390.54,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0946,
+        "flagLow": 337.99,
+        "flagHigh": null,
+        "volumeContraction": 0.75,
+        "poleVolumeRatio": 3.4,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0309,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 357.12,
+        "ema20": 343,
+        "ema50": 334.48,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 343,
+        "stop": 334.61,
+        "target": 431.01,
+        "riskPct": 0.0244,
+        "rewardPct": 0.2566,
+        "rr": 10.5
+      },
+      "rsPercentile": 0,
+      "return60dPct": -0.0631,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-TLN/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.6079,
+        "prePoleSlope": -0.1457
+      },
+      "rankChange": null
+    },
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys, Inc.",
+      "exchange": "NASDAQ",
+      "price": 468.11,
+      "setupType": "first-stage",
+      "score": 63,
+      "subscores": {
+        "pole": 20.2,
+        "flag": 20,
+        "base": 18,
+        "context": 5
+      },
+      "breakdown": {
+        "poleMagnitude": 8.2,
+        "poleVelocity": 7,
+        "poleVolume": 5,
+        "flagContraction": 5,
+        "flagEntry": 10,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
+        "ctxMarket": 5
+      },
+      "stage": "early",
+      "daysInFlag": 4,
+      "pattern": {
         "polePct": 0.2748,
         "poleDays": 13,
         "poleStartDate": "2026-09-22",
         "poleStartPrice": 402.02,
         "recentHigh": 512.49,
         "recentHighDate": "2026-10-09",
-        "pullbackPct": 0.0635,
-        "flagLow": 476.73,
+        "pullbackPct": 0.0866,
+        "flagLow": 454.49,
         "flagHigh": null,
-        "volumeContraction": 0.91,
+        "volumeContraction": 0.98,
         "poleVolumeRatio": 3.51,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0342,
+        "distAbove20Ema": 0.0079,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 484.46,
-        "ema20": 464.07,
-        "ema50": 439.54,
+        "ema10": 481.48,
+        "ema20": 464.46,
+        "ema50": 440.66,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 464.07,
-        "stop": 431.59,
-        "target": 591.59,
-        "riskPct": 0.07,
+        "entry": 464.46,
+        "stop": 449.95,
+        "target": 592.08,
+        "riskPct": 0.0312,
         "rewardPct": 0.2748,
-        "rr": 3.9
+        "rr": 8.8
       },
-      "rsPercentile": 0.5,
-      "return60dPct": 0.2335,
+      "rsPercentile": 0.3478,
+      "return60dPct": 0.2397,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SNPS/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.488,
         "prePoleSlope": -0.1311
       },
-      "rankChange": null
+      "rankChange": -1
     },
     {
-      "ticker": "ROG",
-      "name": "Rogers Corporation",
-      "exchange": "NYSE",
-      "price": 139.72,
+      "ticker": "AMPH",
+      "name": "Amphastar Pharmaceuticals, Inc.",
+      "exchange": "NASDAQ",
+      "price": 26.42,
       "setupType": "first-stage",
-      "score": 60,
+      "score": 62,
       "subscores": {
-        "pole": 23.5,
-        "flag": 13,
+        "pole": 20.9,
+        "flag": 18,
         "base": 18,
         "context": 5
       },
       "breakdown": {
-        "poleMagnitude": 8.5,
-        "poleVelocity": 10,
+        "poleMagnitude": 11.9,
+        "poleVelocity": 4,
         "poleVolume": 5,
-        "flagContraction": 10,
-        "flagEntry": 2,
-        "flagPullback": 1,
+        "flagContraction": 5,
+        "flagEntry": 8,
+        "flagPullback": 5,
         "baseLength": 15,
         "baseTightness": 2,
         "basePoleRatio": 1,
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 10,
+      "daysInFlag": 13,
       "pattern": {
-        "polePct": 0.2824,
-        "poleDays": 6,
-        "poleStartDate": "2026-09-22",
-        "poleStartPrice": 129.4,
-        "recentHigh": 165.94,
-        "recentHighDate": "2026-09-30",
-        "pullbackPct": 0.158,
-        "flagLow": 138.7,
+        "polePct": 0.3977,
+        "poleDays": 30,
+        "poleStartDate": "2026-08-14",
+        "poleStartPrice": 19.89,
+        "recentHigh": 27.8,
+        "recentHighDate": "2026-09-28",
+        "pullbackPct": 0.0496,
+        "flagLow": 25.03,
         "flagHigh": null,
-        "volumeContraction": 0.62,
-        "poleVolumeRatio": 4.95,
+        "volumeContraction": 0.99,
+        "poleVolumeRatio": 2.8,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0321,
+        "distAbove20Ema": 0.0334,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 146.72,
-        "ema20": 144.35,
-        "ema50": 139.37,
+        "ema10": 26.07,
+        "ema20": 25.57,
+        "ema50": 24,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 144.35,
-        "stop": 139.37,
-        "target": 185.11,
-        "riskPct": 0.0345,
-        "rewardPct": 0.2824,
-        "rr": 8.2
+        "entry": 25.57,
+        "stop": 24.78,
+        "target": 35.73,
+        "riskPct": 0.0307,
+        "rewardPct": 0.3977,
+        "rr": 12.9
       },
-      "rsPercentile": 0.0357,
-      "return60dPct": 0.015,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-ROG/",
+      "rsPercentile": 0.5652,
+      "return60dPct": 0.3689,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMPH/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.4756,
-        "prePoleSlope": -0.069
+        "baseRange": 0.4625,
+        "prePoleSlope": -0.0469
       },
-      "rankChange": -2
+      "rankChange": 1
+    },
+    {
+      "ticker": "SWKS",
+      "name": "Skyworks Solutions, Inc.",
+      "exchange": "NASDAQ",
+      "price": 79.1,
+      "setupType": "first-stage",
+      "score": 60,
+      "subscores": {
+        "pole": 25.1,
+        "flag": 12,
+        "base": 18,
+        "context": 5
+      },
+      "breakdown": {
+        "poleMagnitude": 13.1,
+        "poleVelocity": 7,
+        "poleVolume": 5,
+        "flagContraction": 5,
+        "flagEntry": 2,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 16,
+      "pattern": {
+        "polePct": 0.4354,
+        "poleDays": 15,
+        "poleStartDate": "2026-09-01",
+        "poleStartPrice": 64.65,
+        "recentHigh": 92.8,
+        "recentHighDate": "2026-09-23",
+        "pullbackPct": 0.1476,
+        "flagLow": 73.76,
+        "flagHigh": null,
+        "volumeContraction": 0.93,
+        "poleVolumeRatio": 3.83,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": -0.0221,
+        "direction": "ascending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 79.64,
+        "ema20": 80.88,
+        "ema50": 77.89,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 80.88,
+        "stop": 77.89,
+        "target": 116.1,
+        "riskPct": 0.037,
+        "rewardPct": 0.4354,
+        "rr": 11.8
+      },
+      "rsPercentile": 0.4348,
+      "return60dPct": 0.2524,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SWKS/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.5367,
+        "prePoleSlope": -0.035
+      },
+      "rankChange": null
+    },
+    {
+      "ticker": "INSP",
+      "name": "Inspire Medical Systems, Inc.",
+      "exchange": "NYSE",
+      "price": 70.12,
+      "setupType": "first-stage",
+      "score": 59,
+      "subscores": {
+        "pole": 20.6,
+        "flag": 15,
+        "base": 18,
+        "context": 5
+      },
+      "breakdown": {
+        "poleMagnitude": 12.6,
+        "poleVelocity": 4,
+        "poleVolume": 4,
+        "flagContraction": 0,
+        "flagEntry": 10,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 19,
+      "pattern": {
+        "polePct": 0.4214,
+        "poleDays": 23,
+        "poleStartDate": "2026-08-17",
+        "poleStartPrice": 55.44,
+        "recentHigh": 78.8,
+        "recentHighDate": "2026-09-18",
+        "pullbackPct": 0.1102,
+        "flagLow": 66.07,
+        "flagHigh": null,
+        "volumeContraction": 1.31,
+        "poleVolumeRatio": 2.25,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0134,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 69.35,
+        "ema20": 69.2,
+        "ema50": 65.63,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 69.2,
+        "stop": 65.63,
+        "target": 98.35,
+        "riskPct": 0.0516,
+        "rewardPct": 0.4214,
+        "rr": 8.2
+      },
+      "rsPercentile": 0.6522,
+      "return60dPct": 0.3913,
+      "chartUrl": "https://www.tradingview.com/symbols/NYSE-INSP/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.7015,
+        "prePoleSlope": -0.0171
+      },
+      "rankChange": 3
     },
     {
       "ticker": "SONO",
       "name": "Sonos, Inc.",
       "exchange": "NASDAQ",
-      "price": 17.6,
+      "price": 17.69,
       "setupType": "first-stage",
-      "score": 58,
+      "score": 56,
       "subscores": {
         "pole": 18.5,
-        "flag": 12,
+        "flag": 10,
         "base": 22,
         "context": 5
       },
@@ -1438,14 +1444,14 @@
         "poleVolume": 5,
         "flagContraction": 5,
         "flagEntry": 2,
-        "flagPullback": 5,
+        "flagPullback": 3,
         "baseLength": 15,
         "baseTightness": 6,
         "basePoleRatio": 1,
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 8,
+      "daysInFlag": 9,
       "pattern": {
         "polePct": 0.216,
         "poleDays": 14,
@@ -1453,385 +1459,45 @@
         "poleStartPrice": 15.09,
         "recentHigh": 18.35,
         "recentHighDate": "2026-10-02",
-        "pullbackPct": 0.0409,
+        "pullbackPct": 0.036,
         "flagLow": 16.7,
         "flagHigh": null,
-        "volumeContraction": 0.8,
+        "volumeContraction": 0.78,
         "poleVolumeRatio": 3.79,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.026,
+        "distAbove20Ema": 0.0282,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 17.43,
-        "ema20": 17.15,
-        "ema50": 16.44,
+        "ema10": 17.47,
+        "ema20": 17.21,
+        "ema50": 16.49,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 17.15,
+        "entry": 17.21,
         "stop": 16.53,
-        "target": 20.86,
-        "riskPct": 0.0362,
+        "target": 20.92,
+        "riskPct": 0.0391,
         "rewardPct": 0.216,
-        "rr": 6
+        "rr": 5.5
       },
-      "rsPercentile": 0.4286,
-      "return60dPct": 0.19,
+      "rsPercentile": 0.2609,
+      "return60dPct": 0.2067,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SONO/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3718,
         "prePoleSlope": 0.0182
       },
-      "rankChange": 6
-    },
-    {
-      "ticker": "AMPH",
-      "name": "Amphastar Pharmaceuticals, Inc.",
-      "exchange": "NASDAQ",
-      "price": 26.08,
-      "setupType": "first-stage",
-      "score": 57,
-      "subscores": {
-        "pole": 20.9,
-        "flag": 13,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 11.9,
-        "poleVelocity": 4,
-        "poleVolume": 5,
-        "flagContraction": 0,
-        "flagEntry": 8,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "prime",
-      "daysInFlag": 12,
-      "pattern": {
-        "polePct": 0.3977,
-        "poleDays": 30,
-        "poleStartDate": "2026-08-14",
-        "poleStartPrice": 19.89,
-        "recentHigh": 27.8,
-        "recentHighDate": "2026-09-28",
-        "pullbackPct": 0.0619,
-        "flagLow": 25.03,
-        "flagHigh": null,
-        "volumeContraction": 1.01,
-        "poleVolumeRatio": 2.8,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0237,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 26,
-        "ema20": 25.48,
-        "ema50": 23.9,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 25.48,
-        "stop": 24.78,
-        "target": 35.61,
-        "riskPct": 0.0273,
-        "rewardPct": 0.3977,
-        "rr": 14.6
-      },
-      "rsPercentile": 0.6786,
-      "return60dPct": 0.3313,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMPH/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.4625,
-        "prePoleSlope": -0.0469
-      },
-      "rankChange": 7
-    },
-    {
-      "ticker": "SEI",
-      "name": "Solaris Energy Infrastructure, Inc.",
-      "exchange": "NYSE",
-      "price": 69.37,
-      "setupType": "first-stage",
-      "score": 54,
-      "subscores": {
-        "pole": 18.9,
-        "flag": 12,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 9.9,
-        "poleVelocity": 7,
-        "poleVolume": 2,
-        "flagContraction": 5,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3313,
-        "poleDays": 20,
-        "poleStartDate": "2026-09-08",
-        "poleStartPrice": 60.3,
-        "recentHigh": 80.28,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1359,
-        "flagLow": 67.49,
-        "flagHigh": null,
-        "volumeContraction": 0.99,
-        "poleVolumeRatio": 1.69,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0333,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 74.24,
-        "ema20": 71.76,
-        "ema50": 67.2,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 71.76,
-        "stop": 67.2,
-        "target": 95.53,
-        "riskPct": 0.0635,
-        "rewardPct": 0.3313,
-        "rr": 5.2
-      },
-      "rsPercentile": 0.25,
-      "return60dPct": 0.0644,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-SEI/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.0197,
-        "prePoleSlope": -0.145
-      },
-      "rankChange": null
-    },
-    {
-      "ticker": "ARW",
-      "name": "Arrow Electronics, Inc.",
-      "exchange": "NYSE",
-      "price": 224.26,
-      "setupType": "first-stage",
-      "score": 52,
-      "subscores": {
-        "pole": 12.8,
-        "flag": 12,
-        "base": 22,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 6.8,
-        "poleVelocity": 4,
-        "poleVolume": 2,
-        "flagContraction": 5,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 6,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "prime",
-      "daysInFlag": 7,
-      "pattern": {
-        "polePct": 0.2282,
-        "poleDays": 21,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 203.08,
-        "recentHigh": 249.43,
-        "recentHighDate": "2026-10-05",
-        "pullbackPct": 0.1009,
-        "flagLow": 220.77,
-        "flagHigh": null,
-        "volumeContraction": 0.79,
-        "poleVolumeRatio": 1.91,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0138,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 229.25,
-        "ema20": 227.4,
-        "ema50": 220.95,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 227.4,
-        "stop": 220.95,
-        "target": 279.3,
-        "riskPct": 0.0284,
-        "rewardPct": 0.2282,
-        "rr": 8.1
-      },
-      "rsPercentile": 0.0714,
-      "return60dPct": 0.0371,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-ARW/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.3111,
-        "prePoleSlope": 0.0734
-      },
-      "rankChange": 2
-    },
-    {
-      "ticker": "NAVI",
-      "name": "Navient Corporation",
-      "exchange": "NASDAQ",
-      "price": 9.26,
-      "setupType": "first-stage",
-      "score": 52,
-      "subscores": {
-        "pole": 14.2,
-        "flag": 11,
-        "base": 22,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 6.2,
-        "poleVelocity": 4,
-        "poleVolume": 4,
-        "flagContraction": 0,
-        "flagEntry": 6,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 6,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 20,
-      "pattern": {
-        "polePct": 0.2062,
-        "poleDays": 24,
-        "poleStartDate": "2026-08-12",
-        "poleStartPrice": 8.41,
-        "recentHigh": 10.15,
-        "recentHighDate": "2026-09-16",
-        "pullbackPct": 0.0877,
-        "flagLow": 8.75,
-        "flagHigh": null,
-        "volumeContraction": 1.17,
-        "poleVolumeRatio": 2.26,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0031,
-        "direction": "ascending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 9.22,
-        "ema20": 9.23,
-        "ema50": 9.17,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 9.23,
-        "stop": 8.59,
-        "target": 11.14,
-        "riskPct": 0.07,
-        "rewardPct": 0.2062,
-        "rr": 2.9
-      },
-      "rsPercentile": 0.2857,
-      "return60dPct": 0.0668,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-NAVI/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.3424,
-        "prePoleSlope": -0.0238
-      },
-      "rankChange": 10
-    },
-    {
-      "ticker": "INSP",
-      "name": "Inspire Medical Systems, Inc.",
-      "exchange": "NYSE",
-      "price": 68.07,
-      "setupType": "first-stage",
-      "score": 51,
-      "subscores": {
-        "pole": 20.6,
-        "flag": 7,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 12.6,
-        "poleVelocity": 4,
-        "poleVolume": 4,
-        "flagContraction": 0,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 18,
-      "pattern": {
-        "polePct": 0.4214,
-        "poleDays": 23,
-        "poleStartDate": "2026-08-17",
-        "poleStartPrice": 55.44,
-        "recentHigh": 78.8,
-        "recentHighDate": "2026-09-18",
-        "pullbackPct": 0.1362,
-        "flagLow": 66.07,
-        "flagHigh": null,
-        "volumeContraction": 1.33,
-        "poleVolumeRatio": 2.25,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0149,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 69.17,
-        "ema20": 69.1,
-        "ema50": 65.44,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 69.1,
-        "stop": 65.44,
-        "target": 98.21,
-        "riskPct": 0.0529,
-        "rewardPct": 0.4214,
-        "rr": 8
-      },
-      "rsPercentile": 0.5357,
-      "return60dPct": 0.2968,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-INSP/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.7015,
-        "prePoleSlope": -0.0169
-      },
-      "rankChange": 4
+      "rankChange": -3
     },
     {
       "ticker": "NEOG",
       "name": "Neogen Corporation",
       "exchange": "NASDAQ",
-      "price": 12.13,
+      "price": 12.27,
       "setupType": "first-stage",
       "score": 47,
       "subscores": {
@@ -1853,7 +1519,7 @@
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 15,
+      "daysInFlag": 16,
       "pattern": {
         "polePct": 0.2619,
         "poleDays": 29,
@@ -1861,67 +1527,133 @@
         "poleStartPrice": 11.3,
         "recentHigh": 14.26,
         "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.1494,
+        "pullbackPct": 0.1396,
         "flagLow": 11.13,
         "flagHigh": null,
-        "volumeContraction": 2.47,
+        "volumeContraction": 2.39,
         "poleVolumeRatio": 3.48,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.013,
+        "distAbove20Ema": -0.0014,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 12.13,
+        "ema10": 12.16,
         "ema20": 12.29,
-        "ema50": 11.95,
+        "ema50": 11.96,
         "ema50Rising": true
       },
       "levels": {
         "entry": 12.29,
-        "stop": 11.95,
+        "stop": 11.96,
         "target": 15.51,
-        "riskPct": 0.0279,
+        "riskPct": 0.0267,
         "rewardPct": 0.2619,
-        "rr": 9.4
+        "rr": 9.8
       },
-      "rsPercentile": 0.4643,
-      "return60dPct": 0.2216,
+      "rsPercentile": 0.3913,
+      "return60dPct": 0.2482,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-NEOG/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5748,
         "prePoleSlope": 0.0947
       },
-      "rankChange": null
+      "rankChange": 2
     }
   ],
   "flagCandidates": [
     {
+      "ticker": "FIVN",
+      "name": "Five9, Inc.",
+      "exchange": "NASDAQ",
+      "price": 35.1,
+      "setupType": "continuation",
+      "score": 89,
+      "subscores": {
+        "pole": 26.9,
+        "flag": 32,
+        "context": 30
+      },
+      "breakdown": {
+        "poleMagnitude": 9.9,
+        "poleVelocity": 10,
+        "poleVolume": 7,
+        "flagPullback": 20,
+        "flagContraction": 7,
+        "flagEntry": 5,
+        "ctxRs": 15,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 16,
+      "pattern": {
+        "polePct": 0.3289,
+        "poleDays": 9,
+        "poleStartDate": "2026-09-10",
+        "poleStartPrice": 30.1,
+        "recentHigh": 40,
+        "recentHighDate": "2026-09-23",
+        "pullbackPct": 0.1225,
+        "flagLow": 32.17,
+        "flagHigh": null,
+        "volumeContraction": 0.66,
+        "poleVolumeRatio": 2.02,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0146,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 34.79,
+        "ema20": 34.6,
+        "ema50": 32.82,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 34.6,
+        "stop": 32.82,
+        "target": 40.29,
+        "riskPct": 0.0512,
+        "rewardPct": 0.1645,
+        "rr": 3.2
+      },
+      "rsPercentile": 0.913,
+      "return60dPct": 0.5294,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FIVN/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.9383,
+        "prePoleSlope": 0.4231
+      },
+      "rankChange": 11
+    },
+    {
       "ticker": "ILMN",
       "name": "Illumina, Inc.",
       "exchange": "NASDAQ",
-      "price": 271.76,
+      "price": 267.93,
       "setupType": "continuation",
-      "score": 90,
+      "score": 89,
       "subscores": {
         "pole": 32,
-        "flag": 28,
-        "context": 30
+        "flag": 32,
+        "context": 25
       },
       "breakdown": {
         "poleMagnitude": 15,
         "poleVelocity": 7,
         "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 10,
-        "flagEntry": 4,
-        "ctxRs": 15,
+        "flagPullback": 20,
+        "flagContraction": 7,
+        "flagEntry": 5,
+        "ctxRs": 10,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.5467,
         "poleDays": 17,
@@ -1929,45 +1661,45 @@
         "poleStartPrice": 200.01,
         "recentHigh": 309.35,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1215,
+        "pullbackPct": 0.1339,
         "flagLow": 254,
         "flagHigh": null,
-        "volumeContraction": 0.48,
+        "volumeContraction": 0.5,
         "poleVolumeRatio": 17.23,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0351,
+        "distAbove20Ema": 0.0185,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 271.24,
-        "ema20": 262.55,
-        "ema50": 237.95,
+        "ema10": 270.64,
+        "ema20": 263.06,
+        "ema50": 239.13,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 262.55,
+        "entry": 263.06,
         "stop": 251.46,
-        "target": 334.31,
-        "riskPct": 0.0422,
+        "target": 334.96,
+        "riskPct": 0.0441,
         "rewardPct": 0.2733,
-        "rr": 6.5
+        "rr": 6.2
       },
-      "rsPercentile": 0.9286,
-      "return60dPct": 0.4115,
+      "rsPercentile": 0.7826,
+      "return60dPct": 0.4037,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-ILMN/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.7303,
-        "prePoleSlope": 0.3462
+        "prePoleSlope": 0.3461
       },
-      "rankChange": 0
+      "rankChange": -1
     },
     {
       "ticker": "TWLO",
       "name": "Twilio Inc.",
       "exchange": "NYSE",
-      "price": 271.12,
+      "price": 273.4,
       "setupType": "continuation",
       "score": 79,
       "subscores": {
@@ -1986,8 +1718,8 @@
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.407,
         "poleDays": 30,
@@ -1995,45 +1727,45 @@
         "poleStartPrice": 219.19,
         "recentHigh": 308.4,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1209,
-        "flagLow": 269.66,
+        "pullbackPct": 0.1135,
+        "flagLow": 260.66,
         "flagHigh": null,
         "volumeContraction": 0.65,
         "poleVolumeRatio": 15.76,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0165,
+        "distAbove20Ema": -0.0074,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 280.89,
-        "ema20": 275.66,
-        "ema50": 254.6,
+        "ema10": 279.53,
+        "ema20": 275.44,
+        "ema50": 255.34,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 275.66,
-        "stop": 266.96,
-        "target": 331.75,
-        "riskPct": 0.0315,
+        "entry": 275.44,
+        "stop": 258.05,
+        "target": 331.49,
+        "riskPct": 0.0631,
         "rewardPct": 0.2035,
-        "rr": 6.5
+        "rr": 3.2
       },
-      "rsPercentile": 0.8571,
-      "return60dPct": 0.3817,
+      "rsPercentile": 0.8261,
+      "return60dPct": 0.4909,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-TWLO/",
       "base": {
         "baseDays": 90,
         "baseRange": 1.0601,
         "prePoleSlope": 0.2844
       },
-      "rankChange": 0
+      "rankChange": -1
     },
     {
       "ticker": "HZO",
       "name": "MarineMax, Inc.",
       "exchange": "NYSE",
-      "price": 52.34,
+      "price": 52.35,
       "setupType": "continuation",
       "score": 78,
       "subscores": {
@@ -2053,7 +1785,7 @@
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 18,
+      "daysInFlag": 19,
       "pattern": {
         "polePct": 0.6379,
         "poleDays": 30,
@@ -2061,191 +1793,125 @@
         "poleStartPrice": 32.09,
         "recentHigh": 52.56,
         "recentHighDate": "2026-09-18",
-        "pullbackPct": 0.0042,
+        "pullbackPct": 0.004,
         "flagLow": 52.24,
         "flagHigh": null,
-        "volumeContraction": 0.72,
+        "volumeContraction": 0.71,
         "poleVolumeRatio": 25.56,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0027,
+        "distAbove20Ema": 0.0026,
         "direction": "flat",
         "atr14": null
       },
       "ema": {
-        "ema10": 52.37,
-        "ema20": 52.2,
-        "ema50": 49.58,
+        "ema10": 52.36,
+        "ema20": 52.21,
+        "ema50": 49.69,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 52.2,
-        "stop": 48.54,
-        "target": 68.85,
+        "entry": 52.21,
+        "stop": 48.56,
+        "target": 68.87,
         "riskPct": 0.07,
         "rewardPct": 0.3189,
         "rr": 4.6
       },
-      "rsPercentile": 0.9643,
-      "return60dPct": 0.5751,
+      "rsPercentile": 0.9565,
+      "return60dPct": 0.5902,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-HZO/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5016,
-        "prePoleSlope": 0.1869
-      },
-      "rankChange": 1
-    },
-    {
-      "ticker": "RVTY",
-      "name": "Revvity, Inc.",
-      "exchange": "NYSE",
-      "price": 152.12,
-      "setupType": "continuation",
-      "score": 78,
-      "subscores": {
-        "pole": 28.3,
-        "flag": 25,
-        "context": 25
-      },
-      "breakdown": {
-        "poleMagnitude": 11.3,
-        "poleVelocity": 7,
-        "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 7,
-        "flagEntry": 4,
-        "ctxRs": 10,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3751,
-        "poleDays": 18,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 120.9,
-        "recentHigh": 166.25,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.085,
-        "flagLow": 146.7,
-        "flagHigh": null,
-        "volumeContraction": 0.67,
-        "poleVolumeRatio": 2.95,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0211,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 152.82,
-        "ema20": 148.98,
-        "ema50": 137.39,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 148.98,
-        "stop": 145.23,
-        "target": 176.92,
-        "riskPct": 0.0251,
-        "rewardPct": 0.1876,
-        "rr": 7.5
-      },
-      "rsPercentile": 0.7857,
-      "return60dPct": 0.3764,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-RVTY/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.5645,
-        "prePoleSlope": 0.2179
+        "prePoleSlope": 0.187
       },
       "rankChange": -1
     },
     {
-      "ticker": "AZTA",
-      "name": "Azenta, Inc.",
+      "ticker": "OKTA",
+      "name": "Okta, Inc.",
       "exchange": "NASDAQ",
-      "price": 37.18,
+      "price": 208.52,
       "setupType": "continuation",
-      "score": 71,
+      "score": 76,
       "subscores": {
-        "pole": 32,
-        "flag": 14,
+        "pole": 25.7,
+        "flag": 25,
         "context": 25
       },
       "breakdown": {
-        "poleMagnitude": 15,
-        "poleVelocity": 7,
-        "poleVolume": 10,
-        "flagPullback": 6,
+        "poleMagnitude": 14.7,
+        "poleVelocity": 4,
+        "poleVolume": 7,
+        "flagPullback": 20,
         "flagContraction": 4,
-        "flagEntry": 4,
+        "flagEntry": 1,
         "ctxRs": 10,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "early",
+      "daysInFlag": 3,
       "pattern": {
-        "polePct": 0.5658,
-        "poleDays": 18,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 29.64,
-        "recentHigh": 46.41,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1989,
-        "flagLow": 34.93,
+        "polePct": 0.4899,
+        "poleDays": 27,
+        "poleStartDate": "2026-09-02",
+        "poleStartPrice": 157.73,
+        "recentHigh": 235,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.1127,
+        "flagLow": 202.97,
         "flagHigh": null,
-        "volumeContraction": 0.99,
-        "poleVolumeRatio": 4.81,
+        "volumeContraction": 0.97,
+        "poleVolumeRatio": 2.03,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0296,
+        "distAbove20Ema": 0,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 37.14,
-        "ema20": 36.11,
-        "ema50": 33.67,
+        "ema10": 216.16,
+        "ema20": 208.53,
+        "ema50": 185.59,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 36.11,
-        "stop": 34.58,
-        "target": 46.33,
-        "riskPct": 0.0424,
-        "rewardPct": 0.2829,
+        "entry": 208.53,
+        "stop": 200.94,
+        "target": 259.6,
+        "riskPct": 0.0364,
+        "rewardPct": 0.2449,
         "rr": 6.7
       },
-      "rsPercentile": 0.8929,
-      "return60dPct": 0.3983,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AZTA/",
+      "rsPercentile": 0.8696,
+      "return60dPct": 0.5255,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-OKTA/",
       "base": {
         "baseDays": 90,
-        "baseRange": 1.3534,
-        "prePoleSlope": 0.3458
+        "baseRange": 1.3955,
+        "prePoleSlope": 0.5269
       },
       "rankChange": null
     },
     {
-      "ticker": "HPE",
-      "name": "Hewlett Packard Enterprise Company",
-      "exchange": "NYSE",
-      "price": 63.11,
+      "ticker": "QLYS",
+      "name": "Qualys, Inc.",
+      "exchange": "NASDAQ",
+      "price": 192.65,
       "setupType": "continuation",
-      "score": 68,
+      "score": 73,
       "subscores": {
-        "pole": 29,
-        "flag": 19,
+        "pole": 24.4,
+        "flag": 29,
         "context": 20
       },
       "breakdown": {
-        "poleMagnitude": 15,
-        "poleVelocity": 4,
-        "poleVolume": 10,
-        "flagPullback": 14,
+        "poleMagnitude": 10.4,
+        "poleVelocity": 7,
+        "poleVolume": 7,
+        "flagPullback": 20,
         "flagContraction": 4,
-        "flagEntry": 1,
+        "flagEntry": 5,
         "ctxRs": 5,
         "ctxTrend": 10,
         "ctxMarket": 5
@@ -2253,195 +1919,63 @@
       "stage": "early",
       "daysInFlag": 3,
       "pattern": {
-        "polePct": 0.6096,
-        "poleDays": 25,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 45.7,
-        "recentHigh": 73.56,
-        "recentHighDate": "2026-10-09",
-        "pullbackPct": 0.1421,
-        "flagLow": 62.62,
-        "flagHigh": null,
-        "volumeContraction": 0.95,
-        "poleVolumeRatio": 3.92,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.038,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 67.82,
-        "ema20": 65.6,
-        "ema50": 59.85,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 65.6,
-        "stop": 61.99,
-        "target": 85.6,
-        "riskPct": 0.055,
-        "rewardPct": 0.3048,
-        "rr": 5.5
-      },
-      "rsPercentile": 0.7143,
-      "return60dPct": 0.3508,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-HPE/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.3496,
-        "prePoleSlope": 0.4241
-      },
-      "rankChange": null
-    },
-    {
-      "ticker": "CRL",
-      "name": "Charles River Laboratories International, Inc.",
-      "exchange": "NYSE",
-      "price": 302,
-      "setupType": "continuation",
-      "score": 67,
-      "subscores": {
-        "pole": 21.4,
-        "flag": 21,
-        "context": 25
-      },
-      "breakdown": {
-        "poleMagnitude": 7.4,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 3,
-        "ctxRs": 10,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.2471,
-        "poleDays": 16,
+        "polePct": 0.3451,
+        "poleDays": 20,
         "poleStartDate": "2026-09-14",
-        "poleStartPrice": 267.27,
-        "recentHigh": 333.3,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.0939,
-        "flagLow": 288.43,
+        "poleStartPrice": 153.34,
+        "recentHigh": 206.25,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0659,
+        "flagLow": 184.8,
         "flagHigh": null,
-        "volumeContraction": 0.81,
-        "poleVolumeRatio": 2.19,
+        "volumeContraction": 0.84,
+        "poleVolumeRatio": 2.08,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0246,
-        "direction": "flat",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 299.02,
-        "ema20": 294.76,
-        "ema50": 280.12,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 294.76,
-        "stop": 285.55,
-        "target": 331.17,
-        "riskPct": 0.0313,
-        "rewardPct": 0.1235,
-        "rr": 4
-      },
-      "rsPercentile": 0.8214,
-      "return60dPct": 0.3765,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-CRL/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.0746,
-        "prePoleSlope": 0.4837
-      },
-      "rankChange": 1
-    },
-    {
-      "ticker": "CRWD",
-      "name": "CrowdStrike Holdings, Inc.",
-      "exchange": "NASDAQ",
-      "price": 249.29,
-      "setupType": "continuation",
-      "score": 66,
-      "subscores": {
-        "pole": 26.9,
-        "flag": 19,
-        "context": 20
-      },
-      "breakdown": {
-        "poleMagnitude": 12.9,
-        "poleVelocity": 4,
-        "poleVolume": 10,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 1,
-        "ctxRs": 5,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.4307,
-        "poleDays": 23,
-        "poleStartDate": "2026-09-02",
-        "poleStartPrice": 200.6,
-        "recentHigh": 286.99,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1314,
-        "flagLow": 248.03,
-        "flagHigh": null,
-        "volumeContraction": 0.77,
-        "poleVolumeRatio": 2.65,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0278,
+        "distAbove20Ema": 0.0172,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 261.95,
-        "ema20": 256.41,
-        "ema50": 235.65,
+        "ema10": 193.23,
+        "ema20": 189.4,
+        "ema50": 178.57,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 256.41,
-        "stop": 245.55,
-        "target": 311.62,
-        "riskPct": 0.0423,
-        "rewardPct": 0.2153,
+        "entry": 189.4,
+        "stop": 182.95,
+        "target": 222.07,
+        "riskPct": 0.034,
+        "rewardPct": 0.1725,
         "rr": 5.1
       },
-      "rsPercentile": 0.5714,
-      "return60dPct": 0.3042,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-CRWD/",
+      "rsPercentile": 0.6087,
+      "return60dPct": 0.3738,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-QLYS/",
       "base": {
         "baseDays": 90,
-        "baseRange": 1.1628,
-        "prePoleSlope": 0.3916
+        "baseRange": 1.3905,
+        "prePoleSlope": 0.5956
       },
-      "rankChange": -3
+      "rankChange": null
     },
     {
       "ticker": "AMRX",
       "name": "Amneal Pharmaceuticals, Inc.",
       "exchange": "NASDAQ",
-      "price": 18.9,
+      "price": 19.25,
       "setupType": "continuation",
-      "score": 65,
+      "score": 71,
       "subscores": {
         "pole": 28.4,
-        "flag": 22,
+        "flag": 28,
         "context": 15
       },
       "breakdown": {
         "poleMagnitude": 8.4,
         "poleVelocity": 10,
         "poleVolume": 10,
-        "flagPullback": 14,
+        "flagPullback": 20,
         "flagContraction": 7,
         "flagEntry": 1,
         "ctxRs": 0,
@@ -2449,7 +1983,7 @@
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 17,
+      "daysInFlag": 18,
       "pattern": {
         "polePct": 0.2787,
         "poleDays": 3,
@@ -2457,182 +1991,116 @@
         "poleStartPrice": 16.56,
         "recentHigh": 21.17,
         "recentHighDate": "2026-09-21",
-        "pullbackPct": 0.1074,
+        "pullbackPct": 0.0909,
         "flagLow": 18.74,
         "flagHigh": null,
-        "volumeContraction": 0.67,
+        "volumeContraction": 0.68,
         "poleVolumeRatio": 3.74,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0294,
+        "distAbove20Ema": -0.0103,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 19.66,
-        "ema20": 19.47,
-        "ema50": 18.67,
+        "ema10": 19.59,
+        "ema20": 19.45,
+        "ema50": 18.69,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 19.47,
-        "stop": 18.67,
-        "target": 22.18,
-        "riskPct": 0.0411,
+        "entry": 19.45,
+        "stop": 18.69,
+        "target": 22.16,
+        "riskPct": 0.0389,
         "rewardPct": 0.1393,
-        "rr": 3.4
+        "rr": 3.6
       },
-      "rsPercentile": 0.1071,
-      "return60dPct": 0.0442,
+      "rsPercentile": 0.087,
+      "return60dPct": 0.0845,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMRX/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.6378,
         "prePoleSlope": 0.2529
       },
-      "rankChange": -2
+      "rankChange": 2
     },
     {
-      "ticker": "CERT",
-      "name": "Certara, Inc.",
-      "exchange": "NASDAQ",
-      "price": 9.36,
-      "setupType": "continuation",
-      "score": 64,
-      "subscores": {
-        "pole": 24.3,
-        "flag": 15,
-        "context": 25
-      },
-      "breakdown": {
-        "poleMagnitude": 10.3,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 14,
-        "flagContraction": 0,
-        "flagEntry": 1,
-        "ctxRs": 10,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3443,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 7.58,
-        "recentHigh": 10.19,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.0815,
-        "flagLow": 8.58,
-        "flagHigh": null,
-        "volumeContraction": 1.04,
-        "poleVolumeRatio": 2.09,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0364,
-        "direction": "ascending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 9.23,
-        "ema20": 9.03,
-        "ema50": 8.47,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 9.03,
-        "stop": 8.49,
-        "target": 10.59,
-        "riskPct": 0.0594,
-        "rewardPct": 0.1722,
-        "rr": 2.9
-      },
-      "rsPercentile": 0.75,
-      "return60dPct": 0.3664,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-CERT/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.9966,
-        "prePoleSlope": 0.3343
-      },
-      "rankChange": null
-    },
-    {
-      "ticker": "BBY",
-      "name": "Best Buy Co., Inc.",
+      "ticker": "RVTY",
+      "name": "Revvity, Inc.",
       "exchange": "NYSE",
-      "price": 89.1,
+      "price": 154.71,
       "setupType": "continuation",
-      "score": 63,
+      "score": 70,
       "subscores": {
-        "pole": 20.6,
-        "flag": 27,
-        "context": 15
+        "pole": 28.3,
+        "flag": 22,
+        "context": 20
       },
       "breakdown": {
-        "poleMagnitude": 6.6,
+        "poleMagnitude": 11.3,
         "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 20,
+        "poleVolume": 10,
+        "flagPullback": 14,
         "flagContraction": 4,
-        "flagEntry": 3,
-        "ctxRs": 0,
+        "flagEntry": 4,
+        "ctxRs": 5,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "late",
-      "daysInFlag": 15,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
-        "polePct": 0.2216,
-        "poleDays": 15,
-        "poleStartDate": "2026-09-01",
-        "poleStartPrice": 79.02,
-        "recentHigh": 96.53,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.077,
-        "flagLow": 83.65,
+        "polePct": 0.3751,
+        "poleDays": 18,
+        "poleStartDate": "2026-09-10",
+        "poleStartPrice": 120.9,
+        "recentHigh": 166.25,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.0694,
+        "flagLow": 146.7,
         "flagHigh": null,
         "volumeContraction": 0.72,
-        "poleVolumeRatio": 2.01,
+        "poleVolumeRatio": 2.95,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.009,
-        "direction": "ascending",
+        "distAbove20Ema": 0.0347,
+        "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 87.89,
-        "ema20": 88.3,
-        "ema50": 87.04,
+        "ema10": 153.17,
+        "ema20": 149.52,
+        "ema50": 138.07,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 88.3,
-        "stop": 82.12,
-        "target": 98.09,
-        "riskPct": 0.07,
-        "rewardPct": 0.1108,
-        "rr": 1.6
+        "entry": 149.52,
+        "stop": 145.23,
+        "target": 177.57,
+        "riskPct": 0.0287,
+        "rewardPct": 0.1876,
+        "rr": 6.5
       },
-      "rsPercentile": 0.1429,
-      "return60dPct": 0.0455,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-BBY/",
+      "rsPercentile": 0.6957,
+      "return60dPct": 0.3996,
+      "chartUrl": "https://www.tradingview.com/symbols/NYSE-RVTY/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.6564,
-        "prePoleSlope": 0.2741
+        "baseRange": 0.5645,
+        "prePoleSlope": 0.2179
       },
-      "rankChange": 3
+      "rankChange": -4
     },
     {
       "ticker": "META",
       "name": "Meta Platforms, Inc.",
       "exchange": "NASDAQ",
-      "price": 737.54,
+      "price": 736.72,
       "setupType": "first-stage",
-      "score": 63,
+      "score": 69,
       "subscores": {
         "pole": 22.5,
-        "flag": 12,
+        "flag": 18,
         "base": 23,
         "context": 5
       },
@@ -2641,15 +2109,15 @@
         "poleVelocity": 7,
         "poleVolume": 5,
         "flagContraction": 5,
-        "flagEntry": 2,
+        "flagEntry": 8,
         "flagPullback": 5,
         "baseLength": 15,
         "baseTightness": 6,
         "basePoleRatio": 2,
         "ctxMarket": 5
       },
-      "stage": "prime",
-      "daysInFlag": 14,
+      "stage": "late",
+      "daysInFlag": 15,
       "pattern": {
         "polePct": 0.3515,
         "poleDays": 15,
@@ -2657,122 +2125,56 @@
         "poleStartPrice": 577,
         "recentHigh": 779.82,
         "recentHighDate": "2026-09-24",
-        "pullbackPct": 0.0542,
+        "pullbackPct": 0.0553,
         "flagLow": 711.68,
         "flagHigh": null,
         "volumeContraction": 0.75,
         "poleVolumeRatio": 2.73,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.026,
-        "direction": "ascending",
+        "distAbove20Ema": 0.0224,
+        "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 734.93,
-        "ema20": 718.88,
-        "ema50": 675.39,
+        "ema10": 735.25,
+        "ema20": 720.58,
+        "ema50": 677.79,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 718.88,
-        "stop": 668.56,
-        "target": 971.58,
-        "riskPct": 0.07,
+        "entry": 720.58,
+        "stop": 704.56,
+        "target": 973.87,
+        "riskPct": 0.0222,
         "rewardPct": 0.3515,
-        "rr": 5
+        "rr": 15.8
       },
-      "rsPercentile": 0.3929,
-      "return60dPct": 0.1456,
+      "rsPercentile": 0.2174,
+      "return60dPct": 0.1747,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-META/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3081,
         "prePoleSlope": -0.0536
       },
-      "rankChange": null
+      "rankChange": 0
     },
     {
-      "ticker": "FIVN",
-      "name": "Five9, Inc.",
+      "ticker": "TLN",
+      "name": "Talen Energy Corporation",
       "exchange": "NASDAQ",
-      "price": 33.08,
-      "setupType": "continuation",
-      "score": 61,
-      "subscores": {
-        "pole": 26.9,
-        "flag": 14,
-        "context": 20
-      },
-      "breakdown": {
-        "poleMagnitude": 9.9,
-        "poleVelocity": 10,
-        "poleVolume": 7,
-        "flagPullback": 6,
-        "flagContraction": 7,
-        "flagEntry": 1,
-        "ctxRs": 5,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 15,
-      "pattern": {
-        "polePct": 0.3289,
-        "poleDays": 9,
-        "poleStartDate": "2026-09-10",
-        "poleStartPrice": 30.1,
-        "recentHigh": 40,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.173,
-        "flagLow": 32.65,
-        "flagHigh": null,
-        "volumeContraction": 0.66,
-        "poleVolumeRatio": 2.02,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0423,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 34.72,
-        "ema20": 34.54,
-        "ema50": 32.73,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 34.54,
-        "stop": 32.73,
-        "target": 40.22,
-        "riskPct": 0.0525,
-        "rewardPct": 0.1645,
-        "rr": 3.1
-      },
-      "rsPercentile": 0.6429,
-      "return60dPct": 0.3111,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FIVN/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.9383,
-        "prePoleSlope": 0.4231
-      },
-      "rankChange": -6
-    },
-    {
-      "ticker": "SNPS",
-      "name": "Synopsys, Inc.",
-      "exchange": "NASDAQ",
-      "price": 479.93,
+      "price": 353.6,
       "setupType": "first-stage",
-      "score": 61,
+      "score": 64,
       "subscores": {
-        "pole": 20.2,
+        "pole": 22.7,
         "flag": 18,
         "base": 18,
         "context": 5
       },
       "breakdown": {
-        "poleMagnitude": 8.2,
-        "poleVelocity": 7,
+        "poleMagnitude": 7.7,
+        "poleVelocity": 10,
         "poleVolume": 5,
         "flagContraction": 5,
         "flagEntry": 8,
@@ -2785,119 +2187,387 @@
       "stage": "early",
       "daysInFlag": 3,
       "pattern": {
+        "polePct": 0.2566,
+        "poleDays": 7,
+        "poleStartDate": "2026-10-01",
+        "poleStartPrice": 310.79,
+        "recentHigh": 390.54,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0946,
+        "flagLow": 337.99,
+        "flagHigh": null,
+        "volumeContraction": 0.75,
+        "poleVolumeRatio": 3.4,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0309,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 357.12,
+        "ema20": 343,
+        "ema50": 334.48,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 343,
+        "stop": 334.61,
+        "target": 431.01,
+        "riskPct": 0.0244,
+        "rewardPct": 0.2566,
+        "rr": 10.5
+      },
+      "rsPercentile": 0,
+      "return60dPct": -0.0631,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-TLN/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.6079,
+        "prePoleSlope": -0.1457
+      },
+      "rankChange": null
+    },
+    {
+      "ticker": "SNPS",
+      "name": "Synopsys, Inc.",
+      "exchange": "NASDAQ",
+      "price": 468.11,
+      "setupType": "first-stage",
+      "score": 63,
+      "subscores": {
+        "pole": 20.2,
+        "flag": 20,
+        "base": 18,
+        "context": 5
+      },
+      "breakdown": {
+        "poleMagnitude": 8.2,
+        "poleVelocity": 7,
+        "poleVolume": 5,
+        "flagContraction": 5,
+        "flagEntry": 10,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
+        "ctxMarket": 5
+      },
+      "stage": "early",
+      "daysInFlag": 4,
+      "pattern": {
         "polePct": 0.2748,
         "poleDays": 13,
         "poleStartDate": "2026-09-22",
         "poleStartPrice": 402.02,
         "recentHigh": 512.49,
         "recentHighDate": "2026-10-09",
-        "pullbackPct": 0.0635,
-        "flagLow": 476.73,
+        "pullbackPct": 0.0866,
+        "flagLow": 454.49,
         "flagHigh": null,
-        "volumeContraction": 0.91,
+        "volumeContraction": 0.98,
         "poleVolumeRatio": 3.51,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0342,
+        "distAbove20Ema": 0.0079,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 484.46,
-        "ema20": 464.07,
-        "ema50": 439.54,
+        "ema10": 481.48,
+        "ema20": 464.46,
+        "ema50": 440.66,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 464.07,
-        "stop": 431.59,
-        "target": 591.59,
-        "riskPct": 0.07,
+        "entry": 464.46,
+        "stop": 449.95,
+        "target": 592.08,
+        "riskPct": 0.0312,
         "rewardPct": 0.2748,
-        "rr": 3.9
+        "rr": 8.8
       },
-      "rsPercentile": 0.5,
-      "return60dPct": 0.2335,
+      "rsPercentile": 0.3478,
+      "return60dPct": 0.2397,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SNPS/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.488,
         "prePoleSlope": -0.1311
       },
-      "rankChange": null
+      "rankChange": -1
     },
     {
-      "ticker": "ROG",
-      "name": "Rogers Corporation",
+      "ticker": "CRL",
+      "name": "Charles River Laboratories International, Inc.",
       "exchange": "NYSE",
-      "price": 139.72,
-      "setupType": "first-stage",
-      "score": 60,
+      "price": 306.24,
+      "setupType": "continuation",
+      "score": 62,
       "subscores": {
-        "pole": 23.5,
-        "flag": 13,
+        "pole": 21.4,
+        "flag": 21,
+        "context": 20
+      },
+      "breakdown": {
+        "poleMagnitude": 7.4,
+        "poleVelocity": 7,
+        "poleVolume": 7,
+        "flagPullback": 14,
+        "flagContraction": 4,
+        "flagEntry": 3,
+        "ctxRs": 5,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "prime",
+      "daysInFlag": 7,
+      "pattern": {
+        "polePct": 0.2471,
+        "poleDays": 16,
+        "poleStartDate": "2026-09-14",
+        "poleStartPrice": 267.27,
+        "recentHigh": 333.3,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.0812,
+        "flagLow": 288.43,
+        "flagHigh": null,
+        "volumeContraction": 0.82,
+        "poleVolumeRatio": 2.19,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0351,
+        "direction": "flat",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 300.33,
+        "ema20": 295.85,
+        "ema50": 281.14,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 295.85,
+        "stop": 285.55,
+        "target": 332.4,
+        "riskPct": 0.0348,
+        "rewardPct": 0.1235,
+        "rr": 3.5
+      },
+      "rsPercentile": 0.7391,
+      "return60dPct": 0.4003,
+      "chartUrl": "https://www.tradingview.com/symbols/NYSE-CRL/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 1.0746,
+        "prePoleSlope": 0.4837
+      },
+      "rankChange": -2
+    },
+    {
+      "ticker": "AMPH",
+      "name": "Amphastar Pharmaceuticals, Inc.",
+      "exchange": "NASDAQ",
+      "price": 26.42,
+      "setupType": "first-stage",
+      "score": 62,
+      "subscores": {
+        "pole": 20.9,
+        "flag": 18,
         "base": 18,
         "context": 5
       },
       "breakdown": {
-        "poleMagnitude": 8.5,
-        "poleVelocity": 10,
+        "poleMagnitude": 11.9,
+        "poleVelocity": 4,
         "poleVolume": 5,
-        "flagContraction": 10,
-        "flagEntry": 2,
-        "flagPullback": 1,
+        "flagContraction": 5,
+        "flagEntry": 8,
+        "flagPullback": 5,
         "baseLength": 15,
         "baseTightness": 2,
         "basePoleRatio": 1,
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 10,
+      "daysInFlag": 13,
       "pattern": {
-        "polePct": 0.2824,
-        "poleDays": 6,
-        "poleStartDate": "2026-09-22",
-        "poleStartPrice": 129.4,
-        "recentHigh": 165.94,
-        "recentHighDate": "2026-09-30",
-        "pullbackPct": 0.158,
-        "flagLow": 138.7,
+        "polePct": 0.3977,
+        "poleDays": 30,
+        "poleStartDate": "2026-08-14",
+        "poleStartPrice": 19.89,
+        "recentHigh": 27.8,
+        "recentHighDate": "2026-09-28",
+        "pullbackPct": 0.0496,
+        "flagLow": 25.03,
         "flagHigh": null,
-        "volumeContraction": 0.62,
-        "poleVolumeRatio": 4.95,
+        "volumeContraction": 0.99,
+        "poleVolumeRatio": 2.8,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0321,
+        "distAbove20Ema": 0.0334,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 146.72,
-        "ema20": 144.35,
-        "ema50": 139.37,
+        "ema10": 26.07,
+        "ema20": 25.57,
+        "ema50": 24,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 144.35,
-        "stop": 139.37,
-        "target": 185.11,
-        "riskPct": 0.0345,
-        "rewardPct": 0.2824,
-        "rr": 8.2
+        "entry": 25.57,
+        "stop": 24.78,
+        "target": 35.73,
+        "riskPct": 0.0307,
+        "rewardPct": 0.3977,
+        "rr": 12.9
       },
-      "rsPercentile": 0.0357,
-      "return60dPct": 0.015,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-ROG/",
+      "rsPercentile": 0.5652,
+      "return60dPct": 0.3689,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMPH/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.4756,
-        "prePoleSlope": -0.069
+        "baseRange": 0.4625,
+        "prePoleSlope": -0.0469
+      },
+      "rankChange": 1
+    },
+    {
+      "ticker": "CRWD",
+      "name": "CrowdStrike Holdings, Inc.",
+      "exchange": "NASDAQ",
+      "price": 244.57,
+      "setupType": "continuation",
+      "score": 61,
+      "subscores": {
+        "pole": 26.9,
+        "flag": 19,
+        "context": 15
+      },
+      "breakdown": {
+        "poleMagnitude": 12.9,
+        "poleVelocity": 4,
+        "poleVolume": 10,
+        "flagPullback": 14,
+        "flagContraction": 4,
+        "flagEntry": 1,
+        "ctxRs": 0,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "prime",
+      "daysInFlag": 7,
+      "pattern": {
+        "polePct": 0.4307,
+        "poleDays": 23,
+        "poleStartDate": "2026-09-02",
+        "poleStartPrice": 200.6,
+        "recentHigh": 286.99,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.1478,
+        "flagLow": 239.82,
+        "flagHigh": null,
+        "volumeContraction": 0.81,
+        "poleVolumeRatio": 2.65,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": -0.0419,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 258.79,
+        "ema20": 255.28,
+        "ema50": 236,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 255.28,
+        "stop": 237.42,
+        "target": 310.25,
+        "riskPct": 0.0699,
+        "rewardPct": 0.2153,
+        "rr": 3.1
+      },
+      "rsPercentile": 0.4783,
+      "return60dPct": 0.298,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-CRWD/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 1.1628,
+        "prePoleSlope": 0.3916
       },
       "rankChange": -2
+    },
+    {
+      "ticker": "SWKS",
+      "name": "Skyworks Solutions, Inc.",
+      "exchange": "NASDAQ",
+      "price": 79.1,
+      "setupType": "first-stage",
+      "score": 60,
+      "subscores": {
+        "pole": 25.1,
+        "flag": 12,
+        "base": 18,
+        "context": 5
+      },
+      "breakdown": {
+        "poleMagnitude": 13.1,
+        "poleVelocity": 7,
+        "poleVolume": 5,
+        "flagContraction": 5,
+        "flagEntry": 2,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
+        "ctxMarket": 5
+      },
+      "stage": "late",
+      "daysInFlag": 16,
+      "pattern": {
+        "polePct": 0.4354,
+        "poleDays": 15,
+        "poleStartDate": "2026-09-01",
+        "poleStartPrice": 64.65,
+        "recentHigh": 92.8,
+        "recentHighDate": "2026-09-23",
+        "pullbackPct": 0.1476,
+        "flagLow": 73.76,
+        "flagHigh": null,
+        "volumeContraction": 0.93,
+        "poleVolumeRatio": 3.83,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": -0.0221,
+        "direction": "ascending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 79.64,
+        "ema20": 80.88,
+        "ema50": 77.89,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 80.88,
+        "stop": 77.89,
+        "target": 116.1,
+        "riskPct": 0.037,
+        "rewardPct": 0.4354,
+        "rr": 11.8
+      },
+      "rsPercentile": 0.4348,
+      "return60dPct": 0.2524,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SWKS/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.5367,
+        "prePoleSlope": -0.035
+      },
+      "rankChange": null
     },
     {
       "ticker": "PRLB",
       "name": "Proto Labs, Inc.",
       "exchange": "NYSE",
-      "price": 88.97,
+      "price": 87.41,
       "setupType": "continuation",
       "score": 59,
       "subscores": {
@@ -2916,8 +2586,8 @@
         "ctxTrend": 10,
         "ctxMarket": 5
       },
-      "stage": "forming",
-      "daysInFlag": 6,
+      "stage": "prime",
+      "daysInFlag": 7,
       "pattern": {
         "polePct": 0.2508,
         "poleDays": 14,
@@ -2925,116 +2595,184 @@
         "poleStartPrice": 79.92,
         "recentHigh": 99.96,
         "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1099,
-        "flagLow": 87.91,
+        "pullbackPct": 0.1256,
+        "flagLow": 84,
         "flagHigh": null,
-        "volumeContraction": 0.54,
+        "volumeContraction": 0.6,
         "poleVolumeRatio": 2.49,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0274,
+        "distAbove20Ema": -0.0404,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 92.51,
-        "ema20": 91.48,
+        "ema10": 91.58,
+        "ema20": 91.09,
         "ema50": 87.28,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 91.48,
+        "entry": 91.09,
         "stop": 87.28,
-        "target": 102.94,
-        "riskPct": 0.0459,
+        "target": 102.51,
+        "riskPct": 0.0418,
         "rewardPct": 0.1254,
-        "rr": 2.7
+        "rr": 3
       },
-      "rsPercentile": 0.3571,
-      "return60dPct": 0.1004,
+      "rsPercentile": 0.1304,
+      "return60dPct": 0.0963,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-PRLB/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3868,
         "prePoleSlope": 0.1216
       },
-      "rankChange": -1
+      "rankChange": 2
     },
     {
-      "ticker": "SNX",
-      "name": "TD SYNNEX Corporation",
+      "ticker": "INSP",
+      "name": "Inspire Medical Systems, Inc.",
       "exchange": "NYSE",
-      "price": 263.76,
-      "setupType": "continuation",
+      "price": 70.12,
+      "setupType": "first-stage",
       "score": 59,
       "subscores": {
-        "pole": 23.3,
-        "flag": 21,
-        "context": 15
+        "pole": 20.6,
+        "flag": 15,
+        "base": 18,
+        "context": 5
       },
       "breakdown": {
-        "poleMagnitude": 6.3,
-        "poleVelocity": 7,
-        "poleVolume": 10,
-        "flagPullback": 20,
+        "poleMagnitude": 12.6,
+        "poleVelocity": 4,
+        "poleVolume": 4,
         "flagContraction": 0,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
+        "flagEntry": 10,
+        "flagPullback": 5,
+        "baseLength": 15,
+        "baseTightness": 2,
+        "basePoleRatio": 1,
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 15,
+      "daysInFlag": 19,
       "pattern": {
-        "polePct": 0.2088,
-        "poleDays": 13,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 247.17,
-        "recentHigh": 298.77,
-        "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.1172,
-        "flagLow": 243.03,
+        "polePct": 0.4214,
+        "poleDays": 23,
+        "poleStartDate": "2026-08-17",
+        "poleStartPrice": 55.44,
+        "recentHigh": 78.8,
+        "recentHighDate": "2026-09-18",
+        "pullbackPct": 0.1102,
+        "flagLow": 66.07,
         "flagHigh": null,
-        "volumeContraction": 1.09,
-        "poleVolumeRatio": 3.6,
+        "volumeContraction": 1.31,
+        "poleVolumeRatio": 2.25,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0193,
+        "distAbove20Ema": 0.0134,
         "direction": "descending",
         "atr14": null
       },
       "ema": {
-        "ema10": 270.62,
-        "ema20": 268.96,
-        "ema50": 263.51,
+        "ema10": 69.35,
+        "ema20": 69.2,
+        "ema50": 65.63,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 268.96,
-        "stop": 263.51,
-        "target": 297.03,
-        "riskPct": 0.0203,
-        "rewardPct": 0.1044,
-        "rr": 5.2
+        "entry": 69.2,
+        "stop": 65.63,
+        "target": 98.35,
+        "riskPct": 0.0516,
+        "rewardPct": 0.4214,
+        "rr": 8.2
       },
-      "rsPercentile": 0.2143,
-      "return60dPct": 0.058,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-SNX/",
+      "rsPercentile": 0.6522,
+      "return60dPct": 0.3913,
+      "chartUrl": "https://www.tradingview.com/symbols/NYSE-INSP/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.3508,
-        "prePoleSlope": 0.1004
+        "baseRange": 0.7015,
+        "prePoleSlope": -0.0171
       },
-      "rankChange": 8
+      "rankChange": 3
+    },
+    {
+      "ticker": "FFIV",
+      "name": "F5, Inc.",
+      "exchange": "NASDAQ",
+      "price": 456.58,
+      "setupType": "continuation",
+      "score": 58,
+      "subscores": {
+        "pole": 18.2,
+        "flag": 25,
+        "context": 15
+      },
+      "breakdown": {
+        "poleMagnitude": 7.2,
+        "poleVelocity": 4,
+        "poleVolume": 7,
+        "flagPullback": 20,
+        "flagContraction": 0,
+        "flagEntry": 5,
+        "ctxRs": 0,
+        "ctxTrend": 10,
+        "ctxMarket": 5
+      },
+      "stage": "early",
+      "daysInFlag": 3,
+      "pattern": {
+        "polePct": 0.241,
+        "poleDays": 23,
+        "poleStartDate": "2026-09-09",
+        "poleStartPrice": 389.44,
+        "recentHigh": 483.3,
+        "recentHighDate": "2026-10-12",
+        "pullbackPct": 0.0553,
+        "flagLow": 443.7,
+        "flagHigh": null,
+        "volumeContraction": 1.1,
+        "poleVolumeRatio": 2.05,
+        "flagBackHalfRatio": null,
+        "distAbove20Ema": 0.0086,
+        "direction": "descending",
+        "atr14": null
+      },
+      "ema": {
+        "ema10": 461.84,
+        "ema20": 452.68,
+        "ema50": 431.71,
+        "ema50Rising": true
+      },
+      "levels": {
+        "entry": 452.68,
+        "stop": 439.26,
+        "target": 507.23,
+        "riskPct": 0.0296,
+        "rewardPct": 0.1205,
+        "rr": 4.1
+      },
+      "rsPercentile": 0.1739,
+      "return60dPct": 0.1397,
+      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-FFIV/",
+      "base": {
+        "baseDays": 90,
+        "baseRange": 0.3639,
+        "prePoleSlope": 0.1098
+      },
+      "rankChange": null
     },
     {
       "ticker": "SONO",
       "name": "Sonos, Inc.",
       "exchange": "NASDAQ",
-      "price": 17.6,
+      "price": 17.69,
       "setupType": "first-stage",
-      "score": 58,
+      "score": 56,
       "subscores": {
         "pole": 18.5,
-        "flag": 12,
+        "flag": 10,
         "base": 22,
         "context": 5
       },
@@ -3044,14 +2782,14 @@
         "poleVolume": 5,
         "flagContraction": 5,
         "flagEntry": 2,
-        "flagPullback": 5,
+        "flagPullback": 3,
         "baseLength": 15,
         "baseTightness": 6,
         "basePoleRatio": 1,
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 8,
+      "daysInFlag": 9,
       "pattern": {
         "polePct": 0.216,
         "poleDays": 14,
@@ -3059,65 +2797,65 @@
         "poleStartPrice": 15.09,
         "recentHigh": 18.35,
         "recentHighDate": "2026-10-02",
-        "pullbackPct": 0.0409,
+        "pullbackPct": 0.036,
         "flagLow": 16.7,
         "flagHigh": null,
-        "volumeContraction": 0.8,
+        "volumeContraction": 0.78,
         "poleVolumeRatio": 3.79,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.026,
+        "distAbove20Ema": 0.0282,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 17.43,
-        "ema20": 17.15,
-        "ema50": 16.44,
+        "ema10": 17.47,
+        "ema20": 17.21,
+        "ema50": 16.49,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 17.15,
+        "entry": 17.21,
         "stop": 16.53,
-        "target": 20.86,
-        "riskPct": 0.0362,
+        "target": 20.92,
+        "riskPct": 0.0391,
         "rewardPct": 0.216,
-        "rr": 6
+        "rr": 5.5
       },
-      "rsPercentile": 0.4286,
-      "return60dPct": 0.19,
+      "rsPercentile": 0.2609,
+      "return60dPct": 0.2067,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-SONO/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.3718,
         "prePoleSlope": 0.0182
       },
-      "rankChange": 6
+      "rankChange": -3
     },
     {
       "ticker": "TGTX",
       "name": "TG Therapeutics, Inc.",
       "exchange": "NCM",
-      "price": 54.37,
+      "price": 56,
       "setupType": "continuation",
-      "score": 57,
+      "score": 53,
       "subscores": {
         "pole": 17.1,
-        "flag": 25,
+        "flag": 21,
         "context": 15
       },
       "breakdown": {
         "poleMagnitude": 6.1,
         "poleVelocity": 4,
         "poleVolume": 7,
-        "flagPullback": 20,
+        "flagPullback": 14,
         "flagContraction": 4,
-        "flagEntry": 1,
+        "flagEntry": 3,
         "ctxRs": 0,
         "ctxTrend": 10,
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 17,
+      "daysInFlag": 18,
       "pattern": {
         "polePct": 0.2029,
         "poleDays": 23,
@@ -3125,313 +2863,45 @@
         "poleStartPrice": 48.98,
         "recentHigh": 58.92,
         "recentHighDate": "2026-09-21",
-        "pullbackPct": 0.0772,
+        "pullbackPct": 0.0496,
         "flagLow": 51.34,
         "flagHigh": null,
         "volumeContraction": 0.81,
         "poleVolumeRatio": 2.18,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0064,
-        "direction": "descending",
+        "distAbove20Ema": 0.0211,
+        "direction": "flat",
         "atr14": null
       },
       "ema": {
-        "ema10": 54.49,
-        "ema20": 54.72,
-        "ema50": 53.99,
+        "ema10": 54.77,
+        "ema20": 54.84,
+        "ema50": 54.07,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 54.72,
-        "stop": 50.89,
-        "target": 60.27,
+        "entry": 54.84,
+        "stop": 51,
+        "target": 60.41,
         "riskPct": 0.07,
         "rewardPct": 0.1015,
         "rr": 1.4
       },
-      "rsPercentile": 0,
-      "return60dPct": 0.0078,
+      "rsPercentile": 0.0435,
+      "return60dPct": 0.063,
       "chartUrl": "https://www.tradingview.com/symbols/NCM-TGTX/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.7845,
         "prePoleSlope": 0.3795
       },
-      "rankChange": 3
-    },
-    {
-      "ticker": "AMPH",
-      "name": "Amphastar Pharmaceuticals, Inc.",
-      "exchange": "NASDAQ",
-      "price": 26.08,
-      "setupType": "first-stage",
-      "score": 57,
-      "subscores": {
-        "pole": 20.9,
-        "flag": 13,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 11.9,
-        "poleVelocity": 4,
-        "poleVolume": 5,
-        "flagContraction": 0,
-        "flagEntry": 8,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "prime",
-      "daysInFlag": 12,
-      "pattern": {
-        "polePct": 0.3977,
-        "poleDays": 30,
-        "poleStartDate": "2026-08-14",
-        "poleStartPrice": 19.89,
-        "recentHigh": 27.8,
-        "recentHighDate": "2026-09-28",
-        "pullbackPct": 0.0619,
-        "flagLow": 25.03,
-        "flagHigh": null,
-        "volumeContraction": 1.01,
-        "poleVolumeRatio": 2.8,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0237,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 26,
-        "ema20": 25.48,
-        "ema50": 23.9,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 25.48,
-        "stop": 24.78,
-        "target": 35.61,
-        "riskPct": 0.0273,
-        "rewardPct": 0.3977,
-        "rr": 14.6
-      },
-      "rsPercentile": 0.6786,
-      "return60dPct": 0.3313,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMPH/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.4625,
-        "prePoleSlope": -0.0469
-      },
-      "rankChange": 7
-    },
-    {
-      "ticker": "AMD",
-      "name": "Advanced Micro Devices, Inc.",
-      "exchange": "NASDAQ",
-      "price": 570.82,
-      "setupType": "continuation",
-      "score": 56,
-      "subscores": {
-        "pole": 22.1,
-        "flag": 19,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 11.1,
-        "poleVelocity": 7,
-        "poleVolume": 4,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.371,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 480.33,
-        "recentHigh": 658.52,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1332,
-        "flagLow": 567,
-        "flagHigh": null,
-        "volumeContraction": 0.82,
-        "poleVolumeRatio": 1.86,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.041,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 605.62,
-        "ema20": 595.25,
-        "ema50": 555.61,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 595.25,
-        "stop": 561.33,
-        "target": 705.66,
-        "riskPct": 0.057,
-        "rewardPct": 0.1855,
-        "rr": 3.3
-      },
-      "rsPercentile": 0.1786,
-      "return60dPct": 0.0485,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-AMD/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.6955,
-        "prePoleSlope": 0.1577
-      },
-      "rankChange": -6
-    },
-    {
-      "ticker": "PANW",
-      "name": "Palo Alto Networks, Inc.",
-      "exchange": "NASDAQ",
-      "price": 375.04,
-      "setupType": "continuation",
-      "score": 56,
-      "subscores": {
-        "pole": 22.1,
-        "flag": 19,
-        "context": 15
-      },
-      "breakdown": {
-        "poleMagnitude": 8.1,
-        "poleVelocity": 7,
-        "poleVolume": 7,
-        "flagPullback": 14,
-        "flagContraction": 4,
-        "flagEntry": 1,
-        "ctxRs": 0,
-        "ctxTrend": 10,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.2706,
-        "poleDays": 16,
-        "poleStartDate": "2026-09-14",
-        "poleStartPrice": 340.25,
-        "recentHigh": 432.33,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1325,
-        "flagLow": 370.5,
-        "flagHigh": null,
-        "volumeContraction": 0.71,
-        "poleVolumeRatio": 2.2,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0404,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 396.65,
-        "ema20": 390.83,
-        "ema50": 370.99,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 390.83,
-        "stop": 370.99,
-        "target": 443.71,
-        "riskPct": 0.0508,
-        "rewardPct": 0.1353,
-        "rr": 2.7
-      },
-      "rsPercentile": 0.3214,
-      "return60dPct": 0.0961,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-PANW/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.226,
-        "prePoleSlope": 0.4451
-      },
-      "rankChange": -6
-    },
-    {
-      "ticker": "SEI",
-      "name": "Solaris Energy Infrastructure, Inc.",
-      "exchange": "NYSE",
-      "price": 69.37,
-      "setupType": "first-stage",
-      "score": 54,
-      "subscores": {
-        "pole": 18.9,
-        "flag": 12,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 9.9,
-        "poleVelocity": 7,
-        "poleVolume": 2,
-        "flagContraction": 5,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "forming",
-      "daysInFlag": 6,
-      "pattern": {
-        "polePct": 0.3313,
-        "poleDays": 20,
-        "poleStartDate": "2026-09-08",
-        "poleStartPrice": 60.3,
-        "recentHigh": 80.28,
-        "recentHighDate": "2026-10-06",
-        "pullbackPct": 0.1359,
-        "flagLow": 67.49,
-        "flagHigh": null,
-        "volumeContraction": 0.99,
-        "poleVolumeRatio": 1.69,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0333,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 74.24,
-        "ema20": 71.76,
-        "ema50": 67.2,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 71.76,
-        "stop": 67.2,
-        "target": 95.53,
-        "riskPct": 0.0635,
-        "rewardPct": 0.3313,
-        "rr": 5.2
-      },
-      "rsPercentile": 0.25,
-      "return60dPct": 0.0644,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-SEI/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 1.0197,
-        "prePoleSlope": -0.145
-      },
-      "rankChange": null
+      "rankChange": 2
     },
     {
       "ticker": "A",
       "name": "Agilent Technologies, Inc.",
       "exchange": "NYSE",
-      "price": 174,
+      "price": 175.55,
       "setupType": "continuation",
       "score": 52,
       "subscores": {
@@ -3451,7 +2921,7 @@
         "ctxMarket": 5
       },
       "stage": "prime",
-      "daysInFlag": 11,
+      "daysInFlag": 12,
       "pattern": {
         "polePct": 0.2366,
         "poleDays": 12,
@@ -3459,249 +2929,111 @@
         "poleStartPrice": 143.18,
         "recentHigh": 177.05,
         "recentHighDate": "2026-09-29",
-        "pullbackPct": 0.0172,
+        "pullbackPct": 0.0085,
         "flagLow": 163.32,
         "flagHigh": null,
-        "volumeContraction": 0.8,
+        "volumeContraction": 0.79,
         "poleVolumeRatio": 2.26,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0399,
+        "distAbove20Ema": 0.0443,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 170.52,
-        "ema20": 167.32,
-        "ema50": 158.32,
+        "ema10": 171.43,
+        "ema20": 168.1,
+        "ema50": 159,
         "ema50Rising": true
       },
       "levels": {
-        "entry": 167.32,
+        "entry": 168.1,
         "stop": 161.69,
-        "target": 187.11,
-        "riskPct": 0.0337,
+        "target": 187.99,
+        "riskPct": 0.0382,
         "rewardPct": 0.1183,
-        "rr": 3.5
+        "rr": 3.1
       },
-      "rsPercentile": 0.6071,
-      "return60dPct": 0.3096,
+      "rsPercentile": 0.5217,
+      "return60dPct": 0.3154,
       "chartUrl": "https://www.tradingview.com/symbols/NYSE-A/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5113,
         "prePoleSlope": 0.1644
       },
-      "rankChange": 1
+      "rankChange": 4
     },
     {
-      "ticker": "ARW",
-      "name": "Arrow Electronics, Inc.",
-      "exchange": "NYSE",
-      "price": 224.26,
-      "setupType": "first-stage",
-      "score": 52,
+      "ticker": "NEO",
+      "name": "NeoGenomics, Inc.",
+      "exchange": "NCM",
+      "price": 17.25,
+      "setupType": "continuation",
+      "score": 50,
       "subscores": {
-        "pole": 12.8,
-        "flag": 12,
-        "base": 22,
-        "context": 5
+        "pole": 15.1,
+        "flag": 25,
+        "context": 10
       },
       "breakdown": {
-        "poleMagnitude": 6.8,
+        "poleMagnitude": 7.1,
         "poleVelocity": 4,
-        "poleVolume": 2,
-        "flagContraction": 5,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 6,
-        "basePoleRatio": 1,
+        "poleVolume": 4,
+        "flagPullback": 20,
+        "flagContraction": 4,
+        "flagEntry": 1,
+        "ctxRs": 0,
+        "ctxTrend": 5,
         "ctxMarket": 5
       },
       "stage": "prime",
       "daysInFlag": 7,
       "pattern": {
-        "polePct": 0.2282,
-        "poleDays": 21,
-        "poleStartDate": "2026-09-03",
-        "poleStartPrice": 203.08,
-        "recentHigh": 249.43,
-        "recentHighDate": "2026-10-05",
-        "pullbackPct": 0.1009,
-        "flagLow": 220.77,
+        "polePct": 0.2377,
+        "poleDays": 30,
+        "poleStartDate": "2026-08-24",
+        "poleStartPrice": 16.28,
+        "recentHigh": 20.15,
+        "recentHighDate": "2026-10-06",
+        "pullbackPct": 0.1439,
+        "flagLow": 15.41,
         "flagHigh": null,
-        "volumeContraction": 0.79,
-        "poleVolumeRatio": 1.91,
+        "volumeContraction": 0.96,
+        "poleVolumeRatio": 1.64,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0138,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 229.25,
-        "ema20": 227.4,
-        "ema50": 220.95,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 227.4,
-        "stop": 220.95,
-        "target": 279.3,
-        "riskPct": 0.0284,
-        "rewardPct": 0.2282,
-        "rr": 8.1
-      },
-      "rsPercentile": 0.0714,
-      "return60dPct": 0.0371,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-ARW/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.3111,
-        "prePoleSlope": 0.0734
-      },
-      "rankChange": 2
-    },
-    {
-      "ticker": "NAVI",
-      "name": "Navient Corporation",
-      "exchange": "NASDAQ",
-      "price": 9.26,
-      "setupType": "first-stage",
-      "score": 52,
-      "subscores": {
-        "pole": 14.2,
-        "flag": 11,
-        "base": 22,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 6.2,
-        "poleVelocity": 4,
-        "poleVolume": 4,
-        "flagContraction": 0,
-        "flagEntry": 6,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 6,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 20,
-      "pattern": {
-        "polePct": 0.2062,
-        "poleDays": 24,
-        "poleStartDate": "2026-08-12",
-        "poleStartPrice": 8.41,
-        "recentHigh": 10.15,
-        "recentHighDate": "2026-09-16",
-        "pullbackPct": 0.0877,
-        "flagLow": 8.75,
-        "flagHigh": null,
-        "volumeContraction": 1.17,
-        "poleVolumeRatio": 2.26,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": 0.0031,
+        "distAbove20Ema": -0.0106,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 9.22,
-        "ema20": 9.23,
-        "ema50": 9.17,
-        "ema50Rising": true
+        "ema10": 17.06,
+        "ema20": 17.43,
+        "ema50": 17.05,
+        "ema50Rising": false
       },
       "levels": {
-        "entry": 9.23,
-        "stop": 8.59,
-        "target": 11.14,
-        "riskPct": 0.07,
-        "rewardPct": 0.2062,
-        "rr": 2.9
+        "entry": 17.43,
+        "stop": 17.05,
+        "target": 19.51,
+        "riskPct": 0.0221,
+        "rewardPct": 0.1189,
+        "rr": 5.4
       },
-      "rsPercentile": 0.2857,
-      "return60dPct": 0.0668,
-      "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-NAVI/",
+      "rsPercentile": 0.3043,
+      "return60dPct": 0.2313,
+      "chartUrl": "https://www.tradingview.com/symbols/NCM-NEO/",
       "base": {
         "baseDays": 90,
-        "baseRange": 0.3424,
-        "prePoleSlope": -0.0238
+        "baseRange": 1.2211,
+        "prePoleSlope": 0.6318
       },
-      "rankChange": 10
-    },
-    {
-      "ticker": "INSP",
-      "name": "Inspire Medical Systems, Inc.",
-      "exchange": "NYSE",
-      "price": 68.07,
-      "setupType": "first-stage",
-      "score": 51,
-      "subscores": {
-        "pole": 20.6,
-        "flag": 7,
-        "base": 18,
-        "context": 5
-      },
-      "breakdown": {
-        "poleMagnitude": 12.6,
-        "poleVelocity": 4,
-        "poleVolume": 4,
-        "flagContraction": 0,
-        "flagEntry": 2,
-        "flagPullback": 5,
-        "baseLength": 15,
-        "baseTightness": 2,
-        "basePoleRatio": 1,
-        "ctxMarket": 5
-      },
-      "stage": "late",
-      "daysInFlag": 18,
-      "pattern": {
-        "polePct": 0.4214,
-        "poleDays": 23,
-        "poleStartDate": "2026-08-17",
-        "poleStartPrice": 55.44,
-        "recentHigh": 78.8,
-        "recentHighDate": "2026-09-18",
-        "pullbackPct": 0.1362,
-        "flagLow": 66.07,
-        "flagHigh": null,
-        "volumeContraction": 1.33,
-        "poleVolumeRatio": 2.25,
-        "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.0149,
-        "direction": "descending",
-        "atr14": null
-      },
-      "ema": {
-        "ema10": 69.17,
-        "ema20": 69.1,
-        "ema50": 65.44,
-        "ema50Rising": true
-      },
-      "levels": {
-        "entry": 69.1,
-        "stop": 65.44,
-        "target": 98.21,
-        "riskPct": 0.0529,
-        "rewardPct": 0.4214,
-        "rr": 8
-      },
-      "rsPercentile": 0.5357,
-      "return60dPct": 0.2968,
-      "chartUrl": "https://www.tradingview.com/symbols/NYSE-INSP/",
-      "base": {
-        "baseDays": 90,
-        "baseRange": 0.7015,
-        "prePoleSlope": -0.0169
-      },
-      "rankChange": 4
+      "rankChange": null
     },
     {
       "ticker": "NEOG",
       "name": "Neogen Corporation",
       "exchange": "NASDAQ",
-      "price": 12.13,
+      "price": 12.27,
       "setupType": "first-stage",
       "score": 47,
       "subscores": {
@@ -3723,7 +3055,7 @@
         "ctxMarket": 5
       },
       "stage": "late",
-      "daysInFlag": 15,
+      "daysInFlag": 16,
       "pattern": {
         "polePct": 0.2619,
         "poleDays": 29,
@@ -3731,39 +3063,39 @@
         "poleStartPrice": 11.3,
         "recentHigh": 14.26,
         "recentHighDate": "2026-09-23",
-        "pullbackPct": 0.1494,
+        "pullbackPct": 0.1396,
         "flagLow": 11.13,
         "flagHigh": null,
-        "volumeContraction": 2.47,
+        "volumeContraction": 2.39,
         "poleVolumeRatio": 3.48,
         "flagBackHalfRatio": null,
-        "distAbove20Ema": -0.013,
+        "distAbove20Ema": -0.0014,
         "direction": "ascending",
         "atr14": null
       },
       "ema": {
-        "ema10": 12.13,
+        "ema10": 12.16,
         "ema20": 12.29,
-        "ema50": 11.95,
+        "ema50": 11.96,
         "ema50Rising": true
       },
       "levels": {
         "entry": 12.29,
-        "stop": 11.95,
+        "stop": 11.96,
         "target": 15.51,
-        "riskPct": 0.0279,
+        "riskPct": 0.0267,
         "rewardPct": 0.2619,
-        "rr": 9.4
+        "rr": 9.8
       },
-      "rsPercentile": 0.4643,
-      "return60dPct": 0.2216,
+      "rsPercentile": 0.3913,
+      "return60dPct": 0.2482,
       "chartUrl": "https://www.tradingview.com/symbols/NASDAQ-NEOG/",
       "base": {
         "baseDays": 90,
         "baseRange": 0.5748,
         "prePoleSlope": 0.0947
       },
-      "rankChange": null
+      "rankChange": 2
     }
   ],
   "fiftyTwoWeekCandidates": []
