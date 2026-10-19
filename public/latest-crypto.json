@@ -1,34 +1,36 @@
 {
   "schemaVersion": 3,
   "scanDate": "2026-10-19",
-  "scanHourUtc": "09",
-  "timestamp": "2026-10-19T09:39:09.959Z",
-  "durationSec": 414,
+  "scanHourUtc": "18",
+  "timestamp": "2026-10-19T18:21:49.679Z",
+  "durationSec": 394,
   "regime": {
     "state": "strong",
     "btc": {
-      "price": 82887.3,
-      "ema50": 80572.91,
+      "price": 81933.8,
+      "ema50": 80535.52,
       "above": true,
-      "deltaPct": 0.0287,
+      "deltaPct": 0.0174,
       "ema50Rising": true,
-      "ema50SlopePct": 0.0104
+      "ema50SlopePct": 0.0099
     },
     "total3": {
-      "cap": 803520585491,
-      "btcDominancePct": 60.18,
-      "ethDominancePct": 10.76,
-      "totalCap": 2765103020134
+      "cap": 821737645199,
+      "btcDominancePct": 59.65,
+      "ethDominancePct": 10.62,
+      "totalCap": 2764504461366
     },
     "status": "ok",
     "triggered": []
   },
   "stats": {
-    "universeSize": 603,
+    "universeSize": 604,
     "fetched": 603,
-    "failed": 0,
-    "qualified": 2,
-    "failedSymbols": []
+    "failed": 1,
+    "qualified": 1,
+    "failedSymbols": [
+      "DNAUSD"
+    ]
   },
   "universe": [
     {
@@ -36,7 +38,7 @@
       "name": "XRP",
       "binanceSymbol": "XRPUSD",
       "rank": 5,
-      "marketCap": 83044017145,
+      "marketCap": 82183180573,
       "scanned": true
     },
     {
@@ -44,7 +46,7 @@
       "name": "Solana",
       "binanceSymbol": "SOLUSD",
       "rank": 7,
-      "marketCap": 62371331980,
+      "marketCap": 61434359554,
       "scanned": true
     },
     {
@@ -52,7 +54,7 @@
       "name": "TRON",
       "binanceSymbol": "TRXUSD",
       "rank": 8,
-      "marketCap": 31445699361,
+      "marketCap": 31445846975,
       "scanned": true
     },
     {
@@ -60,7 +62,7 @@
       "name": "Zcash",
       "binanceSymbol": "ZECUSD",
       "rank": 10,
-      "marketCap": 19886629459,
+      "marketCap": 19110197507,
       "scanned": true
     },
     {
@@ -68,7 +70,7 @@
       "name": "Hyperliquid",
       "binanceSymbol": "HYPEUSD",
       "rank": 11,
-      "marketCap": 17814043807,
+      "marketCap": 17376288642,
       "scanned": true
     },
     {
@@ -76,7 +78,7 @@
       "name": "Dogecoin",
       "binanceSymbol": "XDGUSD",
       "rank": 12,
-      "marketCap": 12491662257,
+      "marketCap": 12367259285,
       "scanned": true
     },
     {
@@ -84,7 +86,7 @@
       "name": "Monero",
       "binanceSymbol": "XMRUSD",
       "rank": 13,
-      "marketCap": 11085387047,
+      "marketCap": 11131735523,
       "scanned": true
     },
     {
@@ -92,7 +94,7 @@
       "name": "Chainlink",
       "binanceSymbol": "LINKUSD",
       "rank": 16,
-      "marketCap": 9331342463,
+      "marketCap": 9134080131,
       "scanned": true
     },
     {
@@ -100,7 +102,7 @@
       "name": "Cardano",
       "binanceSymbol": "ADAUSD",
       "rank": 18,
-      "marketCap": 8294678324,
+      "marketCap": 8142851732,
       "scanned": true
     },
     {
@@ -108,7 +110,7 @@
       "name": "NEAR Protocol",
       "binanceSymbol": "NEARUSD",
       "rank": 19,
-      "marketCap": 6657998804,
+      "marketCap": 6501934292,
       "scanned": true
     },
     {
@@ -116,7 +118,7 @@
       "name": "Stellar",
       "binanceSymbol": "XLMUSD",
       "rank": 21,
-      "marketCap": 6284263050,
+      "marketCap": 6204370082,
       "scanned": true
     },
     {
@@ -124,7 +126,7 @@
       "name": "Bitcoin Cash",
       "binanceSymbol": "BCHUSD",
       "rank": 22,
-      "marketCap": 5616548725,
+      "marketCap": 5559454126,
       "scanned": true
     },
     {
@@ -132,7 +134,7 @@
       "name": "Litecoin",
       "binanceSymbol": "LTCUSD",
       "rank": 24,
-      "marketCap": 4675772231,
+      "marketCap": 4650892396,
       "scanned": true
     },
     {
@@ -140,7 +142,7 @@
       "name": "Uniswap",
       "binanceSymbol": "UNIUSD",
       "rank": 25,
-      "marketCap": 4637565101,
+      "marketCap": 4533240771,
       "scanned": true
     },
     {
@@ -148,23 +150,23 @@
       "name": "Avalanche",
       "binanceSymbol": "AVAXUSD",
       "rank": 27,
-      "marketCap": 4334922797,
-      "scanned": true
-    },
-    {
-      "symbol": "SUI",
-      "name": "Sui",
-      "binanceSymbol": "SUIUSD",
-      "rank": 28,
-      "marketCap": 4162541122,
+      "marketCap": 4245360216,
       "scanned": true
     },
     {
       "symbol": "CC",
       "name": "Canton",
       "binanceSymbol": "CCUSD",
+      "rank": 28,
+      "marketCap": 4130816140,
+      "scanned": true
+    },
+    {
+      "symbol": "SUI",
+      "name": "Sui",
+      "binanceSymbol": "SUIUSD",
       "rank": 29,
-      "marketCap": 4083293694,
+      "marketCap": 4069106190,
       "scanned": true
     },
     {
@@ -172,7 +174,7 @@
       "name": "Hedera",
       "binanceSymbol": "HBARUSD",
       "rank": 32,
-      "marketCap": 3732180373,
+      "marketCap": 3631203087,
       "scanned": true
     },
     {
@@ -180,15 +182,15 @@
       "name": "Bittensor",
       "binanceSymbol": "TAOUSD",
       "rank": 35,
-      "marketCap": 3107391502,
+      "marketCap": 3019866845,
       "scanned": true
     },
     {
       "symbol": "SHIB",
       "name": "Shiba Inu",
       "binanceSymbol": "SHIBUSD",
-      "rank": 37,
-      "marketCap": 2963404982,
+      "rank": 36,
+      "marketCap": 2946344692,
       "scanned": true
     },
     {
@@ -196,7 +198,7 @@
       "name": "Quant",
       "binanceSymbol": "QNTUSD",
       "rank": 39,
-      "marketCap": 2922391692,
+      "marketCap": 2840736896,
       "scanned": true
     },
     {
@@ -204,15 +206,15 @@
       "name": "Ethena",
       "binanceSymbol": "ENAUSD",
       "rank": 41,
-      "marketCap": 2566482305,
+      "marketCap": 2500655737,
       "scanned": true
     },
     {
       "symbol": "AAVE",
       "name": "Aave",
       "binanceSymbol": "AAVEUSD",
-      "rank": 45,
-      "marketCap": 2363413393,
+      "rank": 46,
+      "marketCap": 2293892451,
       "scanned": true
     },
     {
@@ -220,7 +222,7 @@
       "name": "Ondo",
       "binanceSymbol": "ONDOUSD",
       "rank": 48,
-      "marketCap": 2150602991,
+      "marketCap": 2104704877,
       "scanned": true
     },
     {
@@ -228,7 +230,7 @@
       "name": "Pump.fun",
       "binanceSymbol": "PUMPUSD",
       "rank": 49,
-      "marketCap": 2097887117,
+      "marketCap": 2038515570,
       "scanned": true
     },
     {
@@ -236,55 +238,55 @@
       "name": "Worldcoin",
       "binanceSymbol": "WLDUSD",
       "rank": 50,
-      "marketCap": 1931988732,
-      "scanned": true
-    },
-    {
-      "symbol": "ASTER",
-      "name": "Aster",
-      "binanceSymbol": "ASTERUSD",
-      "rank": 51,
-      "marketCap": 1929952564,
+      "marketCap": 1960172763,
       "scanned": true
     },
     {
       "symbol": "DOT",
       "name": "Polkadot",
       "binanceSymbol": "DOTUSD",
-      "rank": 52,
-      "marketCap": 1916496066,
+      "rank": 51,
+      "marketCap": 1945564120,
       "scanned": true
     },
     {
-      "symbol": "WLFI",
-      "name": "World Liberty Financial",
-      "binanceSymbol": "WLFIUSD",
-      "rank": 55,
-      "marketCap": 1811026781,
+      "symbol": "ASTER",
+      "name": "Aster",
+      "binanceSymbol": "ASTERUSD",
+      "rank": 52,
+      "marketCap": 1906104195,
       "scanned": true
     },
     {
       "symbol": "MNT",
       "name": "Mantle",
       "binanceSymbol": "MNTUSD",
-      "rank": 57,
-      "marketCap": 1767123862,
+      "rank": 56,
+      "marketCap": 1758284291,
       "scanned": true
     },
     {
       "symbol": "MORPHO",
       "name": "Morpho",
       "binanceSymbol": "MORPHOUSD",
-      "rank": 58,
-      "marketCap": 1737770553,
+      "rank": 57,
+      "marketCap": 1743548537,
       "scanned": true
     },
     {
       "symbol": "PEPE",
       "name": "Pepe",
       "binanceSymbol": "PEPEUSD",
+      "rank": 58,
+      "marketCap": 1730062675,
+      "scanned": true
+    },
+    {
+      "symbol": "WLFI",
+      "name": "World Liberty Financial",
+      "binanceSymbol": "WLFIUSD",
       "rank": 59,
-      "marketCap": 1721889934,
+      "marketCap": 1711999169,
       "scanned": true
     },
     {
@@ -292,23 +294,23 @@
       "name": "Sky",
       "binanceSymbol": "SKYUSD",
       "rank": 62,
-      "marketCap": 1662007301,
-      "scanned": true
-    },
-    {
-      "symbol": "ICP",
-      "name": "Internet Computer",
-      "binanceSymbol": "ICPUSD",
-      "rank": 63,
-      "marketCap": 1628603692,
+      "marketCap": 1623291797,
       "scanned": true
     },
     {
       "symbol": "U",
       "name": "United Stables",
       "binanceSymbol": "UUSD",
+      "rank": 63,
+      "marketCap": 1580262359,
+      "scanned": true
+    },
+    {
+      "symbol": "ICP",
+      "name": "Internet Computer",
+      "binanceSymbol": "ICPUSD",
       "rank": 64,
-      "marketCap": 1578988270,
+      "marketCap": 1578901921,
       "scanned": true
     },
     {
@@ -316,7 +318,7 @@
       "name": "Arbitrum",
       "binanceSymbol": "ARBUSD",
       "rank": 66,
-      "marketCap": 1369609991,
+      "marketCap": 1336897152,
       "scanned": true
     },
     {
@@ -324,7 +326,7 @@
       "name": "USDGO",
       "binanceSymbol": "USDGOUSD",
       "rank": 69,
-      "marketCap": 1270644393,
+      "marketCap": 1273590806,
       "scanned": true
     },
     {
@@ -332,7 +334,7 @@
       "name": "Ethereum Classic",
       "binanceSymbol": "ETCUSD",
       "rank": 70,
-      "marketCap": 1238525541,
+      "marketCap": 1223337564,
       "scanned": true
     },
     {
@@ -340,7 +342,7 @@
       "name": "Venice Token",
       "binanceSymbol": "VVVUSD",
       "rank": 71,
-      "marketCap": 1157239090,
+      "marketCap": 1168647230,
       "scanned": true
     },
     {
@@ -348,7 +350,7 @@
       "name": "JUST",
       "binanceSymbol": "JSTUSD",
       "rank": 72,
-      "marketCap": 1095752131,
+      "marketCap": 1120642375,
       "scanned": true
     },
     {
@@ -356,47 +358,47 @@
       "name": "Algorand",
       "binanceSymbol": "ALGOUSD",
       "rank": 75,
-      "marketCap": 1013050056,
-      "scanned": true
-    },
-    {
-      "symbol": "KAS",
-      "name": "Kaspa",
-      "binanceSymbol": "KASUSD",
-      "rank": 76,
-      "marketCap": 996869026,
-      "scanned": true
-    },
-    {
-      "symbol": "JUP",
-      "name": "Jupiter",
-      "binanceSymbol": "JUPUSD",
-      "rank": 77,
-      "marketCap": 988528700,
+      "marketCap": 984230644,
       "scanned": true
     },
     {
       "symbol": "POL",
       "name": "POL (ex-MATIC)",
       "binanceSymbol": "POLUSD",
-      "rank": 78,
-      "marketCap": 988214389,
+      "rank": 76,
+      "marketCap": 976472522,
       "scanned": true
     },
     {
-      "symbol": "RENDER",
-      "name": "Render",
-      "binanceSymbol": "RENDERUSD",
-      "rank": 80,
-      "marketCap": 947460477,
+      "symbol": "KAS",
+      "name": "Kaspa",
+      "binanceSymbol": "KASUSD",
+      "rank": 77,
+      "marketCap": 971467175,
+      "scanned": true
+    },
+    {
+      "symbol": "JUP",
+      "name": "Jupiter",
+      "binanceSymbol": "JUPUSD",
+      "rank": 78,
+      "marketCap": 966371496,
       "scanned": true
     },
     {
       "symbol": "ATOM",
       "name": "Cosmos Hub",
       "binanceSymbol": "ATOMUSD",
+      "rank": 80,
+      "marketCap": 937893672,
+      "scanned": true
+    },
+    {
+      "symbol": "RENDER",
+      "name": "Render",
+      "binanceSymbol": "RENDERUSD",
       "rank": 81,
-      "marketCap": 933115356,
+      "marketCap": 931905666,
       "scanned": true
     },
     {
@@ -404,31 +406,31 @@
       "name": "Pi Network",
       "binanceSymbol": "PIUSD",
       "rank": 82,
-      "marketCap": 879216864,
-      "scanned": true
-    },
-    {
-      "symbol": "FIL",
-      "name": "Filecoin",
-      "binanceSymbol": "FILUSD",
-      "rank": 83,
-      "marketCap": 874008678,
+      "marketCap": 876459105,
       "scanned": true
     },
     {
       "symbol": "INJ",
       "name": "Injective",
       "binanceSymbol": "INJUSD",
+      "rank": 83,
+      "marketCap": 857122943,
+      "scanned": true
+    },
+    {
+      "symbol": "FIL",
+      "name": "Filecoin",
+      "binanceSymbol": "FILUSD",
       "rank": 84,
-      "marketCap": 858820807,
+      "marketCap": 843693567,
       "scanned": true
     },
     {
       "symbol": "OUSD",
       "name": "Open USD",
       "binanceSymbol": "OUSDUSD",
-      "rank": 86,
-      "marketCap": 823597966,
+      "rank": 85,
+      "marketCap": 824682473,
       "scanned": true
     },
     {
@@ -436,7 +438,7 @@
       "name": "Aerodrome Finance",
       "binanceSymbol": "AEROUSD",
       "rank": 88,
-      "marketCap": 803547397,
+      "marketCap": 782139589,
       "scanned": true
     },
     {
@@ -444,7 +446,7 @@
       "name": "Lighter",
       "binanceSymbol": "LITUSD",
       "rank": 89,
-      "marketCap": 787330840,
+      "marketCap": 764743517,
       "scanned": true
     },
     {
@@ -452,31 +454,31 @@
       "name": "LayerZero",
       "binanceSymbol": "ZROUSD",
       "rank": 90,
-      "marketCap": 752662147,
-      "scanned": true
-    },
-    {
-      "symbol": "STX",
-      "name": "Stacks",
-      "binanceSymbol": "STXUSD",
-      "rank": 91,
-      "marketCap": 705684440,
+      "marketCap": 763084754,
       "scanned": true
     },
     {
       "symbol": "CAKE",
       "name": "PancakeSwap",
       "binanceSymbol": "CAKEUSD",
-      "rank": 93,
-      "marketCap": 694099192,
+      "rank": 92,
+      "marketCap": 688188038,
       "scanned": true
     },
     {
       "symbol": "AKE",
       "name": "Akedo",
       "binanceSymbol": "AKEUSD",
+      "rank": 93,
+      "marketCap": 684546370,
+      "scanned": true
+    },
+    {
+      "symbol": "STX",
+      "name": "Stacks",
+      "binanceSymbol": "STXUSD",
       "rank": 94,
-      "marketCap": 692119674,
+      "marketCap": 676075084,
       "scanned": true
     },
     {
@@ -484,63 +486,63 @@
       "name": "Aptos",
       "binanceSymbol": "APTUSD",
       "rank": 95,
-      "marketCap": 691132434,
-      "scanned": true
-    },
-    {
-      "symbol": "ETHFI",
-      "name": "Ether.fi",
-      "binanceSymbol": "ETHFIUSD",
-      "rank": 96,
-      "marketCap": 678782411,
+      "marketCap": 670999857,
       "scanned": true
     },
     {
       "symbol": "NIGHT",
       "name": "Midnight",
       "binanceSymbol": "NIGHTUSD",
-      "rank": 97,
-      "marketCap": 667773373,
+      "rank": 96,
+      "marketCap": 666619357,
+      "scanned": true
+    },
+    {
+      "symbol": "ETHFI",
+      "name": "Ether.fi",
+      "binanceSymbol": "ETHFIUSD",
+      "rank": 98,
+      "marketCap": 656200173,
       "scanned": true
     },
     {
       "symbol": "XDC",
       "name": "XDC Network",
       "binanceSymbol": "XDCUSD",
-      "rank": 98,
-      "marketCap": 665342237,
+      "rank": 99,
+      "marketCap": 653135939,
       "scanned": true
     },
     {
       "symbol": "DASH",
       "name": "Dash",
       "binanceSymbol": "DASHUSD",
-      "rank": 101,
-      "marketCap": 635431976,
-      "scanned": true
-    },
-    {
-      "symbol": "TIA",
-      "name": "Celestia",
-      "binanceSymbol": "TIAUSD",
-      "rank": 103,
-      "marketCap": 600205700,
+      "rank": 100,
+      "marketCap": 634034895,
       "scanned": true
     },
     {
       "symbol": "Q",
       "name": "Quack AI",
       "binanceSymbol": "QUSD",
-      "rank": 104,
-      "marketCap": 593787229,
+      "rank": 101,
+      "marketCap": 600886633,
       "scanned": true
     },
     {
-      "symbol": "PYTH",
-      "name": "Pyth Network",
-      "binanceSymbol": "PYTHUSD",
+      "symbol": "TIA",
+      "name": "Celestia",
+      "binanceSymbol": "TIAUSD",
+      "rank": 102,
+      "marketCap": 594422381,
+      "scanned": true
+    },
+    {
+      "symbol": "CRV",
+      "name": "Curve DAO",
+      "binanceSymbol": "CRVUSD",
       "rank": 105,
-      "marketCap": 591529114,
+      "marketCap": 578799032,
       "scanned": true
     },
     {
@@ -548,23 +550,23 @@
       "name": "VeChain",
       "binanceSymbol": "VETUSD",
       "rank": 106,
-      "marketCap": 587716786,
+      "marketCap": 574708689,
       "scanned": true
     },
     {
-      "symbol": "CRV",
-      "name": "Curve DAO",
-      "binanceSymbol": "CRVUSD",
-      "rank": 108,
-      "marketCap": 563745266,
+      "symbol": "PYTH",
+      "name": "Pyth Network",
+      "binanceSymbol": "PYTHUSD",
+      "rank": 107,
+      "marketCap": 573846533,
       "scanned": true
     },
     {
       "symbol": "FLR",
       "name": "Flare",
       "binanceSymbol": "FLRUSD",
-      "rank": 109,
-      "marketCap": 560744166,
+      "rank": 108,
+      "marketCap": 558680001,
       "scanned": true
     },
     {
@@ -572,23 +574,23 @@
       "name": "Raydium",
       "binanceSymbol": "RAYUSD",
       "rank": 112,
-      "marketCap": 528355495,
+      "marketCap": 510169494,
       "scanned": true
     },
     {
       "symbol": "EURC",
       "name": "EURC",
       "binanceSymbol": "EURCUSD",
-      "rank": 114,
-      "marketCap": 498028715,
+      "rank": 115,
+      "marketCap": 493818434,
       "scanned": true
     },
     {
       "symbol": "TRUMP",
       "name": "Official Trump",
       "binanceSymbol": "TRUMPUSD",
-      "rank": 116,
-      "marketCap": 485602660,
+      "rank": 117,
+      "marketCap": 480015991,
       "scanned": true
     },
     {
@@ -596,7 +598,7 @@
       "name": "Pudgy Penguins",
       "binanceSymbol": "PENGUUSD",
       "rank": 118,
-      "marketCap": 476122675,
+      "marketCap": 470275320,
       "scanned": true
     },
     {
@@ -604,31 +606,31 @@
       "name": "Starknet",
       "binanceSymbol": "STRKUSD",
       "rank": 120,
-      "marketCap": 452164830,
-      "scanned": true
-    },
-    {
-      "symbol": "FET",
-      "name": "Artificial Superintelligence Alliance",
-      "binanceSymbol": "FETUSD",
-      "rank": 121,
-      "marketCap": 441861710,
-      "scanned": true
-    },
-    {
-      "symbol": "VIRTUAL",
-      "name": "Virtuals Protocol",
-      "binanceSymbol": "VIRTUALUSD",
-      "rank": 122,
-      "marketCap": 438930404,
+      "marketCap": 442093308,
       "scanned": true
     },
     {
       "symbol": "STABLE",
       "name": "​​Stable",
       "binanceSymbol": "STABLEUSD",
+      "rank": 122,
+      "marketCap": 435122599,
+      "scanned": true
+    },
+    {
+      "symbol": "FET",
+      "name": "Artificial Superintelligence Alliance",
+      "binanceSymbol": "FETUSD",
+      "rank": 123,
+      "marketCap": 433529208,
+      "scanned": true
+    },
+    {
+      "symbol": "VIRTUAL",
+      "name": "Virtuals Protocol",
+      "binanceSymbol": "VIRTUALUSD",
       "rank": 124,
-      "marketCap": 431145181,
+      "marketCap": 432393590,
       "scanned": true
     },
     {
@@ -636,7 +638,7 @@
       "name": "Grass",
       "binanceSymbol": "GRASSUSD",
       "rank": 125,
-      "marketCap": 418984722,
+      "marketCap": 409975281,
       "scanned": true
     },
     {
@@ -644,7 +646,7 @@
       "name": "Sei",
       "binanceSymbol": "SEIUSD",
       "rank": 126,
-      "marketCap": 407183185,
+      "marketCap": 404445885,
       "scanned": true
     },
     {
@@ -652,71 +654,71 @@
       "name": "Derive",
       "binanceSymbol": "DRVUSD",
       "rank": 127,
-      "marketCap": 386886850,
-      "scanned": true
-    },
-    {
-      "symbol": "PENDLE",
-      "name": "Pendle",
-      "binanceSymbol": "PENDLEUSD",
-      "rank": 128,
-      "marketCap": 365485082,
+      "marketCap": 395653868,
       "scanned": true
     },
     {
       "symbol": "SOFID",
       "name": "SoFiUSD",
       "binanceSymbol": "SOFIDUSD",
-      "rank": 129,
-      "marketCap": 358162107,
+      "rank": 128,
+      "marketCap": 358110507,
       "scanned": true
     },
     {
-      "symbol": "XPL",
-      "name": "Plasma",
-      "binanceSymbol": "XPLUSD",
-      "rank": 131,
-      "marketCap": 354230151,
+      "symbol": "PENDLE",
+      "name": "Pendle",
+      "binanceSymbol": "PENDLEUSD",
+      "rank": 129,
+      "marketCap": 356790524,
       "scanned": true
     },
     {
       "symbol": "FF",
       "name": "Falcon Finance",
       "binanceSymbol": "FFUSD",
-      "rank": 132,
-      "marketCap": 350544111,
+      "rank": 131,
+      "marketCap": 346446907,
       "scanned": true
     },
     {
       "symbol": "BTT",
       "name": "BitTorrent",
       "binanceSymbol": "BTTUSD",
-      "rank": 133,
-      "marketCap": 345336550,
+      "rank": 132,
+      "marketCap": 345560200,
       "scanned": true
     },
     {
-      "symbol": "SPX",
-      "name": "SPX6900",
-      "binanceSymbol": "SPXUSD",
-      "rank": 135,
-      "marketCap": 330560810,
+      "symbol": "XPL",
+      "name": "Plasma",
+      "binanceSymbol": "XPLUSD",
+      "rank": 133,
+      "marketCap": 344100833,
       "scanned": true
     },
     {
       "symbol": "XTZ",
       "name": "Tezos",
       "binanceSymbol": "XTZUSD",
+      "rank": 135,
+      "marketCap": 329908038,
+      "scanned": true
+    },
+    {
+      "symbol": "SPX",
+      "name": "SPX6900",
+      "binanceSymbol": "SPXUSD",
       "rank": 136,
-      "marketCap": 329076933,
+      "marketCap": 327950716,
       "scanned": true
     },
     {
       "symbol": "LDO",
       "name": "Lido DAO",
       "binanceSymbol": "LDOUSD",
-      "rank": 137,
-      "marketCap": 328917447,
+      "rank": 139,
+      "marketCap": 319978021,
       "scanned": true
     },
     {
@@ -724,127 +726,127 @@
       "name": "Sun Token",
       "binanceSymbol": "SUNUSD",
       "rank": 140,
-      "marketCap": 317745683,
-      "scanned": true
-    },
-    {
-      "symbol": "GNO",
-      "name": "Gnosis",
-      "binanceSymbol": "GNOUSD",
-      "rank": 142,
-      "marketCap": 303543786,
+      "marketCap": 317002576,
       "scanned": true
     },
     {
       "symbol": "APXUSD",
       "name": "apxUSD",
       "binanceSymbol": "APXUSDUSD",
+      "rank": 142,
+      "marketCap": 304584815,
+      "scanned": true
+    },
+    {
+      "symbol": "GNO",
+      "name": "Gnosis",
+      "binanceSymbol": "GNOUSD",
       "rank": 143,
-      "marketCap": 302887779,
+      "marketCap": 300755785,
       "scanned": true
     },
     {
       "symbol": "PIEVERSE",
       "name": "Pieverse",
       "binanceSymbol": "PIEVERSEUSD",
-      "rank": 144,
-      "marketCap": 298221152,
+      "rank": 147,
+      "marketCap": 286448270,
       "scanned": true
     },
     {
       "symbol": "OP",
       "name": "Optimism",
       "binanceSymbol": "OPUSD",
-      "rank": 147,
-      "marketCap": 292436883,
-      "scanned": true
-    },
-    {
-      "symbol": "CFX",
-      "name": "Conflux",
-      "binanceSymbol": "CFXUSD",
-      "rank": 149,
-      "marketCap": 278723502,
+      "rank": 148,
+      "marketCap": 285236442,
       "scanned": true
     },
     {
       "symbol": "BAT",
       "name": "Basic Attention",
       "binanceSymbol": "BATUSD",
+      "rank": 150,
+      "marketCap": 275816217,
+      "scanned": true
+    },
+    {
+      "symbol": "CFX",
+      "name": "Conflux",
+      "binanceSymbol": "CFXUSD",
       "rank": 151,
-      "marketCap": 270203132,
+      "marketCap": 272396413,
       "scanned": true
     },
     {
       "symbol": "GRT",
       "name": "The Graph",
       "binanceSymbol": "GRTUSD",
-      "rank": 153,
-      "marketCap": 262376109,
-      "scanned": true
-    },
-    {
-      "symbol": "BONK",
-      "name": "Bonk",
-      "binanceSymbol": "BONKUSD",
-      "rank": 155,
-      "marketCap": 259824640,
+      "rank": 154,
+      "marketCap": 260567559,
       "scanned": true
     },
     {
       "symbol": "DCR",
       "name": "Decred",
       "binanceSymbol": "DCRUSD",
-      "rank": 157,
-      "marketCap": 256437571,
+      "rank": 155,
+      "marketCap": 256273246,
+      "scanned": true
+    },
+    {
+      "symbol": "BONK",
+      "name": "Bonk",
+      "binanceSymbol": "BONKUSD",
+      "rank": 156,
+      "marketCap": 256204389,
       "scanned": true
     },
     {
       "symbol": "AR",
       "name": "Arweave",
       "binanceSymbol": "ARUSD",
-      "rank": 158,
-      "marketCap": 256424017,
+      "rank": 160,
+      "marketCap": 246194293,
       "scanned": true
     },
     {
       "symbol": "MON",
       "name": "Monad",
       "binanceSymbol": "MONUSD",
-      "rank": 160,
-      "marketCap": 253573862,
+      "rank": 161,
+      "marketCap": 245206285,
       "scanned": true
     },
     {
       "symbol": "JTO",
       "name": "Jito",
       "binanceSymbol": "JTOUSD",
-      "rank": 163,
-      "marketCap": 238762398,
+      "rank": 164,
+      "marketCap": 236235532,
       "scanned": true
     },
     {
       "symbol": "JASMY",
       "name": "JasmyCoin",
       "binanceSymbol": "JASMYUSD",
-      "rank": 165,
-      "marketCap": 236304138,
-      "scanned": true
-    },
-    {
-      "symbol": "ENS",
-      "name": "Ethereum Name Service",
-      "binanceSymbol": "ENSUSD",
-      "rank": 167,
-      "marketCap": 233463926,
+      "rank": 166,
+      "marketCap": 230588688,
       "scanned": true
     },
     {
       "symbol": "EIGEN",
       "name": "EigenCloud (prev. EigenLayer)",
       "binanceSymbol": "EIGENUSD",
+      "rank": 167,
+      "marketCap": 230242943,
+      "scanned": true
+    },
+    {
+      "symbol": "ENS",
+      "name": "Ethereum Name Service",
+      "binanceSymbol": "ENSUSD",
       "rank": 168,
-      "marketCap": 230457496,
+      "marketCap": 230148852,
       "scanned": true
     },
     {
@@ -852,7 +854,7 @@
       "name": "Kamino",
       "binanceSymbol": "KMNOUSD",
       "rank": 169,
-      "marketCap": 228961418,
+      "marketCap": 228960409,
       "scanned": true
     },
     {
@@ -860,7 +862,7 @@
       "name": "FLOKI",
       "binanceSymbol": "FLOKIUSD",
       "rank": 170,
-      "marketCap": 227368213,
+      "marketCap": 224988707,
       "scanned": true
     },
     {
@@ -868,47 +870,47 @@
       "name": "Maple Finance",
       "binanceSymbol": "SYRUPUSD",
       "rank": 171,
-      "marketCap": 223342979,
-      "scanned": true
-    },
-    {
-      "symbol": "COMP",
-      "name": "Compound",
-      "binanceSymbol": "COMPUSD",
-      "rank": 173,
-      "marketCap": 216815363,
-      "scanned": true
-    },
-    {
-      "symbol": "RUNE",
-      "name": "THORChain",
-      "binanceSymbol": "RUNEUSD",
-      "rank": 174,
-      "marketCap": 214728459,
-      "scanned": true
-    },
-    {
-      "symbol": "ZBCN",
-      "name": "Zebec Network",
-      "binanceSymbol": "ZBCNUSD",
-      "rank": 176,
-      "marketCap": 213883742,
+      "marketCap": 219493711,
       "scanned": true
     },
     {
       "symbol": "S",
       "name": "Sonic",
       "binanceSymbol": "SUSD",
-      "rank": 180,
-      "marketCap": 209657695,
+      "rank": 172,
+      "marketCap": 218908010,
+      "scanned": true
+    },
+    {
+      "symbol": "COMP",
+      "name": "Compound",
+      "binanceSymbol": "COMPUSD",
+      "rank": 175,
+      "marketCap": 213736403,
+      "scanned": true
+    },
+    {
+      "symbol": "RUNE",
+      "name": "THORChain",
+      "binanceSymbol": "RUNEUSD",
+      "rank": 178,
+      "marketCap": 210434398,
+      "scanned": true
+    },
+    {
+      "symbol": "ZBCN",
+      "name": "Zebec Network",
+      "binanceSymbol": "ZBCNUSD",
+      "rank": 179,
+      "marketCap": 210217985,
       "scanned": true
     },
     {
       "symbol": "AKT",
       "name": "Akash Network",
       "binanceSymbol": "AKTUSD",
-      "rank": 181,
-      "marketCap": 209364742,
+      "rank": 183,
+      "marketCap": 204674435,
       "scanned": true
     },
     {
@@ -916,31 +918,23 @@
       "name": "dogwifhat",
       "binanceSymbol": "WIFUSD",
       "rank": 184,
-      "marketCap": 200278067,
-      "scanned": true
-    },
-    {
-      "symbol": "MET",
-      "name": "Meteora",
-      "binanceSymbol": "METUSD",
-      "rank": 187,
-      "marketCap": 190921772,
+      "marketCap": 198756981,
       "scanned": true
     },
     {
       "symbol": "CVX",
       "name": "Convex Finance",
       "binanceSymbol": "CVXUSD",
-      "rank": 188,
-      "marketCap": 190308410,
+      "rank": 185,
+      "marketCap": 197833526,
       "scanned": true
     },
     {
-      "symbol": "ZAMA",
-      "name": "Zama",
-      "binanceSymbol": "ZAMAUSD",
-      "rank": 191,
-      "marketCap": 184629972,
+      "symbol": "MET",
+      "name": "Meteora",
+      "binanceSymbol": "METUSD",
+      "rank": 190,
+      "marketCap": 186525373,
       "scanned": true
     },
     {
@@ -948,111 +942,111 @@
       "name": "USAT",
       "binanceSymbol": "USATUSD",
       "rank": 192,
-      "marketCap": 183122251,
+      "marketCap": 183016245,
+      "scanned": true
+    },
+    {
+      "symbol": "ZAMA",
+      "name": "Zama",
+      "binanceSymbol": "ZAMAUSD",
+      "rank": 193,
+      "marketCap": 182121475,
       "scanned": true
     },
     {
       "symbol": "AUSD",
       "name": "AUSD",
       "binanceSymbol": "AUSDUSD",
-      "rank": 193,
-      "marketCap": 179953101,
-      "scanned": true
-    },
-    {
-      "symbol": "TRAC",
-      "name": "OriginTrail",
-      "binanceSymbol": "TRACUSD",
       "rank": 194,
-      "marketCap": 178011212,
+      "marketCap": 181380409,
       "scanned": true
     },
     {
       "symbol": "PONS",
       "name": "Pons",
       "binanceSymbol": "PONSUSD",
-      "rank": 195,
-      "marketCap": 177861120,
+      "rank": 196,
+      "marketCap": 176561382,
       "scanned": true
     },
     {
       "symbol": "AXS",
       "name": "Axie Infinity",
       "binanceSymbol": "AXSUSD",
-      "rank": 196,
-      "marketCap": 176901960,
+      "rank": 198,
+      "marketCap": 174401704,
+      "scanned": true
+    },
+    {
+      "symbol": "TRAC",
+      "name": "OriginTrail",
+      "binanceSymbol": "TRACUSD",
+      "rank": 199,
+      "marketCap": 174220576,
       "scanned": true
     },
     {
       "symbol": "SAND",
       "name": "The Sandbox",
       "binanceSymbol": "SANDUSD",
-      "rank": 199,
-      "marketCap": 173037187,
+      "rank": 200,
+      "marketCap": 172638489,
       "scanned": true
     },
     {
       "symbol": "MANA",
       "name": "Decentraland",
       "binanceSymbol": "MANAUSD",
-      "rank": 202,
-      "marketCap": 164368968,
-      "scanned": true
-    },
-    {
-      "symbol": "SENT",
-      "name": "Sentient",
-      "binanceSymbol": "SENTUSD",
-      "rank": 203,
-      "marketCap": 163689949,
+      "rank": 204,
+      "marketCap": 161255358,
       "scanned": true
     },
     {
       "symbol": "XCN",
       "name": "Onyxcoin",
       "binanceSymbol": "XCNUSD",
-      "rank": 205,
-      "marketCap": 162456343,
+      "rank": 206,
+      "marketCap": 160095111,
       "scanned": true
     },
     {
       "symbol": "ZK",
       "name": "ZKsync",
       "binanceSymbol": "ZKUSD",
-      "rank": 206,
-      "marketCap": 161425663,
-      "scanned": true
-    },
-    {
-      "symbol": "VSN",
-      "name": "Vision",
-      "binanceSymbol": "VSNUSD",
       "rank": 207,
-      "marketCap": 159277891,
+      "marketCap": 159361508,
       "scanned": true
     },
     {
       "symbol": "NEO",
       "name": "NEO",
       "binanceSymbol": "NEOUSD",
-      "rank": 209,
-      "marketCap": 156598779,
+      "rank": 210,
+      "marketCap": 155170310,
       "scanned": true
     },
     {
-      "symbol": "2Z",
-      "name": "DoubleZero",
-      "binanceSymbol": "2ZUSD",
+      "symbol": "SENT",
+      "name": "Sentient",
+      "binanceSymbol": "SENTUSD",
       "rank": 211,
-      "marketCap": 154345580,
+      "marketCap": 155160383,
       "scanned": true
     },
     {
-      "symbol": "NPC",
-      "name": "Non-Playable Coin",
-      "binanceSymbol": "NPCUSD",
+      "symbol": "VSN",
+      "name": "Vision",
+      "binanceSymbol": "VSNUSD",
+      "rank": 213,
+      "marketCap": 152793259,
+      "scanned": true
+    },
+    {
+      "symbol": "BEAM",
+      "name": "Beam",
+      "binanceSymbol": "BEAMUSD",
       "rank": 214,
-      "marketCap": 152405284,
+      "marketCap": 152435985,
       "scanned": true
     },
     {
@@ -1060,111 +1054,119 @@
       "name": "GoMining Token",
       "binanceSymbol": "GOMININGUSD",
       "rank": 215,
-      "marketCap": 152228362,
+      "marketCap": 152385869,
       "scanned": true
     },
     {
-      "symbol": "SN51",
-      "name": "lium",
-      "binanceSymbol": "SN51USD",
-      "rank": 219,
-      "marketCap": 148332270,
+      "symbol": "2Z",
+      "name": "DoubleZero",
+      "binanceSymbol": "2ZUSD",
+      "rank": 216,
+      "marketCap": 150495642,
       "scanned": true
     },
     {
       "symbol": "A",
       "name": "Vaulta",
       "binanceSymbol": "AUSD",
+      "rank": 219,
+      "marketCap": 147368784,
+      "scanned": true
+    },
+    {
+      "symbol": "NPC",
+      "name": "Non-Playable Coin",
+      "binanceSymbol": "NPCUSD",
       "rank": 220,
-      "marketCap": 148300018,
+      "marketCap": 147124769,
       "scanned": true
     },
     {
-      "symbol": "CHZ",
-      "name": "Chiliz",
-      "binanceSymbol": "CHZUSD",
+      "symbol": "SN51",
+      "name": "lium",
+      "binanceSymbol": "SN51USD",
       "rank": 221,
-      "marketCap": 146492896,
-      "scanned": true
-    },
-    {
-      "symbol": "BEAM",
-      "name": "Beam",
-      "binanceSymbol": "BEAMUSD",
-      "rank": 222,
-      "marketCap": 146487029,
-      "scanned": true
-    },
-    {
-      "symbol": "FARTCOIN",
-      "name": "Fartcoin",
-      "binanceSymbol": "FARTCOINUSD",
-      "rank": 223,
-      "marketCap": 146268744,
+      "marketCap": 145450675,
       "scanned": true
     },
     {
       "symbol": "APE",
       "name": "ApeCoin",
       "binanceSymbol": "APEUSD",
-      "rank": 225,
-      "marketCap": 144533133,
+      "rank": 222,
+      "marketCap": 144774832,
       "scanned": true
     },
     {
-      "symbol": "USELESS",
-      "name": "Useless Coin",
-      "binanceSymbol": "USELESSUSD",
-      "rank": 226,
-      "marketCap": 144171952,
+      "symbol": "CHZ",
+      "name": "Chiliz",
+      "binanceSymbol": "CHZUSD",
+      "rank": 223,
+      "marketCap": 144365479,
       "scanned": true
     },
     {
-      "symbol": "IMX",
-      "name": "Immutable",
-      "binanceSymbol": "IMXUSD",
-      "rank": 228,
-      "marketCap": 138351914,
-      "scanned": true
-    },
-    {
-      "symbol": "0G",
-      "name": "0G",
-      "binanceSymbol": "0GUSD",
-      "rank": 229,
-      "marketCap": 137296425,
+      "symbol": "FARTCOIN",
+      "name": "Fartcoin",
+      "binanceSymbol": "FARTCOINUSD",
+      "rank": 224,
+      "marketCap": 140776470,
       "scanned": true
     },
     {
       "symbol": "DGAI",
       "name": "DGrid AI",
       "binanceSymbol": "DGAIUSD",
-      "rank": 230,
-      "marketCap": 136467203,
+      "rank": 226,
+      "marketCap": 139079597,
       "scanned": true
     },
     {
-      "symbol": "AIOZ",
-      "name": "AIOZ Network",
-      "binanceSymbol": "AIOZUSD",
-      "rank": 231,
-      "marketCap": 135015722,
+      "symbol": "USELESS",
+      "name": "Useless Coin",
+      "binanceSymbol": "USELESSUSD",
+      "rank": 227,
+      "marketCap": 138043815,
+      "scanned": true
+    },
+    {
+      "symbol": "0G",
+      "name": "0G",
+      "binanceSymbol": "0GUSD",
+      "rank": 228,
+      "marketCap": 136409910,
+      "scanned": true
+    },
+    {
+      "symbol": "IMX",
+      "name": "Immutable",
+      "binanceSymbol": "IMXUSD",
+      "rank": 229,
+      "marketCap": 136258372,
       "scanned": true
     },
     {
       "symbol": "1INCH",
       "name": "1INCH",
       "binanceSymbol": "1INCHUSD",
-      "rank": 234,
-      "marketCap": 130889052,
+      "rank": 232,
+      "marketCap": 129275287,
+      "scanned": true
+    },
+    {
+      "symbol": "AIOZ",
+      "name": "AIOZ Network",
+      "binanceSymbol": "AIOZUSD",
+      "rank": 233,
+      "marketCap": 129194727,
       "scanned": true
     },
     {
       "symbol": "CASH",
       "name": "CASH",
       "binanceSymbol": "CASHUSD",
-      "rank": 240,
-      "marketCap": 126753839,
+      "rank": 238,
+      "marketCap": 126748416,
       "scanned": true
     },
     {
@@ -1172,15 +1174,23 @@
       "name": "Synthetix",
       "binanceSymbol": "SNXUSD",
       "rank": 242,
-      "marketCap": 124772736,
+      "marketCap": 124250989,
       "scanned": true
     },
     {
       "symbol": "DBR",
       "name": "deBridge",
       "binanceSymbol": "DBRUSD",
-      "rank": 244,
-      "marketCap": 123278385,
+      "rank": 247,
+      "marketCap": 120046768,
+      "scanned": true
+    },
+    {
+      "symbol": "SUPER",
+      "name": "SuperVerse",
+      "binanceSymbol": "SUPERUSD",
+      "rank": 248,
+      "marketCap": 119451531,
       "scanned": true
     },
     {
@@ -2134,6 +2144,14 @@
       "rank": null,
       "marketCap": 0,
       "scanned": true
+    },
+    {
+      "symbol": "DNA",
+      "name": "DNA",
+      "binanceSymbol": "DNAUSD",
+      "rank": null,
+      "marketCap": 0,
+      "scanned": false
     },
     {
       "symbol": "DOGS",
@@ -4144,14 +4162,6 @@
       "scanned": true
     },
     {
-      "symbol": "SUPER",
-      "name": "SUPER",
-      "binanceSymbol": "SUPERUSD",
-      "rank": null,
-      "marketCap": 0,
-      "scanned": true
-    },
-    {
       "symbol": "SUP",
       "name": "SUP",
       "binanceSymbol": "SUPUSD",
@@ -4866,17 +4876,17 @@
       "tvSymbol": "KRAKEN:XBTUSD",
       "tier": "major",
       "context": {
-        "price": 82887.2,
-        "change24h": 0.0113,
-        "ema10": 82046.5,
-        "ema20": 81927.49,
-        "ema50": 82255.86,
+        "price": 81933.8,
+        "change24h": 0.0143,
+        "ema10": 81920.34,
+        "ema20": 81872.47,
+        "ema50": 82205.22,
         "ema50Rising": false,
-        "aboveEma50": true,
+        "aboveEma50": false,
         "stack": "mixed",
-        "direction": "flat",
-        "distAbove20Ema": 0.0117,
-        "asOf": "2026-10-19T08:00:00.000Z"
+        "direction": "descending",
+        "distAbove20Ema": 0.0007,
+        "asOf": "2026-10-19T16:00:00.000Z"
       },
       "flag": null,
       "score": null,
@@ -4891,17 +4901,17 @@
       "tvSymbol": "KRAKEN:ETHUSD",
       "tier": "major",
       "context": {
-        "price": 2439.05,
-        "change24h": 0.0101,
-        "ema10": 2412.98,
-        "ema20": 2417.91,
-        "ema50": 2453.38,
+        "price": 2398.12,
+        "change24h": 0.0269,
+        "ema10": 2404.44,
+        "ema20": 2412.06,
+        "ema50": 2448.1,
         "ema50Rising": false,
         "aboveEma50": false,
         "stack": "bearish",
-        "direction": "flat",
-        "distAbove20Ema": 0.0087,
-        "asOf": "2026-10-19T08:00:00.000Z"
+        "direction": "descending",
+        "distAbove20Ema": -0.0058,
+        "asOf": "2026-10-19T16:00:00.000Z"
       },
       "flag": null,
       "score": null,
@@ -4910,74 +4920,18 @@
   ],
   "candidates": [
     {
-      "id": "dualusd",
-      "symbol": "DUAL",
-      "name": "DUAL",
-      "binanceSymbol": "DUALUSD",
-      "marketCap": 0,
-      "rank": null,
-      "image": null,
-      "price": 0.002984,
-      "score": 73,
-      "subscores": {
-        "pole": 30,
-        "flag": 23,
-        "structure": 20
-      },
-      "breakdown": {
-        "poleMagnitude": 7,
-        "poleVelocity": 10,
-        "poleVolume": 13,
-        "flagPullback": 9,
-        "flagContraction": 12,
-        "flagEntry": 2,
-        "stack": 10,
-        "regime": 10
-      },
-      "stage": "prime",
-      "barsInFlag": 12,
-      "pattern": {
-        "polePct": 0.1664,
-        "poleBars": 4,
-        "poleStartDate": "2026-10-16T16:00:00.000Z",
-        "poleStartPrice": 0.002716,
-        "recentHigh": 0.003168,
-        "recentHighDate": "2026-10-17T08:00:00.000Z",
-        "pullbackPctAbsolute": 0.0581,
-        "pullbackFracOfPole": 0.4071,
-        "flagLow": 0.002815,
-        "flagHigh": 0.003168,
-        "volumeContraction": 0.5,
-        "cumulativePoleVolumeRatio": 1.74,
-        "maxBarVolumeRatio": 6.05,
-        "highsSlope": -0.0049,
-        "lowsSlope": -0.0024,
-        "distAbove20Ema": 0.0255,
-        "direction": "ascending"
-      },
-      "ema": {
-        "ema10": 0.00294555,
-        "ema20": 0.00290967,
-        "ema50": 0.00284151,
-        "ema50Rising": true
-      },
-      "return60bars": 0.0847,
-      "chartUrl": "https://www.tradingview.com/symbols/DUALUSD/?exchange=KRAKEN",
-      "tvSymbol": "KRAKEN:DUALUSD"
-    },
-    {
       "id": "monero",
       "symbol": "XMR",
       "name": "Monero",
       "binanceSymbol": "XMRUSD",
-      "marketCap": 11085387047,
+      "marketCap": 11131735523,
       "rank": 13,
       "image": "https://coin-images.coingecko.com/coins/images/69/large/monero_logo.png?1696501460",
-      "price": 589,
-      "score": 71,
+      "price": 591.18,
+      "score": 68,
       "subscores": {
         "pole": 19,
-        "flag": 32,
+        "flag": 29,
         "structure": 20
       },
       "breakdown": {
@@ -4986,12 +4940,12 @@
         "poleVolume": 9,
         "flagPullback": 12,
         "flagContraction": 12,
-        "flagEntry": 8,
+        "flagEntry": 5,
         "stack": 10,
         "regime": 10
       },
-      "stage": "forming",
-      "barsInFlag": 7,
+      "stage": "prime",
+      "barsInFlag": 9,
       "pattern": {
         "polePct": 0.1154,
         "poleBars": 3,
@@ -4999,25 +4953,25 @@
         "poleStartPrice": 545,
         "recentHigh": 607.87,
         "recentHighDate": "2026-10-18T04:00:00.000Z",
-        "pullbackPctAbsolute": 0.031,
-        "pullbackFracOfPole": 0.3001,
+        "pullbackPctAbsolute": 0.0275,
+        "pullbackFracOfPole": 0.2655,
         "flagLow": 571.25,
         "flagHigh": 607.87,
-        "volumeContraction": 0.48,
+        "volumeContraction": 0.52,
         "cumulativePoleVolumeRatio": 2.22,
         "maxBarVolumeRatio": 3.73,
-        "highsSlope": 0.0027,
-        "lowsSlope": 0.0054,
-        "distAbove20Ema": 0.0249,
-        "direction": "descending"
+        "highsSlope": 0.0024,
+        "lowsSlope": 0.0037,
+        "distAbove20Ema": 0.0232,
+        "direction": "flat"
       },
       "ema": {
-        "ema10": 584.13,
-        "ema20": 574.67,
-        "ema50": 560.16,
+        "ema10": 586.67,
+        "ema20": 577.79,
+        "ema50": 562.6,
         "ema50Rising": true
       },
-      "return60bars": 0.0961,
+      "return60bars": 0.1444,
       "chartUrl": "https://www.tradingview.com/symbols/XMRUSD/?exchange=KRAKEN",
       "tvSymbol": "KRAKEN:XMRUSD"
     }
